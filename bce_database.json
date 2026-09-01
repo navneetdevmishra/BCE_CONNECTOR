@@ -1,0 +1,52 @@
+{
+  "registeredStudents": [
+    {
+      "regNo": "25155126904",
+      "name": "NAVNEET MISHRA",
+      "branch": "CSE (IoT)",
+      "sem": "4",
+      "status": "VERIFIED",
+      "idCard": "ID_CARD_25155126904.png",
+      "attendance": "88.5%"
+    },
+    {
+      "regNo": "24155126050",
+      "name": "ABHISHEK KUMAR",
+      "branch": "CSE (IoT)",
+      "sem": "4",
+      "status": "VERIFIED",
+      "idCard": "ID_CARD_24155126050.png",
+      "attendance": "84.2%"
+    },
+    {
+      "regNo": "25155126902",
+      "name": "ANKIT SHARMA",
+      "branch": "CSE (IoT)",
+      "sem": "4",
+      "status": "VERIFIED",
+      "idCard": "ID_CARD_25155126902.png",
+      "attendance": "82.0%"
+    },
+    {
+      "regNo": "25155126915",
+      "name": "PRIYA KUMARI",
+      "branch": "CSE (IoT)",
+      "sem": "4",
+      "status": "PENDING_VERIFICATION",
+      "idCard": "ID_CARD_25155126915.png",
+      "attendance": "79.5%"
+    },
+    {
+      "regNo": "25155126920",
+      "name": "RAHUL VERMA",
+      "branch": "CSE (IoT)",
+      "sem": "4",
+      "status": "PENDING_VERIFICATION",
+      "idCard": "ID_CARD_25155126920.png",
+      "attendance": "76.0%"
+    }
+  ],
+  "attendanceLogs": {},
+  "uploadedPyqs": [],
+  "certificatesQueue": []
+}

@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BCE Connect — Campus OS | BCE Bakhtiyarpur</title>
+  <meta name="description" content="All-in-one personalized student portal for Bakhtiyarpur College of Engineering (BCE). Access Syllabus, PYQs, AI Study Assistant, Attendance Calculator, Notices, and Results.">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome 6 Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Stylesheets -->
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/views.css">
+</head>
+<body class="bg-slate">
+  
+  <!-- App Container Layout -->
+  <div id="app" class="app-container">
+    
+    <!-- Top Header Bar -->
+    <header class="top-header glass-header">
+      <div class="header-left">
+        <div class="brand-logo" onclick="app.switchView('home')">
+          <div class="logo-icon-wrap glow-cyan" style="padding:2px; background:white;">
+            <img src="https://bcebakhtiyarpur.ac.in/wp-content/uploads/2024/05/logo-bced-f.png" alt="BCE Logo" style="width:100%; height:100%; object-fit:contain; border-radius:var(--radius-sm);">
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">BCE <span class="accent-text">CONNECT</span></span>
+            <span class="brand-sub">ONE CAMPUS. ONE IDENTITY. EVERYTHING BCE.</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="header-center hide-mobile">
+        <div class="global-search-trigger" onclick="app.openSearchModal()">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <span class="search-placeholder">Search syllabus, PYQs, notices, faculty...</span>
+          <kbd class="search-shortcut">ctrl K</kbd>
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <!-- Role Selector Switcher Pill -->
+        <div class="profile-context-pill" style="border-color:var(--accent-purple); background:rgba(168,85,247,0.08);" onclick="app.openRoleSwitchModal()">
+          <i class="fa-solid fa-user-shield pill-icon" style="color:var(--accent-purple);"></i>
+          <div class="pill-text">
+            <span class="pill-branch" id="headerRoleText" style="color:var(--accent-purple);">STUDENT PORTAL</span>
+            <span class="pill-sem" id="headerRoleSubText">ID Verified 🟢</span>
+          </div>
+          <i class="fa-solid fa-chevron-down pill-arrow"></i>
+        </div>
+
+        <!-- Branch & Semester Selector Pill -->
+        <div class="profile-context-pill" onclick="app.openProfileSelector()">
+          <i class="fa-solid fa-microchip pill-icon"></i>
+          <div class="pill-text">
+            <span class="pill-branch" id="headerBranchText">CSE</span>
+            <span class="pill-sem" id="headerSemText">Sem 4</span>
+          </div>
+          <i class="fa-solid fa-chevron-down pill-arrow"></i>
+        </div>
+        
+        <!-- Search Button (Mobile) -->
+        <button class="icon-btn hide-desktop" onclick="app.openSearchModal()" title="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+
+        <!-- Exam Mode Toggle -->
+        <button class="exam-mode-badge" id="examModeBtn" onclick="app.toggleExamMode()" title="Toggle Exam Mode">
+          <i class="fa-solid fa-bolt-lightning"></i>
+          <span class="hide-mobile">EXAM MODE</span>
+        </button>
+
+        <!-- Notification Bell -->
+        <button class="icon-btn relative" onclick="app.switchView('campus', 'notices')" title="Notices">
+          <i class="fa-solid fa-bell"></i>
+          <span class="notification-dot glow-red"></span>
+        </button>
+      </div>
+    </header>
+    
+    <!-- Main App Body (Sidebar + Content View) -->
+    <div class="app-body">
+      
+      <!-- Desktop Sidebar -->
+      <aside class="desktop-sidebar glass-panel hide-mobile">
+        <nav class="sidebar-nav">
+          <div class="nav-section-label">MAIN MENU</div>
+          
+          <button class="sidebar-item active" data-view="home" onclick="app.switchView('home')">
+            <i class="fa-solid fa-house-chimney"></i>
+            <span>Dashboard</span>
+          </button>
+          
+          <button class="sidebar-item" data-view="academics" onclick="app.switchView('academics')">
+            <i class="fa-solid fa-book-bookmark"></i>
+            <span>Academics & Syllabus</span>
+          </button>
+          
+          <button class="sidebar-item" data-view="pyq" onclick="app.switchView('pyq')">
+            <i class="fa-solid fa-file-lines"></i>
+            <span>PYQs & Analytics</span>
+            <span class="badge-mini badge-cyan">HOT</span>
+          </button>
+          
+          <button class="sidebar-item" data-view="ai" onclick="app.switchView('ai')">
+            <i class="fa-solid fa-brain"></i>
+            <span>BCE Genius AI</span>
+            <span class="badge-mini badge-purple">AI</span>
+          </button>
+          
+          <button class="sidebar-item" data-view="attendance" onclick="app.switchView('attendance')">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Attendance Calculator</span>
+          </button>
+
+          <button class="sidebar-item" data-view="results" onclick="app.switchView('results')">
+            <i class="fa-solid fa-trophy"></i>
+            <span>Results & Rank</span>
+          </button>
+
+          <button class="sidebar-item" data-view="student360" onclick="app.switchView('student360')">
+            <i class="fa-solid fa-id-badge"></i>
+            <span>Student 360° Profile</span>
+            <span class="badge-mini badge-cyan">PORTFOLIO</span>
+          </button>
+
+          <button class="sidebar-item" data-view="portal" onclick="app.switchView('portal')">
+            <i class="fa-solid fa-user-shield"></i>
+            <span>Admin & Teacher Portal</span>
+            <span class="badge-mini badge-amber">MULTI-ROLE</span>
+          </button>
+          
+          <div class="nav-section-label">CAMPUS & UTILS</div>
+
+          <button class="sidebar-item" data-view="campus" onclick="app.switchView('campus')">
+            <i class="fa-solid fa-building-columns"></i>
+            <span>BCE Campus Hub</span>
+          </button>
+          
+          <button class="sidebar-item" data-view="tools" onclick="app.switchView('tools')">
+            <i class="fa-solid fa-toolbox"></i>
+            <span>Student Tools</span>
+          </button>
+        </nav>
+        
+        <!-- Sidebar Widget: BCE Quick Status -->
+        <div class="sidebar-status-card glass-card">
+          <div class="status-header">
+            <i class="fa-solid fa-university accent-cyan"></i>
+            <span>BCE Bakhtiyarpur</span>
+          </div>
+          <p class="status-desc">Government Engineering College, Bihar</p>
+          <div class="status-footer">
+            <span class="status-badge"><span class="pulse-dot"></span> BEU Affiliated</span>
+          </div>
+        </div>
+      </aside>
+      
+      <!-- Main Content View Area -->
+      <main class="main-content" id="mainContent">
+        
+        <!-- ========================================== -->
+        <!-- VIEW 1: HOME DASHBOARD                     -->
+        <!-- ========================================== -->
+        <section id="view-home" class="view-section active">
+          <!-- Urgent Notice Marquee Banner -->
+          <div class="notice-ticker-banner glass-card" onclick="app.switchView('campus', 'notices')">
+            <div class="ticker-tag"><i class="fa-solid fa-bullhorn"></i> NOTICE</div>
+            <div class="ticker-text-wrap">
+              <div class="ticker-text" id="homeNoticeMarquee">
+                🔔 B.Tech 4th & 6th Mid-Semester Examination Schedule Announced • BEU Regular Batch Form Filling Open • BCE Placement Drive by TCS Digital
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right ticker-arrow"></i>
+          </div>
+
+          <!-- Hero Greeting Card -->
+          <div class="hero-welcome-card glass-card">
+            <div class="hero-bg-glow"></div>
+            <div class="hero-content">
+              <div class="user-greeting">
+                <span class="greeting-subtitle">Good Morning 👋</span>
+                <h1 class="greeting-title">Welcome back, <span class="accent-text-gradient">Student</span></h1>
+                <p class="greeting-meta" id="homeUserMeta">CSE Department • Semester 4 • BCE Bakhtiyarpur</p>
+              </div>
+              <div class="hero-date-badge">
+                <i class="fa-regular fa-calendar-days"></i>
+                <span id="liveDateStr">Monday, Aug 31, 2026</span>
+              </div>
+            </div>
+
+            <!-- Live Next Class Alert Banner -->
+            <div class="next-class-card" id="nextClassWidget">
+              <div class="next-class-header">
+                <span class="live-pill"><i class="fa-solid fa-clock-rotate-left"></i> UPCOMING CLASS</span>
+                <span class="time-countdown" id="classCountdownStr">Starts in 28 mins</span>
+              </div>
+              <div class="next-class-body">
+                <div class="class-info">
+                  <h3 class="class-subject" id="nextSubjectName">DAA (155403) - Design & Analysis of Algo</h3>
+                  <p class="class-meta" id="nextClassMeta"><i class="fa-solid fa-location-dot"></i> Room 217 • Mr. Shahab Saquib (SS) • 11:00 AM - 12:00 PM</p>
+                </div>
+                <div style="display:flex; gap:0.5rem;">
+                  <button class="btn-sm btn-cyan" onclick="app.openOfficialRoutineModal()">
+                    <i class="fa-solid fa-calendar-week"></i> View Routine Sheet
+                  </button>
+                  <button class="btn-sm btn-outline" onclick="app.openSubjectDetail('Design and Analysis of Algorithm (DAA)')">
+                    <i class="fa-solid fa-book"></i> Syllabus
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Key Quick Stat Badges Grid -->
+          <div class="stats-grid">
+            <div class="stat-card glass-card" onclick="app.switchView('attendance')">
+              <div class="stat-icon-wrap icon-emerald">
+                <i class="fa-solid fa-chart-pie"></i>
+              </div>
+              <div class="stat-details">
+                <span class="stat-label">Overall Attendance</span>
+                <div class="stat-value-row">
+                  <span class="stat-value" id="homeAttendanceVal">78%</span>
+                  <span class="badge-mini badge-emerald"><i class="fa-solid fa-check"></i> Safe</span>
+                </div>
+                <span class="stat-sub">3 classes needed for 80%</span>
+              </div>
+            </div>
+
+            <div class="stat-card glass-card" onclick="app.switchView('results')">
+              <div class="stat-icon-wrap icon-cyan">
+                <i class="fa-solid fa-award"></i>
+              </div>
+              <div class="stat-details">
+                <span class="stat-label">Current CGPA</span>
+                <div class="stat-value-row">
+                  <span class="stat-value" id="homeCgpaVal">8.42</span>
+                  <span class="badge-mini badge-cyan">Sem 3: 8.6</span>
+                </div>
+                <span class="stat-sub">College Rank #12 • CSE #4</span>
+              </div>
+            </div>
+
+            <div class="stat-card glass-card" onclick="app.switchView('pyq')">
+              <div class="stat-icon-wrap icon-purple">
+                <i class="fa-solid fa-fire"></i>
+              </div>
+              <div class="stat-details">
+                <span class="stat-label">PYQ Solved</span>
+                <div class="stat-value-row">
+                  <span class="stat-value">42 / 60</span>
+                  <span class="badge-mini badge-purple">70% Done</span>
+                </div>
+                <span class="stat-sub">Top repeated topic: Logic Gates</span>
+              </div>
+            </div>
+
+            <div class="stat-card glass-card" onclick="app.switchView('academics')">
+              <div class="stat-icon-wrap icon-amber">
+                <i class="fa-solid fa-hourglass-half"></i>
+              </div>
+              <div class="stat-details">
+                <span class="stat-label">Mid-Sem Exam</span>
+                <div class="stat-value-row">
+                  <span class="stat-value">6 Days</span>
+                  <span class="badge-mini badge-amber">Prep Mode</span>
+                </div>
+                <span class="stat-sub">5 Subjects • BEU Pattern</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Access Dock (Grid Icons) -->
+          <div class="section-container">
+            <div class="section-header">
+              <h2 class="section-title"><i class="fa-solid fa-bolt accent-cyan"></i> Quick Actions</h2>
+              <span class="section-sub">1-Tap Access to Campus Tools</span>
+            </div>
+            
+            <div class="quick-dock-grid">
+              <div class="dock-item glass-card" onclick="app.switchView('academics')">
+                <div class="dock-icon bg-cyan-glow">
+                  <i class="fa-solid fa-book-open"></i>
+                </div>
+                <span class="dock-title">Syllabus</span>
+                <span class="dock-sub">BEU 2026</span>
+              </div>
+
+              <div class="dock-item glass-card" onclick="app.switchView('pyq')">
+                <div class="dock-icon bg-purple-glow">
+                  <i class="fa-solid fa-file-contract"></i>
+                </div>
+                <span class="dock-title">PYQs</span>
+                <span class="dock-sub">2020 - 2025</span>
+              </div>
+
+              <div class="dock-item glass-card" onclick="app.switchView('ai')">
+                <div class="dock-icon bg-pink-glow">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <span class="dock-title">Ask AI</span>
+                <span class="dock-sub">Study Helper</span>
+              </div>
+
+              <div class="dock-item glass-card" onclick="app.switchView('results')">
+                <div class="dock-icon bg-emerald-glow">
+                  <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <span class="dock-title">Results</span>
+                <span class="dock-sub">BEU Portal</span>
+              </div>
+
+              <div class="dock-item glass-card" onclick="app.switchView('attendance')">
+                <div class="dock-icon bg-amber-glow">
+                  <i class="fa-solid fa-calculator"></i>
+                </div>
+                <span class="dock-title">Attendance</span>
+                <span class="dock-sub">Bunk Calculator</span>
+              </div>
+
+              <div class="dock-item glass-card" onclick="app.switchView('campus')">
+                <div class="dock-icon bg-blue-glow">
+                  <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <span class="dock-title">Faculty</span>
+                <span class="dock-sub">Directory</span>
+              </div>
+
+              <div class="dock-item glass-card" onclick="app.switchView('campus', 'placements')">
+                <div class="dock-icon bg-indigo-glow">
+                  <i class="fa-solid fa-briefcase"></i>
+                </div>
+                <span class="dock-title">Placements</span>
+                <span class="dock-sub">TCS / Wipro</span>
+              </div>
+
+              <div class="dock-item glass-card" onclick="app.switchView('tools')">
+                <div class="dock-icon bg-red-glow">
+                  <i class="fa-solid fa-gears"></i>
+                </div>
+                <span class="dock-title">Tools</span>
+                <span class="dock-sub">SGPA & Timers</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Two Column Row: Today's Timeline + Latest BCE Notices -->
+          <div class="home-two-col">
+            <!-- Left: Today's Class Timetable -->
+            <div class="glass-card panel-padded">
+              <div class="section-header">
+                <h3 class="panel-title"><i class="fa-solid fa-calendar-day accent-cyan"></i> Today's Schedule</h3>
+                <span class="badge-mini badge-outline" id="todayDayBadge">Monday</span>
+              </div>
+              <div class="timeline-list" id="homeScheduleList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Right: Latest BCE Notice Stream -->
+            <div class="glass-card panel-padded">
+              <div class="section-header">
+                <h3 class="panel-title"><i class="fa-solid fa-bullhorn accent-purple"></i> Latest BCE Notices</h3>
+                <button class="btn-link" onclick="app.switchView('campus', 'notices')">View All <i class="fa-solid fa-arrow-right"></i></button>
+              </div>
+              <div class="notice-feed-short" id="homeNoticeList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 2: ACADEMICS & SYLLABUS               -->
+        <!-- ========================================== -->
+        <section id="view-academics" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title"><i class="fa-solid fa-book-open accent-cyan"></i> Academics & Syllabus</h1>
+              <p class="view-sub">BEU Official Syllabus, Topic Progress Tracker, Custom Subjects & Notes</p>
+            </div>
+            
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button class="btn-sm btn-cyan" onclick="app.openAddSubjectModal()">
+                <i class="fa-solid fa-plus"></i> Add Subject
+              </button>
+              <button class="btn-sm btn-purple" onclick="app.openUploadSyllabusNotesModal()">
+                <i class="fa-solid fa-file-circle-plus"></i> Upload Notes
+              </button>
+              <select id="academicsBranchSelect" class="custom-select btn-sm" onchange="app.switchBranch(this.value)">
+                <option value="CSE (IoT)">CSE (IoT & Cyber Security)</option>
+                <option value="CSE">CSE (Computer Science)</option>
+                <option value="EEE">EEE (Electrical & Electronics)</option>
+                <option value="ME">Mechanical Engineering</option>
+                <option value="CE">Civil Engineering</option>
+                <option value="FTS">Fire Tech & Safety</option>
+              </select>
+
+              <select id="academicsSemSelect" class="custom-select" onchange="app.onAcademicFilterChange()">
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4" selected>Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Overall Semester Progress Bar -->
+          <div class="glass-card sem-progress-card">
+            <div class="sem-progress-info">
+              <div>
+                <span class="sem-title" id="academicsHeaderTitle">CSE • 4th Semester Completion</span>
+                <span class="sem-sub" id="academicsHeaderSub">5 Subjects • 22 Total Credits</span>
+              </div>
+              <div class="sem-percentage" id="academicsOverallPercent">74%</div>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill glow-cyan-bar" id="academicsOverallBar" style="width: 74%;"></div>
+            </div>
+          </div>
+
+          <!-- Subject Cards Grid -->
+          <div class="subject-grid" id="academicsSubjectGrid">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 3: PYQ ARCHIVE & ANALYTICS            -->
+        <!-- ========================================== -->
+        <section id="view-pyq" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title"><i class="fa-solid fa-file-pdf accent-purple"></i> PYQ Archive & Analytics</h1>
+              <p class="view-sub">BEU Examination Papers (2020–2025) with Topic Frequency AI Breakdown</p>
+            </div>
+            
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button class="btn-sm btn-cyan" onclick="app.openUploadPyqModal()">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Upload PYQ / Important Notes
+              </button>
+              <select id="pyqSubjectFilter" class="custom-select btn-sm" onchange="app.renderPyqView()">
+                <option value="ALL">All Subjects</option>
+                <option value="Digital Electronics">Digital Electronics</option>
+                <option value="Data Structures">Data Structures & Algo</option>
+                <option value="Mathematics III">Mathematics III</option>
+                <option value="Discrete Mathematics">Discrete Mathematics</option>
+                <option value="Object Oriented Programming">OOPs in C++</option>
+              </select>
+              
+              <select id="pyqYearSelect" class="custom-select" onchange="app.renderPyqView()">
+                <option value="ALL">All Years (2020-2025)</option>
+                <option value="2025">BEU 2025</option>
+                <option value="2024">BEU 2024</option>
+                <option value="2023">BEU 2023</option>
+                <option value="2022">BEU 2022</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Feature Banner: Topic Frequency Analytics -->
+          <div class="glass-card analytics-banner">
+            <div class="section-header">
+              <h3><i class="fa-solid fa-chart-column accent-cyan"></i> 🔥 High-Frequency Exam Topics Analytics</h3>
+              <span class="badge-mini badge-purple">AI Analyzed from 5 Years PYQs</span>
+            </div>
+            <p class="analytics-sub">Prioritize these topics for Maximum Marks in BEU End-Sem Examinations:</p>
+            
+            <div class="frequency-bars-container" id="pyqTopicAnalyticsList">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- PYQ List Cards -->
+          <div class="section-container">
+            <h3 class="section-title"><i class="fa-solid fa-folder-open"></i> Question Papers Archive</h3>
+            <div class="pyq-grid" id="pyqGrid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 4: BCE GENIUS AI STUDY ASSISTANT      -->
+        <!-- ========================================== -->
+        <section id="view-ai" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title"><i class="fa-solid fa-brain accent-pink"></i> BCE Genius AI Assistant</h1>
+              <p class="view-sub">Syllabus-trained AI tutor for BCE & BEU engineering students</p>
+            </div>
+            <button class="btn-sm btn-outline" onclick="app.clearAiChat()">
+              <i class="fa-solid fa-trash-can"></i> Clear Chat
+            </button>
+          </div>
+
+          <!-- AI Quick Action Chips -->
+          <div class="ai-prompts-bar">
+            <button class="ai-prompt-chip" onclick="app.triggerAiPreset('Explain Logic Gates and IC 7400 with truth tables')">
+              ⚡ Explain Logic Gates
+            </button>
+            <button class="ai-prompt-chip" onclick="app.triggerAiPreset('Generate 5 important BEU End-Sem questions for Data Structures')">
+              📝 5 Important DS Questions
+            </button>
+            <button class="ai-prompt-chip" onclick="app.triggerAiPreset('Create a 7-day revision plan for Digital Electronics')">
+              📅 7-Day Revision Roadmap
+            </button>
+            <button class="ai-prompt-chip" onclick="app.triggerAiPreset('Solve numerical on Karnaugh Map (K-Map) simplification')">
+              🧮 Solve K-Map Numerical
+            </button>
+          </div>
+
+          <!-- Chat Window Box -->
+          <div class="glass-card ai-chat-container">
+            <div class="chat-messages" id="aiChatMessages">
+              <!-- Default welcome message -->
+              <div class="chat-bubble bot-bubble">
+                <div class="bot-avatar"><i class="fa-solid fa-robot"></i></div>
+                <div class="bubble-text">
+                  <strong>Namaste! I am BCE Genius AI 👋</strong><br>
+                  I am trained specifically on BEU engineering syllabus, PYQs, and BCE coursework.<br><br>
+                  How can I assist your studies today? You can ask me to explain any topic, solve PYQ numericals, or generate revision notes!
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat Input Box -->
+            <div class="chat-input-row">
+              <input type="text" id="aiInput" class="chat-input" placeholder="Ask anything about syllabus, PYQs, numericals..." onkeypress="app.handleAiKeyPress(event)">
+              <button class="btn-cyan send-btn" onclick="app.sendAiMessage()">
+                <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 5: ATTENDANCE & BUNK CALCULATOR       -->
+        <!-- ========================================== -->
+        <section id="view-attendance" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title"><i class="fa-solid fa-calculator accent-emerald"></i> Attendance & Bunk Calculator</h1>
+              <p class="view-sub">Track subject-wise criteria, interactive calendar marking & simulate attendance recovery</p>
+            </div>
+          </div>
+
+          <!-- Overall Gauge & Recovery Simulator Grid -->
+          <div class="attendance-top-grid mb-4">
+            <div class="glass-card panel-padded gauge-card">
+              <div class="gauge-container">
+                <div class="gauge-circle" id="gaugeCircle">
+                  <span class="gauge-val" id="gaugeVal">78%</span>
+                  <span class="gauge-label">OVERALL</span>
+                </div>
+              </div>
+              <div class="gauge-info">
+                <span class="badge-mini badge-emerald" id="gaugeStatusBadge"><i class="fa-solid fa-shield-check"></i> SAFE (>75% Criteria Met)</span>
+                <h3 class="gauge-title" id="gaugeTitle">You have attended 78 out of 100 classes</h3>
+                <p class="gauge-desc" id="gaugeDesc">Great job! You are above the mandatory BEU 75% cutoff threshold. You can bunk up to 4 classes and still remain safe!</p>
+              </div>
+            </div>
+
+            <!-- Bunk Simulator -->
+            <div class="glass-card panel-padded simulator-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h3 class="panel-title" style="margin:0;"><i class="fa-solid fa-calculator accent-cyan"></i> Interactive Bunk & Attendance Recovery Simulator</h3>
+                <span class="badge-mini badge-cyan">SMART PREDICTION</span>
+              </div>
+
+              <div class="simulator-controls">
+                <div class="sim-slider-group">
+                  <label>If you attend next <strong id="attendVal" class="accent-cyan">5</strong> upcoming classes:</label>
+                  <input type="range" id="attendSlider" min="0" max="30" value="5" class="custom-slider" oninput="app.calculatePredictedAttendance()">
+                </div>
+
+                <div class="sim-slider-group">
+                  <label>Or if you bunk next <strong id="bunkVal" class="accent-amber">0</strong> upcoming classes:</label>
+                  <input type="range" id="bunkSlider" min="0" max="20" value="0" class="custom-slider" oninput="app.calculatePredictedAttendance()">
+                </div>
+              </div>
+
+              <div class="sim-result-panel glass-panel mt-3">
+                <span class="sim-res-label">PREDICTED ATTENDANCE</span>
+                <div class="sim-res-val accent-cyan-text" id="calcPredictedVal">81.9%</div>
+                <div id="calcPredictedStatus"><span class="badge-mini badge-emerald">SAFE • ABOVE 75%</span></div>
+                <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.3rem;" id="calcPredictedNote">Attending 5 more classes will boost your total by +3.9%!</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subject-wise Interactive Attendance Calendar Component -->
+          <div class="glass-card panel-padded mb-4" style="border:1px solid var(--accent-cyan);">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
+              <div>
+                <h3 class="panel-title" style="margin:0;"><i class="fa-solid fa-calendar-days accent-cyan"></i> Subject Attendance Calendar & Manual Marker</h3>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.2rem;">Click on any date to toggle Present (P), Absent (A), or Cancelled (C) for your classes.</p>
+              </div>
+
+              <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <select id="calSubjectSelect" class="custom-select btn-sm" onchange="app.renderAttendanceCalendar()">
+                  <option value="155401" selected>Computer Org & Architecture (155401)</option>
+                  <option value="155402">Formal Language & Automata (155402)</option>
+                  <option value="155403">Design & Analysis of Algorithms (155403)</option>
+                  <option value="155404">Database Management Systems (155404)</option>
+                  <option value="155405">Software Engineering (155405)</option>
+                  <option value="155406">Computer Networks (155406)</option>
+                </select>
+
+                <button class="btn-sm btn-emerald" onclick="app.markTodayAttendance('P')">
+                  <i class="fa-solid fa-check"></i> Today Present
+                </button>
+                <button class="btn-sm btn-outline" style="border-color:var(--accent-amber); color:var(--accent-amber);" onclick="app.markTodayAttendance('A')">
+                  <i class="fa-solid fa-xmark"></i> Today Absent
+                </button>
+              </div>
+            </div>
+
+            <!-- Calendar Legend & Stats Bar -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; background:rgba(255,255,255,0.03); padding:0.75rem 1rem; border-radius:var(--radius-md); font-size:0.8rem; margin-bottom:1rem;">
+              <div style="display:flex; gap:1rem;">
+                <span>🟢 <strong style="color:var(--accent-emerald);">Present:</strong> <span id="calPresentCount">18</span></span>
+                <span>🔴 <strong style="color:#ef4444;">Absent:</strong> <span id="calAbsentCount">4</span></span>
+                <span>🟡 <strong style="color:var(--accent-amber);">Cancelled:</strong> <span id="calCancelledCount">1</span></span>
+              </div>
+              <div>
+                Selected Subject Attendance: <strong style="color:var(--accent-cyan); font-size:0.95rem;" id="calSubjectPercent">81.8%</strong>
+              </div>
+            </div>
+
+            <!-- Interactive Month Calendar Grid -->
+            <div style="overflow-x:auto;">
+              <div id="attendanceCalendarGrid" style="display:grid; grid-template-columns:repeat(7, 1fr); gap:0.5rem; min-width:600px; text-align:center;">
+                <!-- Dynamically filled calendar -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Subject-wise Attendance Breakdown Cards -->
+          <div class="glass-card panel-padded">
+            <h3 class="panel-title"><i class="fa-solid fa-list-check accent-cyan"></i> Subject-wise Attendance Breakdown</h3>
+            <div class="subject-attendance-grid mt-3" id="subjectAttendanceList">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 6: RESULTS & RANK DASHBOARD           -->
+        <!-- ========================================== -->
+        <section id="view-results" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title"><i class="fa-solid fa-trophy accent-amber"></i> BEU Result & Rank Portal</h1>
+              <p class="view-sub">Enter any BEU Registration Number to generate official Result Grade Card & Ranks</p>
+            </div>
+            
+            <a href="https://beu-bih.ac.in/result-two/B.Tech%203rd%20Semester%20Examination%202025?d=eyJzZW1lc3RlciI6Mywic2Vzc2lvbiI6IjIwMjUiLCJleGFtX2hlbGQiOiJBcHJpbC8yMDI2IiwiZXhhbV9pZCI6IjI1MDEwMyJ9" target="_blank" class="btn-sm btn-cyan">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> beu-bih.ac.in Sem 3 Official Portal
+            </a>
+          </div>
+
+          <!-- BEU Registration Number Search Bar -->
+          <div class="glass-card panel-padded mb-4" style="border:1px solid var(--accent-cyan); background:linear-gradient(135deg, rgba(0,242,254,0.08), rgba(168,85,247,0.06));">
+            <h3 style="font-size:1.05rem; color:var(--accent-cyan); margin-bottom:0.75rem;"><i class="fa-solid fa-id-card"></i> Live BEU Registration Number Lookup:</h3>
+            <form onsubmit="app.lookupBeuRegNoResult(event)" style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
+              <div style="flex:1; min-width:220px;">
+                <input type="text" id="beuSearchRegNoInput" class="chat-input full-width" value="25155126904" placeholder="Enter Reg No (e.g. 25155126904)" oninput="app.lookupBeuRegNoResult()" onkeyup="app.lookupBeuRegNoResult()" style="font-size:0.95rem; font-weight:700; letter-spacing:0.5px;">
+              </div>
+              <div style="width:160px;">
+                <select id="beuSearchSemSelect" class="custom-select full-width" style="height:42px;" onchange="app.lookupBeuRegNoResult()">
+                  <option value="1">Semester 1</option>
+                  <option value="2">Semester 2</option>
+                  <option value="3" selected>Semester 3</option>
+                  <option value="4">Semester 4</option>
+                </select>
+              </div>
+              <button type="button" onclick="app.lookupBeuRegNoResult()" class="btn-cyan" style="height:42px; padding:0 1.25rem; font-weight:700;">
+                <i class="fa-solid fa-magnifying-glass"></i> Check Result & Rank
+              </button>
+            </form>
+          </div>
+
+          <!-- Dynamic Result & Rank Container -->
+          <div id="beuDynamicResultContainer">
+            <!-- Rendered dynamically by lookupBeuRegNoResult -->
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 7: BCE CAMPUS HUB                     -->
+        <!-- ========================================== -->
+        <section id="view-campus" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title"><i class="fa-solid fa-building-columns accent-cyan"></i> BCE Campus Hub</h1>
+              <p class="view-sub">Departments, Faculty Directory, Notices & Campus Life</p>
+            </div>
+          </div>
+
+          <!-- Campus Tabs -->
+          <div class="tab-pills-bar">
+            <button class="tab-pill active" data-campustab="departments" onclick="app.switchCampusTab('departments')">🏢 Departments</button>
+            <button class="tab-pill" data-campustab="faculty" onclick="app.switchCampusTab('faculty')">👨‍🏫 Faculty Directory</button>
+            <button class="tab-pill" data-campustab="notices" onclick="app.switchCampusTab('notices')">📢 All Notices</button>
+            <button class="tab-pill" data-campustab="placements" onclick="app.switchCampusTab('placements')">💼 Placement Drive</button>
+            <button class="tab-pill" data-campustab="campus-info" onclick="app.switchCampusTab('campus-info')">📍 Campus Map & Info</button>
+          </div>
+
+          <div id="campusTabContent">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 8: STUDENT TOOLS                       -->
+        <!-- ========================================== -->
+        <section id="view-tools" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title"><i class="fa-solid fa-toolbox accent-red"></i> Student Utilities & Tools</h1>
+              <p class="view-sub">SGPA/CGPA Calculators, Study Timer, and Quick Utilities</p>
+            </div>
+          </div>
+
+          <div class="tools-grid">
+            <!-- Tool 1: SGPA Calculator -->
+            <div class="glass-card tool-card">
+              <div class="tool-icon bg-cyan-glow"><i class="fa-solid fa-calculator"></i></div>
+              <h3>SGPA / CGPA Calculator</h3>
+              <p>Calculate your semester grade points based on credit weightage.</p>
+              <button class="btn-sm btn-cyan mt-3" onclick="app.openSgpaCalculatorModal()">Launch Calculator</button>
+            </div>
+
+            <!-- Tool 2: Focus Study Timer (Pomodoro) -->
+            <div class="glass-card tool-card">
+              <div class="tool-icon bg-purple-glow"><i class="fa-solid fa-stopwatch"></i></div>
+              <h3>Pomodoro Study Timer</h3>
+              <p>25-min study sessions with ambient focus timer for exams.</p>
+              <button class="btn-sm btn-purple mt-3" onclick="app.openPomodoroModal()">Start Timer</button>
+            </div>
+
+            <!-- Tool 3: PDF Notes Scanner & Compressor -->
+            <div class="glass-card tool-card">
+              <div class="tool-icon bg-emerald-glow"><i class="fa-solid fa-file-pdf"></i></div>
+              <h3>PDF Compressor & Tools</h3>
+              <p>Compress assignment PDFs under 2MB for BEU portal upload.</p>
+              <button class="btn-sm btn-emerald mt-3" onclick="app.openPdfToolModal()">Open PDF Tool</button>
+            </div>
+
+            <!-- Tool 4: Freshers Guide & Checklist -->
+            <div class="glass-card tool-card">
+              <div class="tool-icon bg-amber-glow"><i class="fa-solid fa-compass"></i></div>
+              <h3>1st Year Freshers Kit</h3>
+              <p>Complete onboarding guide, syllabus introduction & hostel manual.</p>
+              <button class="btn-sm btn-amber mt-3" onclick="app.openFreshersModal()">View Freshers Kit</button>
+            </div>
+          </div>
+        <!-- ========================================== -->
+        <!-- VIEW 9: MULTI-ROLE PORTALS (ADMIN & TEACHER)-->
+        <!-- ========================================== -->
+        <section id="view-portal" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title"><i class="fa-solid fa-user-shield accent-purple"></i> BCE Campus Multi-Role Portals</h1>
+              <p class="view-sub">Role-Based Dashboard for Students, Teachers & Admin Cell</p>
+            </div>
+
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button class="btn-sm btn-cyan" onclick="app.setRole('student')">
+                <i class="fa-solid fa-user-graduate"></i> Student Portal
+              </button>
+              <button class="btn-sm btn-purple" onclick="app.setRole('teacher')">
+                <i class="fa-solid fa-chalkboard-user"></i> Teacher Panel
+              </button>
+              <button class="btn-sm btn-amber" onclick="app.setRole('admin')">
+                <i class="fa-solid fa-shield-halved"></i> Admin Control Panel
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic Role Banner -->
+          <div class="glass-card panel-padded mb-4" id="roleStatusBanner" style="border:1px solid var(--accent-purple); background:linear-gradient(135deg, rgba(168,85,247,0.1), rgba(0,242,254,0.06));">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+              <div>
+                <span class="badge-mini badge-purple" id="activeRoleBadge">ACTIVE ROLE: TEACHER PANEL 👨‍🏫</span>
+                <h2 style="font-size:1.3rem; margin:0.3rem 0;" id="activeRoleTitle">Faculty Attendance & Class Management Panel</h2>
+                <p style="font-size:0.85rem; color:var(--text-muted);" id="activeRoleDesc">Mark live lecture attendance for 4th Semester CSE (IoT) students & manage class logs.</p>
+              </div>
+              <button class="btn-sm btn-emerald" onclick="app.openStudentRegisterModal()">
+                <i class="fa-solid fa-id-card"></i> Student ID Registration & Upload
+              </button>
+            </div>
+          </div>
+
+          <!-- Role Content Panels -->
+          <div id="rolePanelContainer">
+            <!-- Dynamically populated via JS depending on active role (teacher, admin, student) -->
+          </div>
+        <!-- ========================================== -->
+        <!-- VIEW 10: STUDENT 360° DIGITAL IDENTITY     -->
+        <!-- ========================================== -->
+        <section id="view-student360" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title"><i class="fa-solid fa-id-badge accent-cyan"></i> Student 360° Digital Identity</h1>
+              <p class="view-sub">Verified Academic Journey, Skills Evidence, Projects & AI Resume Generator</p>
+            </div>
+
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button class="btn-sm btn-cyan" onclick="app.generateStudentAiPortfolio()">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Build AI Portfolio & Resume
+              </button>
+              <button class="btn-sm btn-purple" onclick="app.openUploadCertificateModal()">
+                <i class="fa-solid fa-certificate"></i> Upload Certificate
+              </button>
+            </div>
+          </div>
+
+          <!-- Student 360° Hero Header Card -->
+          <div class="glass-card panel-padded mb-4" style="border:1.5px solid var(--accent-cyan); background:linear-gradient(135deg, rgba(0,242,254,0.1), rgba(168,85,247,0.08));">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.25rem;">
+              <div style="display:flex; align-items:center; gap:1.25rem;">
+                <div style="width:75px; height:75px; border-radius:50%; background:linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:800; color:white; border:3px solid var(--bg-card); box-shadow:0 0 20px rgba(0,242,254,0.4);">
+                  NM
+                </div>
+                <div>
+                  <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                    <h2 style="font-size:1.4rem; margin:0;" class="accent-text-gradient">NAVNEET MISHRA</h2>
+                    <span class="badge-mini badge-emerald"><i class="fa-solid fa-circle-check"></i> VERIFIED BCE STUDENT 🟢</span>
+                    <span class="badge-mini badge-amber"><i class="fa-solid fa-crown"></i> CSE-IoT BRANCH RANK #1</span>
+                  </div>
+                  <p style="font-size:0.88rem; color:var(--text-muted); margin-top:0.3rem;">BEU Reg No: <strong style="color:var(--accent-cyan);">25155126904</strong> • B.Tech CSE (IoT & Cyber Security) • Semester 4</p>
+                  <p style="font-size:0.8rem; color:var(--text-main); margin-top:0.2rem;"><i class="fa-solid fa-location-dot accent-cyan"></i> Bakhtiyarpur College of Engineering, Patna • BEU Affiliated</p>
+                </div>
+              </div>
+
+              <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <button class="btn-sm btn-cyan" onclick="app.showToast('🔗 Shareable Student Profile Link Copied to Clipboard!')">
+                  <i class="fa-solid fa-share-nodes"></i> Share Profile
+                </button>
+                <button class="btn-sm btn-purple" onclick="app.generateStudentAiPortfolio()">
+                  <i class="fa-solid fa-file-pdf"></i> Export Resume
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Academic Performance Grid -->
+          <div class="glass-card panel-padded mb-4" style="border:1px solid var(--accent-purple);">
+            <h3 class="panel-title mb-3"><i class="fa-solid fa-chart-line accent-purple"></i> Academic 360° Performance & SGPA History</h3>
+            
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:1rem; margin-bottom:1.25rem;">
+              <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); text-align:center;">
+                <span style="font-size:0.75rem; color:var(--text-muted);">Cumulative CGPA</span>
+                <div style="font-size:1.8rem; font-weight:800; color:var(--accent-cyan);">8.75</div>
+                <span style="font-size:0.7rem; color:var(--accent-emerald);">Top 1% Class Merit</span>
+              </div>
+              <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); text-align:center;">
+                <span style="font-size:0.75rem; color:var(--text-muted);">Current Sem 3 SGPA</span>
+                <div style="font-size:1.8rem; font-weight:800; color:var(--accent-amber);">8.58</div>
+                <span style="font-size:0.7rem; color:var(--accent-amber);">First Class Distinction</span>
+              </div>
+              <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); text-align:center;">
+                <span style="font-size:0.75rem; color:var(--text-muted);">Active Backlogs</span>
+                <div style="font-size:1.8rem; font-weight:800; color:var(--accent-emerald);">0</div>
+                <span style="font-size:0.7rem; color:var(--accent-emerald);">Clean Track Record</span>
+              </div>
+              <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); text-align:center;">
+                <span style="font-size:0.75rem; color:var(--text-muted);">Overall Attendance</span>
+                <div style="font-size:1.8rem; font-weight:800; color:var(--accent-cyan);">88.5%</div>
+                <span style="font-size:0.7rem; color:var(--accent-cyan);">Above 75% Cutoff</span>
+              </div>
+            </div>
+
+            <!-- Semester Breakdown Bars -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:0.75rem;">
+              <div style="background:rgba(255,255,255,0.03); padding:0.75rem; border-radius:var(--radius-sm); text-align:center; border:1px solid var(--border-glass);">
+                <div style="font-size:0.75rem; color:var(--text-muted);">Sem 1 SGPA</div>
+                <div style="font-size:1.2rem; font-weight:700; color:var(--text-main);">8.50</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.03); padding:0.75rem; border-radius:var(--radius-sm); text-align:center; border:1px solid var(--border-glass);">
+                <div style="font-size:0.75rem; color:var(--text-muted);">Sem 2 SGPA</div>
+                <div style="font-size:1.2rem; font-weight:700; color:var(--text-main);">8.70</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.03); padding:0.75rem; border-radius:var(--radius-sm); text-align:center; border:1px solid var(--accent-cyan);">
+                <div style="font-size:0.75rem; color:var(--accent-cyan); font-weight:700;">Sem 3 SGPA</div>
+                <div style="font-size:1.2rem; font-weight:800; color:var(--accent-cyan);">8.58</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.03); padding:0.75rem; border-radius:var(--radius-sm); text-align:center; border:1px solid var(--border-glass);">
+                <div style="font-size:0.75rem; color:var(--text-muted);">Sem 4 Target</div>
+                <div style="font-size:1.2rem; font-weight:700; color:var(--accent-amber);">8.90</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Evidence-Backed Skill Confidence Engine -->
+          <div class="glass-card panel-padded mb-4" style="border:1px solid var(--accent-cyan);">
+            <h3 class="panel-title mb-2"><i class="fa-solid fa-brain accent-cyan"></i> AI Skill Evidence & Confidence Engine</h3>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">Skills calculated based on verified problem solving, hackathons, projects & certifications</p>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1rem;">
+              <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md);">
+                <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.9rem; margin-bottom:0.4rem;">
+                  <span>C++ & Data Structures</span>
+                  <span class="accent-cyan">90% Confidence</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.1); height:8px; border-radius:4px; margin-bottom:0.75rem;">
+                  <div style="width:90%; height:100%; background:var(--accent-cyan); border-radius:4px;"></div>
+                </div>
+                <ul style="font-size:0.75rem; color:var(--text-muted); padding-left:1rem; margin:0;">
+                  <li>✓ 420+ LeetCode & CodeChef Solved Problems</li>
+                  <li>✓ 3 Algorithms & System Projects</li>
+                  <li>✓ Hackathon Finalist 2025</li>
+                </ul>
+              </div>
+
+              <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md);">
+                <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.9rem; margin-bottom:0.4rem;">
+                  <span>Full Stack Web Development</span>
+                  <span class="accent-purple">88% Confidence</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.1); height:8px; border-radius:4px; margin-bottom:0.75rem;">
+                  <div style="width:88%; height:100%; background:var(--accent-purple); border-radius:4px;"></div>
+                </div>
+                <ul style="font-size:0.75rem; color:var(--text-muted); padding-left:1rem; margin:0;">
+                  <li>✓ Creator of BCE Connect Campus OS App</li>
+                  <li>✓ React, Node.js, Express & SQL</li>
+                  <li>✓ NPTEL Elite Gold Certified</li>
+                </ul>
+              </div>
+
+              <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md);">
+                <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.9rem; margin-bottom:0.4rem;">
+                  <span>IoT & Embedded Security</span>
+                  <span class="accent-emerald">82% Confidence</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.1); height:8px; border-radius:4px; margin-bottom:0.75rem;">
+                  <div style="width:82%; height:100%; background:var(--accent-emerald); border-radius:4px;"></div>
+                </div>
+                <ul style="font-size:0.75rem; color:var(--text-muted); padding-left:1rem; margin:0;">
+                  <li>✓ ESP32 & MQTT Protocol Implementation</li>
+                  <li>✓ Published IEEE Paper on Smart Sensors</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Verified Projects & Certifications Grid -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:1.25rem; margin-bottom:1.5rem;">
+            <!-- Projects Showcase -->
+            <div class="glass-card panel-padded" style="border:1px solid var(--accent-purple);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h3 class="panel-title" style="margin:0;"><i class="fa-solid fa-code accent-purple"></i> Featured Projects</h3>
+                <button class="btn-sm btn-outline" onclick="app.showToast('Add Project feature active!')"><i class="fa-solid fa-plus"></i> Add</button>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:0.85rem;">
+                <div class="glass-panel" style="padding:0.85rem; border-radius:var(--radius-md);">
+                  <h4 style="font-size:0.95rem; margin-bottom:0.2rem; color:var(--accent-cyan);">BCE Connect — Campus OS Web App</h4>
+                  <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.5rem;">All-in-one personalized portal for BCE Bakhtiyarpur with AI tutor & attendance engine.</p>
+                  <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.6rem;">
+                    <span class="badge-mini badge-purple">HTML5</span>
+                    <span class="badge-mini badge-cyan">JavaScript ES6</span>
+                    <span class="badge-mini badge-emerald">CSS Glassmorphism</span>
+                  </div>
+                  <div style="display:flex; gap:0.5rem;">
+                    <a href="https://github.com" target="_blank" class="btn-sm btn-outline" style="font-size:0.72rem;"><i class="fa-brands fa-github"></i> GitHub</a>
+                    <a href="http://localhost:8085/" target="_blank" class="btn-sm btn-cyan" style="font-size:0.72rem;"><i class="fa-solid fa-globe"></i> Live Demo</a>
+                  </div>
+                </div>
+
+                <div class="glass-panel" style="padding:0.85rem; border-radius:var(--radius-md);">
+                  <h4 style="font-size:0.95rem; margin-bottom:0.2rem; color:var(--accent-emerald);">IoT Smart Agriculture Node</h4>
+                  <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.5rem;">Automated soil moisture & weather telemetry node with cloud dashboard.</p>
+                  <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.6rem;">
+                    <span class="badge-mini badge-emerald">C++</span>
+                    <span class="badge-mini badge-amber">ESP32</span>
+                    <span class="badge-mini badge-purple">MQTT Protocol</span>
+                  </div>
+                  <a href="https://github.com" target="_blank" class="btn-sm btn-outline" style="font-size:0.72rem;"><i class="fa-brands fa-github"></i> GitHub Code</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Verified Certifications -->
+            <div class="glass-card panel-padded" style="border:1px solid var(--accent-emerald);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h3 class="panel-title" style="margin:0;"><i class="fa-solid fa-certificate accent-emerald"></i> Verified Certifications</h3>
+                <button class="btn-sm btn-emerald" onclick="app.openUploadCertificateModal()"><i class="fa-solid fa-upload"></i> Upload</button>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:0.85rem;">
+                <div class="glass-panel" style="padding:0.85rem; border-radius:var(--radius-md); border-left:3px solid var(--accent-emerald);">
+                  <div style="display:flex; justify-content:space-between;">
+                    <strong style="font-size:0.88rem; color:var(--text-main);">Google Cloud Associate Cloud Engineer</strong>
+                    <span class="badge-mini badge-emerald"><i class="fa-solid fa-circle-check"></i> VERIFIED 🟢</span>
+                  </div>
+                  <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.2rem;">Issued by Google Cloud • Verified by BCE Admin Cell</p>
+                </div>
+
+                <div class="glass-panel" style="padding:0.85rem; border-radius:var(--radius-md); border-left:3px solid var(--accent-emerald);">
+                  <div style="display:flex; justify-content:space-between;">
+                    <strong style="font-size:0.88rem; color:var(--text-main);">NPTEL Programming in Java (Top 1% Elite+Gold)</strong>
+                    <span class="badge-mini badge-emerald"><i class="fa-solid fa-circle-check"></i> VERIFIED 🟢</span>
+                  </div>
+                  <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.2rem;">Issued by IIT Kharagpur • BEU Credit Approved</p>
+                </div>
+
+                <div class="glass-panel" style="padding:0.85rem; border-radius:var(--radius-md); border-left:3px solid var(--accent-emerald);">
+                  <div style="display:flex; justify-content:space-between;">
+                    <strong style="font-size:0.88rem; color:var(--text-main);">AWS Solutions Architect Associate</strong>
+                    <span class="badge-mini badge-emerald"><i class="fa-solid fa-circle-check"></i> VERIFIED 🟢</span>
+                  </div>
+                  <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.2rem;">Issued by Amazon Web Services</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Portfolio & Resume Output Drawer Container -->
+          <div id="aiPortfolioOutputContainer"></div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation Dock Bar -->
+    <nav class="mobile-bottom-nav hide-desktop">
+      <button class="nav-item active" data-view="home" onclick="app.switchView('home')">
+        <i class="fa-solid fa-house-chimney"></i>
+        <span>Home</span>
+      </button>
+
+      <button class="nav-item" data-view="academics" onclick="app.switchView('academics')">
+        <i class="fa-solid fa-book-open"></i>
+        <span>Academics</span>
+      </button>
+
+      <button class="nav-item" data-view="pyq" onclick="app.switchView('pyq')">
+        <i class="fa-solid fa-file-lines"></i>
+        <span>PYQs</span>
+      </button>
+
+      <button class="nav-item" data-view="ai" onclick="app.switchView('ai')">
+        <i class="fa-solid fa-brain"></i>
+        <span>Ask AI</span>
+      </button>
+
+      <button class="nav-item" data-view="campus" onclick="app.switchView('campus')">
+        <i class="fa-solid fa-building-columns"></i>
+        <span>Campus</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODALS & OVERLAYS                          -->
+  <!-- ========================================== -->
+
+  <!-- Global Search Modal (Ctrl + K) -->
+  <div id="searchModal" class="modal-overlay">
+    <div class="modal-card glass-card search-modal-card">
+      <div class="search-modal-header">
+        <i class="fa-solid fa-magnifying-glass search-modal-icon"></i>
+        <input type="text" id="globalSearchInput" class="search-modal-input" placeholder="Search syllabus, PYQs, faculty, notices..." oninput="app.handleGlobalSearch()">
+        <button class="modal-close-btn" onclick="app.closeSearchModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="search-results-list" id="searchResultsList">
+        <div class="search-empty">Type something to search across BCE Connect...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile / Branch & Semester Selector Modal -->
+  <div id="profileModal" class="modal-overlay">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-user-gear accent-cyan"></i> Select Branch & Semester</h3>
+        <button class="modal-close-btn" onclick="app.closeProfileSelector()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Select Department / Branch:</label>
+          <select id="modalBranchSelect" class="custom-select full-width">
+            <option value="CSE">CSE (Computer Science)</option>
+            <option value="CSE-IoT">CSE (IoT & Cyber Security)</option>
+            <option value="EEE">EEE (Electrical & Electronics)</option>
+            <option value="ME">Mechanical Engineering</option>
+            <option value="CE">Civil Engineering</option>
+            <option value="FTS">Fire Tech & Safety</option>
+          </select>
+        </div>
+
+        <div class="form-group mt-3">
+          <label>Select Current Semester:</label>
+          <select id="modalSemSelect" class="custom-select full-width">
+            <option value="1">Semester 1</option>
+            <option value="2">Semester 2</option>
+            <option value="3">Semester 3</option>
+            <option value="4" selected>Semester 4</option>
+            <option value="5">Semester 5</option>
+            <option value="6">Semester 6</option>
+            <option value="7">Semester 7</option>
+            <option value="8">Semester 8</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cyan full-width" onclick="app.saveProfileContext()">Save & Update Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subject Detail Modal -->
+  <div id="subjectModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <h3 id="subjectModalTitle"><i class="fa-solid fa-book accent-cyan"></i> Subject Details</h3>
+        <button class="modal-close-btn" onclick="app.closeSubjectModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="subjectModalBody">
+        <!-- Dynamically filled -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Role Selector Switcher Modal -->
+  <div id="roleSwitchModal" class="modal-overlay">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.15rem; color:var(--accent-purple);"><i class="fa-solid fa-user-shield accent-purple"></i> Switch BCE Connect Role Portal</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">Select your active portal view for student, faculty, or administration</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closeRoleSwitchModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="display:flex; flex-direction:column; gap:0.85rem;">
+        <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); cursor:pointer; border:1px solid var(--accent-cyan);" onclick="app.setRole('student'); app.closeRoleSwitchModal();">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h4 style="margin:0; font-size:1rem; color:var(--accent-cyan);"><i class="fa-solid fa-user-graduate"></i> Student Portal</h4>
+              <p style="margin:0.2rem 0 0 0; font-size:0.75rem; color:var(--text-muted);">Verified identity, attendance history, 360° portfolio & resume generator</p>
+            </div>
+            <span class="badge-mini badge-emerald">ID VERIFIED 🟢</span>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); cursor:pointer; border:1px solid var(--accent-purple);" onclick="app.setRole('teacher'); app.closeRoleSwitchModal();">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h4 style="margin:0; font-size:1rem; color:var(--accent-purple);"><i class="fa-solid fa-chalkboard-user"></i> Teacher Panel</h4>
+              <p style="margin:0.2rem 0 0 0; font-size:0.75rem; color:var(--text-muted);">Faculty live lecture roll call sheet & attendance marker</p>
+            </div>
+            <span class="badge-mini badge-purple">FACULTY CELL 👨‍🏫</span>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); cursor:pointer; border:1px solid var(--accent-amber);" onclick="app.setRole('admin'); app.closeRoleSwitchModal();">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h4 style="margin:0; font-size:1rem; color:var(--accent-amber);"><i class="fa-solid fa-shield-halved"></i> Admin Control Panel</h4>
+              <p style="margin:0.2rem 0 0 0; font-size:0.75rem; color:var(--text-muted);">Principal / HOD student ID card verification queue & college analytics</p>
+            </div>
+            <span class="badge-mini badge-amber">PRINCIPAL / HOD 🛡️</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Registration & ID Card Upload Modal -->
+  <div id="studentRegisterModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.15rem; color:var(--accent-cyan);"><i class="fa-solid fa-id-card accent-cyan"></i> Student Registration & College ID Upload</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">Upload official BCE Student ID card photo for admin verification & activation</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closeStudentRegisterModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="app.handleStudentRegistration(event)">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1rem;">
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Full Student Name *</label>
+              <input type="text" id="regStudentName" class="chat-input full-width mt-1" value="Navneet Mishra" required>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">BEU Registration No *</label>
+              <input type="text" id="regStudentNo" class="chat-input full-width mt-1" value="25155126904" required>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Branch *</label>
+              <select id="regStudentBranch" class="custom-select full-width mt-1">
+                <option value="CSE (IoT)">CSE (IoT & Cyber Security)</option>
+                <option value="CSE">Computer Science & Engineering</option>
+                <option value="EEE">Electrical & Electronics Engg</option>
+                <option value="Civil">Civil Engineering</option>
+                <option value="Mechanical">Mechanical Engineering</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Active Semester *</label>
+              <select id="regStudentSem" class="custom-select full-width mt-1">
+                <option value="4" selected>Semester 4</option>
+                <option value="3">Semester 3</option>
+                <option value="5">Semester 5</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="border:2px dashed var(--accent-cyan); border-radius:var(--radius-md); padding:1.5rem; text-align:center; background:rgba(0,242,254,0.04); margin-bottom:1.25rem;">
+            <i class="fa-solid fa-file-arrow-up accent-cyan" style="font-size:2.2rem; margin-bottom:0.5rem;"></i>
+            <p style="font-size:0.85rem; font-weight:700; color:var(--text-main); margin-bottom:0.2rem;">Choose BCE College ID Card Photo / PDF</p>
+            <input type="file" id="studentIdCardFileInput" accept=".pdf,image/*" style="display:none;" onchange="app.handleIdCardSelected(this)">
+            <button type="button" class="btn-sm btn-cyan" onclick="document.getElementById('studentIdCardFileInput').click()">
+              <i class="fa-solid fa-folder-open"></i> Browse ID Card File
+            </button>
+            <span id="selectedIdCardName" style="display:block; font-size:0.75rem; color:var(--accent-cyan); font-weight:700; margin-top:0.5rem;"></span>
+          </div>
+
+          <button type="submit" class="btn-cyan full-width" style="padding:0.75rem; font-weight:700;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Submit ID Card for Admin Verification
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- SGPA / CGPA Interactive Calculator Modal -->
+  <div id="sgpaModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.15rem; color:var(--accent-cyan);"><i class="fa-solid fa-calculator accent-cyan"></i> BEU SGPA & CGPA Calculator</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">Enter subject grades to compute your official BEU Grade Point Average</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closeSgpaCalculatorModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:0.75rem; margin-bottom:1.25rem;" id="sgpaSubjectsInputs">
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">COA / Digital Elec (3 Credits)</label>
+            <select class="custom-select full-width mt-1 sgpa-grade-input" data-credit="3">
+              <option value="10">O (Outstanding - 10)</option>
+              <option value="9">A+ (Excellent - 9)</option>
+              <option value="8" selected>A (Very Good - 8)</option>
+              <option value="7">B+ (Good - 7)</option>
+              <option value="6">B (Above Avg - 6)</option>
+              <option value="5">C (Average - 5)</option>
+              <option value="4">P (Pass - 4)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">FLAT / DSA (3 Credits)</label>
+            <select class="custom-select full-width mt-1 sgpa-grade-input" data-credit="3">
+              <option value="10">O (Outstanding - 10)</option>
+              <option value="9" selected>A+ (Excellent - 9)</option>
+              <option value="8">A (Very Good - 8)</option>
+              <option value="7">B+ (Good - 7)</option>
+              <option value="6">B (Above Avg - 6)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">DAA / Java OOP (3 Credits)</label>
+            <select class="custom-select full-width mt-1 sgpa-grade-input" data-credit="3">
+              <option value="10">O (Outstanding - 10)</option>
+              <option value="9">A+ (Excellent - 9)</option>
+              <option value="8" selected>A (Very Good - 8)</option>
+              <option value="7">B+ (Good - 7)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">DBMS / Discrete Math (4 Credits)</label>
+            <select class="custom-select full-width mt-1 sgpa-grade-input" data-credit="4">
+              <option value="10">O (Outstanding - 10)</option>
+              <option value="9">A+ (Excellent - 9)</option>
+              <option value="8" selected>A (Very Good - 8)</option>
+              <option value="7">B+ (Good - 7)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Software Engg / OS (3 Credits)</label>
+            <select class="custom-select full-width mt-1 sgpa-grade-input" data-credit="3">
+              <option value="10">O (Outstanding - 10)</option>
+              <option value="9">A+ (Excellent - 9)</option>
+              <option value="8" selected>A (Very Good - 8)</option>
+              <option value="7">B+ (Good - 7)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Computer Networks (3 Credits)</label>
+            <select class="custom-select full-width mt-1 sgpa-grade-input" data-credit="3">
+              <option value="10" selected>O (Outstanding - 10)</option>
+              <option value="9">A+ (Excellent - 9)</option>
+              <option value="8">A (Very Good - 8)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding:1.25rem; border-radius:var(--radius-md); text-align:center; background:linear-gradient(135deg, rgba(0,242,254,0.1), rgba(168,85,247,0.08)); border:1px solid var(--accent-cyan);">
+          <span style="font-size:0.8rem; color:var(--text-muted);">CALCULATED SGPA</span>
+          <div id="sgpaCalcResult" style="font-size:2.4rem; font-weight:900; color:var(--accent-cyan); margin:0.2rem 0;">8.53</div>
+          <span class="badge-mini badge-emerald" id="sgpaCalcStatus">FIRST CLASS WITH DISTINCTION ⭐</span>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; gap:0.5rem;">
+        <button class="btn-cyan full-width" onclick="app.calculateSgpaNow()">Calculate SGPA</button>
+        <button class="modal-close-btn btn-outline" onclick="app.closeSgpaCalculatorModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pomodoro Focus Timer Modal -->
+  <div id="pomodoroModal" class="modal-overlay">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.15rem; color:var(--accent-purple);"><i class="fa-solid fa-stopwatch accent-purple"></i> Pomodoro Exam Focus Timer</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">25-minute deep work session followed by 5-min rest</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closePomodoroModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="text-align:center; padding:1.5rem;">
+        <div style="font-size:4rem; font-weight:900; font-family:monospace; color:var(--accent-cyan); letter-spacing:2px;" id="pomoTimeDisplay">25:00</div>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.5rem;" id="pomoStatusText">Ready for Deep Study Session ⚡</p>
+        
+        <div style="display:flex; justify-content:center; gap:0.75rem;">
+          <button class="btn-purple" style="padding:0.6rem 1.5rem;" onclick="app.startPomodoroTimer()"><i class="fa-solid fa-play"></i> Start Session</button>
+          <button class="btn-outline" style="padding:0.6rem 1.25rem;" onclick="app.pausePomodoroTimer()"><i class="fa-solid fa-pause"></i> Pause</button>
+          <button class="btn-outline" style="padding:0.6rem 1.25rem;" onclick="app.resetPomodoroTimer()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+        </div>
+      </div>
+    </div>
+  <!-- Student Certificate Verification Upload Modal -->
+  <div id="uploadCertificateModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.15rem; color:var(--accent-purple);"><i class="fa-solid fa-certificate accent-purple"></i> Upload Certificate for Admin Verification</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">Uploaded certificates are audited by BCE Admin Cell before getting a Verified badge 🟢</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closeUploadCertificateModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="app.handleCertificateUpload(event)">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1rem;">
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Certificate Title *</label>
+              <input type="text" id="certTitleInput" class="chat-input full-width mt-1" value="NPTEL Programming in Java (Elite+Gold)" required>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Issuing Organization *</label>
+              <input type="text" id="certIssuerInput" class="chat-input full-width mt-1" value="IIT Kharagpur / NPTEL" required>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Category *</label>
+              <select id="certCategoryInput" class="custom-select full-width mt-1">
+                <option value="Academic / NPTEL">Academic / NPTEL</option>
+                <option value="Technical / Cloud">Technical / Cloud</option>
+                <option value="Hackathon / Coding">Hackathon / Coding</option>
+                <option value="Sports & Cultural">Sports & Cultural</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="border:2px dashed var(--accent-purple); border-radius:var(--radius-md); padding:1.5rem; text-align:center; background:rgba(168,85,247,0.04); margin-bottom:1.25rem;">
+            <i class="fa-solid fa-file-shield accent-purple" style="font-size:2.2rem; margin-bottom:0.5rem;"></i>
+            <p style="font-size:0.85rem; font-weight:700; color:var(--text-main); margin-bottom:0.2rem;">Choose Certificate PDF / Image File</p>
+            <input type="file" id="certFileInput" accept=".pdf,image/*" style="display:none;" onchange="app.handleCertFileSelected(this)">
+            <button type="button" class="btn-sm btn-purple" onclick="document.getElementById('certFileInput').click()">
+              <i class="fa-solid fa-folder-open"></i> Browse Certificate File
+            </button>
+            <span id="selectedCertFileName" style="display:block; font-size:0.75rem; color:var(--accent-cyan); font-weight:700; margin-top:0.5rem;"></span>
+          </div>
+
+          <button type="submit" onclick="app.handleCertificateUpload(event)" class="btn-purple full-width" style="padding:0.75rem; font-weight:700;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Submit Certificate to Admin Queue
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div id="pdfToolModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.15rem; color:var(--accent-emerald);"><i class="fa-solid fa-file-pdf accent-emerald"></i> PDF Compressor & Utilities</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">Compress assignment PDFs & lab reports under 2MB for official BEU portal</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closePdfToolModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div style="border:2px dashed var(--accent-emerald); border-radius:var(--radius-md); padding:2rem; text-align:center; background:rgba(16,185,129,0.03); margin-bottom:1.25rem;">
+          <i class="fa-solid fa-cloud-arrow-up accent-emerald" style="font-size:2.5rem; margin-bottom:0.5rem;"></i>
+          <p style="font-size:0.9rem; font-weight:700; color:var(--text-main);">Drop PDF File Here to Compress</p>
+          <input type="file" id="pdfToolInput" accept=".pdf" style="display:none;" onchange="app.handlePdfToolSelect(this)">
+          <button type="button" class="btn-sm btn-emerald mt-2" onclick="document.getElementById('pdfToolInput').click()">Browse PDF File</button>
+          <span id="pdfToolStatus" style="display:block; font-size:0.8rem; color:var(--accent-cyan); font-weight:700; margin-top:0.75rem;"></span>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Target Compression Limit:</label>
+            <select class="custom-select btn-sm" id="pdfTargetLimit">
+              <option value="2MB">BEU Portal Standard (< 2 MB)</option>
+              <option value="1MB">Medium Compression (< 1 MB)</option>
+              <option value="500KB">High Compression (< 500 KB)</option>
+            </select>
+          </div>
+          <button class="btn-emerald" onclick="app.compressPdfNow()"><i class="fa-solid fa-bolt"></i> Compress PDF Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1st Year Freshers Onboarding Kit Modal -->
+  <div id="freshersModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.15rem; color:var(--accent-amber);"><i class="fa-solid fa-compass accent-amber"></i> 1st Year Freshers Onboarding Guide</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">BCE Bakhtiyarpur Campus Rules, Hostel Manual & Academic Handbook</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closeFreshersModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-bottom:1.25rem;">
+          <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); border-left:3px solid var(--accent-cyan);">
+            <h4 style="color:var(--accent-cyan); margin-bottom:0.4rem;"><i class="fa-solid fa-building-columns"></i> Campus & Hostel</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Boys Hostel (H1, H2) & Girls Hostel manual with mess timetable and gate pass rules.</p>
+            <a href="https://bcebakhtiyarpur.ac.in/" target="_blank" class="btn-sm btn-cyan full-width" style="text-align:center;">
+              <i class="fa-solid fa-external-link"></i> BCE Official Website
+            </a>
+          </div>
+
+          <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); border-left:3px solid var(--accent-purple);">
+            <h4 style="color:var(--accent-purple); margin-bottom:0.4rem;"><i class="fa-solid fa-shield-halved"></i> Anti-Ragging Cell</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Strict zero-tolerance policy. Helpline: 1800-180-5522 | HOD Cell: 06132-22201</p>
+            <a href="https://bcebakhtiyarpur.ac.in/category/notices/" target="_blank" class="btn-sm btn-purple full-width" style="text-align:center;">
+              <i class="fa-solid fa-bell"></i> BCE Official Notices
+            </a>
+          </div>
+
+          <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); border-left:3px solid var(--accent-emerald);">
+            <h4 style="color:var(--accent-emerald); margin-bottom:0.4rem;"><i class="fa-solid fa-book-open"></i> Syllabus & Books</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">1st Year Basic Electrical, Engineering Graphics, Physics & Math-I reference books.</p>
+            <a href="https://beu-bih.ac.in/" target="_blank" class="btn-sm btn-emerald full-width" style="text-align:center;">
+              <i class="fa-solid fa-globe"></i> BEU Official Bihar Portal
+            </a>
+          </div>
+
+          <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); border-left:3px solid var(--accent-amber);">
+            <h4 style="color:var(--accent-amber); margin-bottom:0.4rem;"><i class="fa-solid fa-percent"></i> BEU 75% Rule</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">75% minimum attendance required in each subject to obtain End-Sem admit card.</p>
+            <a href="https://beu-bih.ac.in/result-two/B.Tech%203rd%20Semester%20Examination%202025?d=eyJzZW1lc3RlciI6Mywic2Vzc2lvbiI6IjIwMjUiLCJleGFtX2hlbGQiOiJBcHJpbC8yMDI2IiwiZXhhbV9pZCI6IjI1MDEwMyJ9" target="_blank" class="btn-sm btn-amber full-width" style="text-align:center;">
+              <i class="fa-solid fa-graduation-cap"></i> BEU 2025 Result Portal
+            </a>
+          </div>
+        </div>
+
+        <div style="text-align:center; background:rgba(0,242,254,0.05); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--accent-cyan);">
+          <span style="font-size:0.85rem; font-weight:700; color:var(--accent-cyan);">Quick Official Links:</span>
+          <div style="display:flex; justify-content:center; gap:0.75rem; flex-wrap:wrap; margin-top:0.6rem;">
+            <a href="https://bcebakhtiyarpur.ac.in/" target="_blank" class="btn-sm btn-outline"><i class="fa-solid fa-university"></i> bcebakhtiyarpur.ac.in</a>
+            <a href="https://beu-bih.ac.in/" target="_blank" class="btn-sm btn-outline"><i class="fa-solid fa-globe"></i> beu-bih.ac.in</a>
+            <a href="https://bcebakhtiyarpur.ac.in/category/notices/" target="_blank" class="btn-sm btn-outline"><i class="fa-solid fa-bullhorn"></i> BCE Notices Feed</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Registration & ID Verification Upload Modal -->
+  <div id="studentRegisterModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.15rem; color:var(--accent-emerald);"><i class="fa-solid fa-id-card accent-emerald"></i> Student ID Verification & Registration</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">Upload College ID Card to get verified student status for teacher attendance tracking</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closeStudentRegisterModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="app.handleStudentRegistration(event)">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1rem;">
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Full Student Name *</label>
+              <input type="text" id="regStudentName" class="chat-input full-width mt-1" value="NAVNEET MISHRA" required>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">BEU Registration No *</label>
+              <input type="text" id="regStudentNo" class="chat-input full-width mt-1" value="25155126904" required>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Department / Branch *</label>
+              <select id="regStudentBranch" class="custom-select full-width mt-1">
+                <option value="CSE (IoT)">CSE (IoT & Cyber Security)</option>
+                <option value="CSE">CSE (Computer Science)</option>
+                <option value="EEE">EEE (Electrical)</option>
+                <option value="ME">Mechanical</option>
+                <option value="CE">Civil</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Current Semester *</label>
+              <select id="regStudentSem" class="custom-select full-width mt-1">
+                <option value="4" selected>Semester 4</option>
+                <option value="3">Semester 3</option>
+                <option value="2">Semester 2</option>
+                <option value="1">Semester 1</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- ID Card Photo Upload Dropzone -->
+          <div style="border:2px dashed var(--accent-emerald); border-radius:var(--radius-md); padding:1.5rem; text-align:center; background:rgba(16,185,129,0.04); margin-bottom:1.25rem;">
+            <i class="fa-solid fa-address-card accent-emerald" style="font-size:2.2rem; margin-bottom:0.5rem;"></i>
+            <p style="font-size:0.85rem; font-weight:700; color:var(--text-main); margin-bottom:0.2rem;">Upload Official BCE College ID Card Photo / Scan</p>
+            <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.75rem;">Supported formats: JPG, PNG, PDF (Max 10MB)</p>
+            <input type="file" id="studentIdCardInput" accept=".pdf,image/*" style="display:none;" onchange="app.handleIdCardSelected(this)">
+            <button type="button" class="btn-sm btn-emerald" onclick="document.getElementById('studentIdCardInput').click()">
+              <i class="fa-solid fa-folder-open"></i> Select College ID Card
+            </button>
+            <span id="selectedIdCardName" style="display:block; font-size:0.75rem; color:var(--accent-cyan); font-weight:700; margin-top:0.5rem;"></span>
+          </div>
+
+          <button type="submit" onclick="app.handleStudentRegistration(event)" class="btn-emerald full-width" style="padding:0.75rem; font-weight:700;">
+            <i class="fa-solid fa-paper-plane"></i> Submit Registration to Admin Cell
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Multi-Role Switcher Modal -->
+  <div id="roleSwitchModal" class="modal-overlay">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.15rem; color:var(--accent-purple);"><i class="fa-solid fa-user-shield accent-purple"></i> Select Active Workspace Role</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">Switch between Student, Teacher, and Admin Control views</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closeRoleSwitchModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="display:flex; flex-direction:column; gap:0.75rem;">
+        <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); cursor:pointer; border:1px solid var(--accent-cyan);" onclick="app.setRole('student'); app.closeRoleSwitchModal();">
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <i class="fa-solid fa-user-graduate accent-cyan" style="font-size:1.5rem;"></i>
+            <div>
+              <strong style="color:var(--text-main);">🎓 Student Portal</strong>
+              <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.1rem;">ID Card verification, BEU Result, AI Tutor & Attendance tracker.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); cursor:pointer; border:1px solid var(--accent-purple);" onclick="app.setRole('teacher'); app.closeRoleSwitchModal();">
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <i class="fa-solid fa-chalkboard-user accent-purple" style="font-size:1.5rem;"></i>
+            <div>
+              <strong style="color:var(--text-main);">👨‍🏫 Teacher Panel</strong>
+              <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.1rem;">Mark live class roll call attendance, manage subject rosters & student notes.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); cursor:pointer; border:1px solid var(--accent-amber);" onclick="app.setRole('admin'); app.closeRoleSwitchModal();">
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <i class="fa-solid fa-shield-halved accent-amber" style="font-size:1.5rem;"></i>
+            <div>
+              <strong style="color:var(--text-main);">🛡️ Admin Control Panel</strong>
+              <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.1rem;">Approve student ID uploads, verify registrations & college broadcasts.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="pyqViewerModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <h3 id="pyqModalTitle"><i class="fa-solid fa-file-pdf accent-purple"></i> Question Paper Viewer</h3>
+        <button class="modal-close-btn" onclick="app.closePyqViewer()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="pyqModalBody">
+        <!-- Dynamically filled -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Custom Subject Modal -->
+  <div id="addSubjectModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.15rem; color:var(--accent-cyan);"><i class="fa-solid fa-plus-circle accent-cyan"></i> Add New Subject to BEU Syllabus</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">Create custom core or elective subject for your semester curriculum</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closeAddSubjectModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="app.handleCreateCustomSubject(event)">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1rem;">
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Subject Title *</label>
+              <input type="text" id="newSubTitle" class="chat-input full-width mt-1" value="Artificial Intelligence & Machine Learning" placeholder="e.g. AI & ML" required>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">BEU Subject Code *</label>
+              <input type="text" id="newSubCode" class="chat-input full-width mt-1" value="155409" placeholder="e.g. 155409" required>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Credits *</label>
+              <input type="number" id="newSubCredits" class="chat-input full-width mt-1" value="4" min="1" max="6" required>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Semester *</label>
+              <select id="newSubSem" class="custom-select full-width mt-1" required>
+                <option value="4" selected>Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-bottom:1rem;">
+            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Unit 1 Topics Breakdown *</label>
+            <input type="text" id="newSubUnit1" class="chat-input full-width mt-1" value="Introduction to AI, State Space Search, Heuristic Search Strategies" required>
+          </div>
+
+          <div style="margin-bottom:1.25rem;">
+            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Unit 2 Topics Breakdown</label>
+            <input type="text" id="newSubUnit2" class="chat-input full-width mt-1" value="Supervised Learning, Regression, Decision Trees, Neural Networks">
+          </div>
+
+          <button type="submit" class="btn-cyan full-width" style="padding:0.75rem; font-weight:700;">
+            <i class="fa-solid fa-plus"></i> Save Subject to Syllabus Tracker
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload Syllabus Notes Modal -->
+  <div id="uploadSyllabusNotesModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.15rem; color:var(--accent-purple);"><i class="fa-solid fa-file-circle-plus accent-purple"></i> Upload Handwritten Chapter Notes</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">Share unit-wise class notes & formula sheets with fellow BCE students</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closeUploadSyllabusNotesModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="app.handleUploadSyllabusNotes(event)">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-bottom:1rem;">
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Target Subject *</label>
+              <select id="noteSubSelect" class="custom-select full-width mt-1" required>
+                <option value="155301">Digital Electronics (155301)</option>
+                <option value="155302">Data Structures & Algo (155302)</option>
+                <option value="155303">OOP using JAVA (155303)</option>
+                <option value="155304">Discrete Mathematics (155304)</option>
+                <option value="155305">Operating System (155305)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Unit / Chapter *</label>
+              <select id="noteUnitSelect" class="custom-select full-width mt-1" required>
+                <option value="Unit 1">Unit 1 Complete Notes</option>
+                <option value="Unit 2">Unit 2 Complete Notes</option>
+                <option value="Unit 3">Unit 3 Complete Notes</option>
+                <option value="Full Subject Notes">Full Subject All Units Notes</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Student Author / Reg No *</label>
+              <input type="text" id="noteAuthor" class="chat-input full-width mt-1" value="NAVNEET MISHRA (25155126904)" required>
+            </div>
+          </div>
+
+          <div style="margin-bottom:1rem;">
+            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Notes Title / Description *</label>
+            <input type="text" id="noteTitle" class="chat-input full-width mt-1" value="Unit 1 & 2 Handwritten Class Notes with Solved Examples" required>
+          </div>
+
+          <!-- File Upload Box -->
+          <div style="border:2px dashed var(--accent-purple); border-radius:var(--radius-md); padding:1.5rem; text-align:center; background:rgba(168,85,247,0.03); margin-bottom:1.25rem;">
+            <i class="fa-solid fa-file-pdf accent-purple" style="font-size:2rem; margin-bottom:0.5rem;"></i>
+            <p style="font-size:0.85rem; font-weight:700; color:var(--text-main); margin-bottom:0.2rem;">Choose PDF Notes File or Drag & Drop</p>
+            <input type="file" id="noteFileInput" accept=".pdf,image/*" style="display:none;" onchange="app.handleNoteFileSelected(this)">
+            <button type="button" class="btn-sm btn-outline" style="border-color:var(--accent-purple); color:var(--accent-purple);" onclick="document.getElementById('noteFileInput').click()">
+              <i class="fa-solid fa-folder-open"></i> Browse Notes File
+            </button>
+            <span id="selectedNoteFileName" style="display:block; font-size:0.75rem; color:var(--accent-emerald); font-weight:700; margin-top:0.5rem;"></span>
+          </div>
+
+          <button type="submit" class="btn-purple full-width" style="padding:0.75rem; font-weight:700;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Upload & Attach Notes to Subject
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload PYQ & Important Questions Notes Modal -->
+  <div id="uploadPyqModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.15rem; color:var(--accent-cyan);"><i class="fa-solid fa-cloud-arrow-up accent-cyan"></i> Upload BEU PYQ & Important Questions Notes</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">Share previous year question papers or handwritten VVIP notes with fellow BCE students</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closeUploadPyqModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="app.handleStudentPyqUpload(event)">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-bottom:1rem;">
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Subject Name *</label>
+              <select id="upPyqSubject" class="custom-select full-width mt-1" required>
+                <option value="Digital Electronics (155301)">Digital Electronics (155301)</option>
+                <option value="Data Structure and Algorithms (155302)">Data Structure and Algorithms (155302)</option>
+                <option value="Object Oriented Programming using JAVA (155303)">OOP using JAVA (155303)</option>
+                <option value="Discrete Mathematics and Graph Theory (155304)">Discrete Mathematics (155304)</option>
+                <option value="Operating System (155305)">Operating System (155305)</option>
+                <option value="Universal Human Values (155306)">Universal Human Values (155306)</option>
+                <option value="Computer Organization & Architecture (155401)">COA (155401)</option>
+                <option value="Formal Language & Automata Theory (155402)">FLAT (155402)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Resource Type *</label>
+              <select id="upPyqType" class="custom-select full-width mt-1" required>
+                <option value="BEU End-Sem PYQ Paper">BEU End-Sem PYQ Paper</option>
+                <option value="Mid-Sem Mid-Term Paper">BCE Mid-Term Question Paper</option>
+                <option value="Handwritten VVIP Notes & Solutions">Handwritten VVIP Notes & Solutions</option>
+                <option value="Topic-wise Formula Sheet">Topic-wise Formula Sheet</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Year / Session *</label>
+              <input type="text" id="upPyqYear" class="chat-input full-width mt-1" value="2025" placeholder="e.g. 2025" required>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Uploaded By (Student Name / Reg No) *</label>
+              <input type="text" id="upPyqAuthor" class="chat-input full-width mt-1" value="NAVNEET MISHRA (25155126904)" placeholder="e.g. Navneet Mishra" required>
+            </div>
+          </div>
+
+          <div style="margin-bottom:1rem;">
+            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Paper Title / Short Description *</label>
+            <input type="text" id="upPyqTitle" class="chat-input full-width mt-1" value="2025 BEU End-Sem Complete Question Paper with Solutions" placeholder="e.g. 2025 End-Sem Solved Paper" required>
+          </div>
+
+          <!-- File Drag & Drop Box -->
+          <div style="border:2px dashed var(--accent-cyan); border-radius:var(--radius-md); padding:1.5rem; text-align:center; background:rgba(0,242,254,0.03); margin-bottom:1.25rem;">
+            <i class="fa-solid fa-file-pdf accent-cyan" style="font-size:2rem; margin-bottom:0.5rem;"></i>
+            <p style="font-size:0.85rem; font-weight:700; color:var(--text-main); margin-bottom:0.2rem;">Choose PDF / Image File or Drag & Drop Here</p>
+            <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.75rem;">Supported Formats: PDF, JPG, PNG (Max Size: 25MB)</p>
+            <input type="file" id="upPyqFileInput" accept=".pdf,image/*" style="display:none;" onchange="app.handlePyqFileSelected(this)">
+            <button type="button" class="btn-sm btn-outline" onclick="document.getElementById('upPyqFileInput').click()">
+              <i class="fa-solid fa-folder-open"></i> Browse File
+            </button>
+            <span id="selectedFileName" style="display:block; font-size:0.75rem; color:var(--accent-emerald); font-weight:700; margin-top:0.5rem;"></span>
+          </div>
+
+          <button type="submit" onclick="app.handleStudentPyqUpload(event)" class="btn-cyan full-width" style="padding:0.75rem; font-weight:700;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Upload & Publish to BCE Connect Archive
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Official BEU Result Marksheet Simulator Modal -->
+  <div id="beuResultModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.15rem; color:var(--accent-cyan);"><i class="fa-solid fa-graduation-cap accent-cyan"></i> BEU Official Marksheet Simulator (beu-bih.ac.in)</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">Simulate & preview your semester grade sheet based on BEU 10-Point CGPA Grading System</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closeBeuResultSimulatorModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="beuResultModalBody">
+        <!-- Dynamically filled -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Official BCE Timetable Routine Modal -->
+  <div id="officialRoutineModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.15rem; color:var(--accent-cyan);"><i class="fa-solid fa-table accent-cyan"></i> Official BCE Class Time Table (Room 217)</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">B.Tech CSE & CSE (IoT) - IV Semester • Batch 2024-28 • Effective from 18/05/2026</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closeOfficialRoutineModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="officialRoutineModalBody">
+        <!-- Dynamically filled grid -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Popup -->
+  <div id="toast" class="toast-popup glass-card">
+    <i class="fa-solid fa-circle-check toast-icon"></i>
+    <span id="toastMsg">Action completed successfully!</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data/bce-data.js"></script>
+  <script src="js/data/syllabus-data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
