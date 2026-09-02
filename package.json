@@ -1,0 +1,14 @@
+{
+  "name": "bce-connector",
+  "version": "1.0.0",
+  "description": "BCE Bakhtiyapur Digital Connector & Portal",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "push": "node auto-sync.js --once",
+    "watch-push": "node auto-sync.js"
+  },
+  "keywords": [],
+  "author": "navneetdevmishra",
+  "license": "ISC"
+}
