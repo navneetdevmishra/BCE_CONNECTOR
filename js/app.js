@@ -51,6 +51,19 @@ class BCEConnectApp {
     this.renderAttendanceView();
     this.renderResultsView();
     this.renderCampusTab('departments');
+    this.syncWithBackend();
+  }
+
+  async syncWithBackend() {
+    try {
+      const res = await fetch('/api/students');
+      const data = await res.json();
+      if (data.success && data.students) {
+        this.registeredStudents = data.students;
+      }
+    } catch (err) {
+      console.log('Backend sync offline, using local cache');
+    }
   }
 
   // Event Listeners Configuration

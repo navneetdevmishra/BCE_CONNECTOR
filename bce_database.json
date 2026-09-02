@@ -1,13 +1,26 @@
 {
   "registeredStudents": [
     {
+      "regNo": "25155126999",
+      "name": "SANDEEP KUMAR",
+      "branch": "CSE (IoT)",
+      "sem": "4",
+      "status": "VERIFIED",
+      "idCard": "ID_CARD_25155126999.png",
+      "attendance": "100.0%",
+      "email": "sandeep.bce@gmail.com",
+      "joinedDate": "2026-09-02"
+    },
+    {
       "regNo": "25155126904",
       "name": "NAVNEET MISHRA",
       "branch": "CSE (IoT)",
       "sem": "4",
       "status": "VERIFIED",
       "idCard": "ID_CARD_25155126904.png",
-      "attendance": "88.5%"
+      "attendance": "88.5%",
+      "email": "navneet.bce@gmail.com",
+      "joinedDate": "2024-08-15"
     },
     {
       "regNo": "24155126050",
@@ -16,7 +29,9 @@
       "sem": "4",
       "status": "VERIFIED",
       "idCard": "ID_CARD_24155126050.png",
-      "attendance": "84.2%"
+      "attendance": "84.2%",
+      "email": "abhishek.bce@gmail.com",
+      "joinedDate": "2024-08-16"
     },
     {
       "regNo": "25155126902",
@@ -25,7 +40,9 @@
       "sem": "4",
       "status": "VERIFIED",
       "idCard": "ID_CARD_25155126902.png",
-      "attendance": "82.0%"
+      "attendance": "82.0%",
+      "email": "ankit.bce@gmail.com",
+      "joinedDate": "2024-08-18"
     },
     {
       "regNo": "25155126915",
@@ -34,7 +51,9 @@
       "sem": "4",
       "status": "PENDING_VERIFICATION",
       "idCard": "ID_CARD_25155126915.png",
-      "attendance": "79.5%"
+      "attendance": "79.5%",
+      "email": "priya.bce@gmail.com",
+      "joinedDate": "2024-09-01"
     },
     {
       "regNo": "25155126920",
@@ -43,10 +62,87 @@
       "sem": "4",
       "status": "PENDING_VERIFICATION",
       "idCard": "ID_CARD_25155126920.png",
-      "attendance": "76.0%"
+      "attendance": "76.0%",
+      "email": "rahul.bce@gmail.com",
+      "joinedDate": "2024-09-02"
     }
   ],
-  "attendanceLogs": {},
-  "uploadedPyqs": [],
+  "notices": [
+    {
+      "id": "NTC-101",
+      "title": "BEU End-Semester Examination Schedule 2026",
+      "category": "Exam",
+      "date": "2026-09-01",
+      "author": "Controller of Examinations",
+      "content": "The 4th and 6th Semester End Exams for Bihar Engineering University (BEU) will commence from September 25, 2026. Admit cards will be available on the portal shortly.",
+      "priority": "HIGH"
+    },
+    {
+      "id": "NTC-102",
+      "title": "75% Attendance Mandatory for BEU Exam Form Fillup",
+      "category": "Academic",
+      "date": "2026-08-28",
+      "author": "Academic Dean Office",
+      "content": "All B.Tech students must maintain at least 75% overall attendance to be eligible for university end semester examinations. Check your live attendance in the tracker.",
+      "priority": "HIGH"
+    },
+    {
+      "id": "NTC-103",
+      "title": "IoT & AI Hackathon 'TechSrishti 2026' Registration Open",
+      "category": "Event",
+      "date": "2026-08-25",
+      "author": "BCE Innovation & Incubation Cell",
+      "content": "BCE Bakhtiyapur presents TechSrishti 2026! Cash prizes worth ₹50,000 for top IoT & Web3 projects. Register your teams before Sept 10.",
+      "priority": "MEDIUM"
+    }
+  ],
+  "uploadedPyqs": [
+    {
+      "id": "PYQ-401",
+      "subject": "Microprocessors & Microcontrollers",
+      "branch": "CSE (IoT)",
+      "sem": "4",
+      "year": "2025",
+      "uploadedBy": "NAVNEET MISHRA",
+      "fileUrl": "#",
+      "downloads": 142
+    },
+    {
+      "id": "PYQ-402",
+      "subject": "Database Management Systems",
+      "branch": "CSE (IoT)",
+      "sem": "4",
+      "year": "2025",
+      "uploadedBy": "ANKIT SHARMA",
+      "fileUrl": "#",
+      "downloads": 198
+    },
+    {
+      "id": "PYQ-403",
+      "subject": "Discrete Mathematics",
+      "branch": "CSE (IoT)",
+      "sem": "4",
+      "year": "2024",
+      "uploadedBy": "ABHISHEK KUMAR",
+      "fileUrl": "#",
+      "downloads": 230
+    }
+  ],
+  "attendanceLogs": {
+    "25155126904": {
+      "MPMC": {
+        "attended": 28,
+        "total": 32
+      },
+      "DBMS": {
+        "attended": 30,
+        "total": 34
+      },
+      "OS": {
+        "attended": 26,
+        "total": 30
+      }
+    }
+  },
   "certificatesQueue": []
 }
