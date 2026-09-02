@@ -25,9 +25,6 @@
 </head>
 <body class="bg-slate">
   
-  <!-- React 18 Application Root Mount -->
-  <div id="react-app-root"></div>
-  
   <!-- Main Container Layout -->
   <div id="app" class="app-container">
     
@@ -144,6 +141,12 @@
             <span>Admin & Teacher Portal</span>
             <span class="badge-mini badge-amber">MULTI-ROLE</span>
           </button>
+
+          <button class="sidebar-item" data-view="react" onclick="app.switchView('react')">
+            <i class="fa-solid fa-atom"></i>
+            <span>React OS & Node APIs</span>
+            <span class="badge-mini badge-cyan">REACT 18</span>
+          </button>
           
           <div class="nav-section-label">CAMPUS & UTILS</div>
 
@@ -173,6 +176,13 @@
       
       <!-- Main Content View Area -->
       <main class="main-content" id="mainContent">
+
+        <!-- ========================================== -->
+        <!-- VIEW: REACT 18 & EXPRESS BACKEND PORTAL    -->
+        <!-- ========================================== -->
+        <section id="view-react" class="view-section">
+          <div id="react-app-root"></div>
+        </section>
         
         <!-- ========================================== -->
         <!-- VIEW 1: HOME DASHBOARD                     -->
@@ -268,6 +278,20 @@
                   <span class="badge-mini badge-purple">70% Done</span>
                 </div>
                 <span class="stat-sub">Top repeated topic: Logic Gates</span>
+              </div>
+            </div>
+
+            <div class="stat-card glass-card" onclick="app.switchView('react')">
+              <div class="stat-icon-wrap icon-amber">
+                <i class="fa-solid fa-server"></i>
+              </div>
+              <div class="stat-details">
+                <span class="stat-label">Express Backend API</span>
+                <div class="stat-value-row">
+                  <span class="stat-value text-emerald">Port 8086</span>
+                  <span class="badge-mini badge-emerald">ONLINE</span>
+                </div>
+                <span class="stat-sub">Live Node.js Database Synced</span>
               </div>
             </div>
 
