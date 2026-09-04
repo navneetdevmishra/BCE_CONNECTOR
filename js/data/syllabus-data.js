@@ -276,4 +276,5 @@ const SYLLABUS_DATA = {
     { rank: 8, regNo: "25155126955", name: "KAVYA SINGH", sgpa: 8.15, cgpa: 8.28, badge: "DISTINCTION", status: "PASS" },
     { rank: 9, regNo: "25155126912", name: "VIVEK KUMAR", sgpa: 8.10, cgpa: 8.22, badge: "FIRST CLASS", status: "PASS" },
     { rank: 10, regNo: "25155126928", name: "SNEHA KUMARI", sgpa: 8.05, cgpa: 8.18, badge: "FIRST CLASS", status: "PASS" }
-  ],
+  ]
+};

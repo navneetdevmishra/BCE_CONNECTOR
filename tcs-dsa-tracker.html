@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCS DSA Tracker — 75 Problems</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#0D1117;
+  --surface:#151B23;
+  --surface-2:#1B232D;
+  --border:#232B36;
+  --text:#E6E8EB;
+  --muted:#8A94A3;
+  --amber:#F2A93B;
+  --amber-dim:#5B4522;
+  --green:#3FB68B;
+  --green-dim:#1B3B32;
+  --red:#E1594C;
+  --violet:#8B7CF6;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Space Grotesk',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+/* ===== Header ===== */
+.header{
+  padding:36px 28px 24px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  flex-wrap:wrap;
+  gap:28px;
+  align-items:flex-end;
+  justify-content:space-between;
+}
+.title-block h1{
+  font-size:28px;
+  font-weight:700;
+  margin:0 0 6px;
+  letter-spacing:-0.02em;
+}
+.title-block p{
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+  max-width:520px;
+  line-height:1.5;
+}
+.title-block .badge{
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  color:var(--amber);
+  border:1px solid var(--amber-dim);
+  background:rgba(242,169,59,0.08);
+  padding:3px 8px;
+  border-radius:4px;
+  margin-bottom:12px;
+}
+
+.stat-block{
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+.ring-wrap{position:relative;width:86px;height:86px;flex-shrink:0;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:var(--surface-2);stroke-width:7;}
+.ring-fg{fill:none;stroke:var(--amber);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .4s ease;}
+.ring-label{
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:16px;font-weight:600;
+}
+.stat-nums{font-family:'JetBrains Mono',monospace;}
+.stat-nums .big{font-size:22px;font-weight:600;color:var(--text);}
+.stat-nums .lbl{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* ===== Controls ===== */
+.controls{
+  padding:18px 28px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  background:rgba(13,17,23,0.92);
+  backdrop-filter:blur(6px);
+  z-index:10;
+}
+.search-input{
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:9px 12px;
+  border-radius:6px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:14px;
+  min-width:200px;
+  flex:1;
+}
+.search-input:focus{outline:none;border-color:var(--amber);}
+.search-input::placeholder{color:var(--muted);}
+
+select.filter, .toggle-btn{
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:9px 10px;
+  border-radius:6px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:13px;
+  cursor:pointer;
+}
+select.filter:focus{outline:none;border-color:var(--amber);}
+.toggle-btn{
+  display:flex;align-items:center;gap:6px;
+  color:var(--muted);
+  transition:all .15s ease;
+  white-space:nowrap;
+}
+.toggle-btn.active{
+  color:var(--amber);
+  border-color:var(--amber-dim);
+  background:rgba(242,169,59,0.08);
+}
+.toggle-btn:hover{color:var(--text);}
+.reset-btn{
+  background:none;border:none;color:var(--muted);
+  font-size:13px;cursor:pointer;text-decoration:underline;
+  font-family:'Space Grotesk',sans-serif;
+  padding:9px 4px;
+}
+.reset-btn:hover{color:var(--red);}
+
+/* ===== Table ===== */
+.list-wrap{padding:8px 28px 60px;}
+.list-head{
+  display:grid;
+  grid-template-columns:40px 34px 1fr 200px 90px 90px 40px;
+  gap:14px;
+  padding:10px 14px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  color:var(--muted);
+  border-bottom:1px solid var(--border);
+}
+.row{
+  display:grid;
+  grid-template-columns:40px 34px 1fr 200px 90px 90px 40px;
+  gap:14px;
+  align-items:center;
+  padding:12px 14px;
+  border-bottom:1px solid var(--border);
+  transition:background .12s ease;
+}
+.row:hover{background:var(--surface);}
+.row.solved{opacity:0.55;}
+.row.solved .p-title{text-decoration:line-through;text-decoration-color:var(--green);}
+
+.checkbox{
+  width:20px;height:20px;
+  border-radius:5px;
+  border:1.5px solid var(--border);
+  background:var(--surface);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--bg);
+  font-size:13px;
+  flex-shrink:0;
+}
+.checkbox.checked{background:var(--green);border-color:var(--green);}
+
+.p-num{font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:13px;}
+
+.p-title{
+  color:var(--text);
+  text-decoration:none;
+  font-weight:500;
+  font-size:14.5px;
+}
+.p-title:hover{color:var(--amber);}
+
+.p-tags{
+  display:flex;flex-wrap:wrap;gap:5px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;
+  color:var(--violet);
+}
+.tag{
+  border:1px solid rgba(139,124,246,0.35);
+  background:rgba(139,124,246,0.08);
+  padding:2px 6px;
+  border-radius:4px;
+  white-space:nowrap;
+}
+
+.p-diff{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;}
+.diff-Easy{color:var(--green);}
+.diff-Medium{color:var(--amber);}
+.diff-Hard{color:var(--red);}
+
+.pop-pill{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;
+  padding:3px 8px;
+  border-radius:20px;
+  text-align:center;
+  white-space:nowrap;
+}
+.pop-Hot{background:rgba(242,169,59,0.12);color:var(--amber);border:1px solid var(--amber-dim);}
+.pop-VeryHot{background:rgba(225,89,76,0.14);color:var(--red);border:1px solid rgba(225,89,76,0.35);}
+.pop-Warm{background:rgba(139,148,163,0.12);color:var(--muted);border:1px solid var(--border);}
+
+.star-btn{
+  background:none;border:none;cursor:pointer;
+  font-size:18px;color:var(--border);
+  transition:color .15s ease, transform .15s ease;
+}
+.star-btn.on{color:var(--amber);}
+.star-btn:hover{transform:scale(1.15);}
+
+.empty-state{
+  padding:60px 20px;
+  text-align:center;
+  color:var(--muted);
+}
+.empty-state .glyph{font-size:32px;margin-bottom:10px;}
+
+.footer-note{
+  padding:16px 28px 32px;
+  color:var(--muted);
+  font-size:12px;
+  border-top:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;
+}
+.footer-note a{color:var(--amber);text-decoration:none;}
+
+@media (max-width:820px){
+  .list-head{display:none;}
+  .row{
+    grid-template-columns:30px 1fr 40px;
+    grid-template-areas:
+      "chk title star"
+      "chk tags tags"
+      "chk meta meta";
+    row-gap:6px;
+  }
+  .checkbox{grid-area:chk;}
+  .p-title{grid-area:title;}
+  .star-btn{grid-area:star;justify-self:end;}
+  .p-tags{grid-area:tags;}
+  .p-num{display:none;}
+  .p-diff,.pop-pill{grid-area:meta;justify-self:start;}
+  .row{position:relative;}
+  .p-diff{position:absolute;left:44px;bottom:12px;}
+  .pop-pill{position:absolute;left:100px;bottom:10px;}
+  .header{padding:24px 16px;}
+  .controls{padding:14px 16px;}
+  .list-wrap{padding:8px 12px 40px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="title-block">
+    <div class="badge">TCS NQT · DIGITAL · PRIME</div>
+    <h1>TCS DSA Interview Tracker</h1>
+    <p>75 high-frequency coding questions pulled together for TCS placement prep — spans NQT numerical/logic basics through Digital &amp; Prime-band algorithm rounds. Check off what you've solved, star what needs a revisit.</p>
+  </div>
+  <div class="stat-block">
+    <div class="stat-nums" style="text-align:right;">
+      <div class="big" id="solvedCount">0 / 75</div>
+      <div class="lbl">SOLVED</div>
+    </div>
+    <div class="ring-wrap">
+      <svg width="86" height="86" viewBox="0 0 86 86">
+        <circle class="ring-bg" cx="43" cy="43" r="36"></circle>
+        <circle class="ring-fg" id="ringFg" cx="43" cy="43" r="36" stroke-dasharray="226.19" stroke-dashoffset="226.19"></circle>
+      </svg>
+      <div class="ring-label" id="ringLabel">0%</div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <input class="search-input" id="searchBox" type="text" placeholder="Search by title or tag (e.g. 'Two Pointers', 'Tree')…">
+  <select class="filter" id="diffFilter">
+    <option value="all">All difficulties</option>
+    <option value="Easy">Easy</option>
+    <option value="Medium">Medium</option>
+    <option value="Hard">Hard</option>
+  </select>
+  <select class="filter" id="popFilter">
+    <option value="all">All popularity</option>
+    <option value="Very Hot">Very Hot</option>
+    <option value="Hot">Hot</option>
+    <option value="Warm">Warm</option>
+  </select>
+  <button class="toggle-btn" id="bookmarkToggle">☆ Bookmarked only</button>
+  <button class="toggle-btn" id="unsolvedToggle">◻ Unsolved only</button>
+  <button class="reset-btn" id="resetBtn">Reset progress</button>
+</div>
+
+<div class="list-wrap">
+  <div class="list-head">
+    <div></div><div>#</div><div>PROBLEM</div><div>TAGS</div><div>DIFFICULTY</div><div>POPULARITY</div><div></div>
+  </div>
+  <div id="listBody"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <div class="glyph">¯\_(ツ)_/¯</div>
+    No problems match these filters. Try clearing search or filters.
+  </div>
+</div>
+
+<div class="footer-note">
+  Source list adapted from the <a href="https://hynts.in/preparation/company-wise-dsa-sheet/tcs-dsa-interview-questions/" target="_blank" rel="noopener">hynts TCS DSA sheet</a>. Progress is saved to your browser local storage.
+</div>
+
+<script>
+const PROBLEMS = [
+{n:1,t:"Fizz Buzz",tags:["Math","String","Simulation"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/fizz-buzz/"},
+{n:2,t:"Climbing Stairs",tags:["Math","Dynamic Programming","Memoization"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/climbing-stairs/"},
+{n:3,t:"Valid Palindrome",tags:["Two Pointers","String"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/valid-palindrome/"},
+{n:4,t:"Maximum Subarray",tags:["Array","Divide and Conquer","Dynamic Programming"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/maximum-subarray/"},
+{n:5,t:"Fibonacci Number",tags:["Math","Dynamic Programming","Recursion","Memoization"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/fibonacci-number/"},
+{n:6,t:"Two Sum",tags:["Array","Hash Table"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/two-sum/"},
+{n:7,t:"Valid Parentheses",tags:["String","Stack"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/valid-parentheses/"},
+{n:8,t:"Majority Element",tags:["Array","Hash Table","Divide and Conquer","Sorting","Counting"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/majority-element/"},
+{n:9,t:"Best Time to Buy and Sell Stock",tags:["Array","Dynamic Programming"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/best-time-to-buy-and-sell-stock/"},
+{n:10,t:"Valid Anagram",tags:["Hash Table","String","Sorting"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/valid-anagram/"},
+{n:11,t:"Longest Common Prefix",tags:["String","Trie"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/longest-common-prefix/"},
+{n:12,t:"Missing Number",tags:["Array","Hash Table","Math","Binary Search","Bit Manipulation","Sorting"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/missing-number/"},
+{n:13,t:"Single Number",tags:["Array","Bit Manipulation"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/single-number/"},
+{n:14,t:"Reverse Linked List",tags:["Linked List","Recursion"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/reverse-linked-list/"},
+{n:15,t:"Merge Two Sorted Lists",tags:["Linked List","Recursion"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/merge-two-sorted-lists/"},
+{n:16,t:"Pascal's Triangle",tags:["Array","Dynamic Programming"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/pascals-triangle/"},
+{n:17,t:"Search Insert Position",tags:["Array","Binary Search"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/search-insert-position/"},
+{n:18,t:"Contains Duplicate",tags:["Array","Hash Table","Sorting"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/contains-duplicate/"},
+{n:19,t:"Binary Search",tags:["Array","Binary Search"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/binary-search/"},
+{n:20,t:"Find the Index of the First Occurrence in a String",tags:["Two Pointers","String","String Matching"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/"},
+{n:21,t:"Search a 2D Matrix",tags:["Array","Binary Search","Matrix"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/search-a-2d-matrix/"},
+{n:22,t:"Container With Most Water",tags:["Array","Two Pointers","Greedy"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/container-with-most-water/"},
+{n:23,t:"Product of Array Except Self",tags:["Array","Prefix Sum"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/product-of-array-except-self/"},
+{n:24,t:"Subarray Sum Equals K",tags:["Array","Hash Table","Prefix Sum"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/subarray-sum-equals-k/"},
+{n:25,t:"Group Anagrams",tags:["Array","Hash Table","String","Sorting"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/group-anagrams/"},
+{n:26,t:"Longest Substring Without Repeating Characters",tags:["String","Sliding Window","Hash Table"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/longest-substring-without-repeating-characters/"},
+{n:27,t:"Number of Islands",tags:["Array","Matrix","DFS","BFS","Union Find"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/number-of-islands/"},
+{n:28,t:"Rotting Oranges",tags:["Array","Matrix","BFS"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/rotting-oranges/"},
+{n:29,t:"Spiral Matrix",tags:["Array","Matrix","Simulation"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/spiral-matrix/"},
+{n:30,t:"Sort Colors",tags:["Array","Two Pointers","Sorting"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/sort-colors/"},
+{n:31,t:"Coin Change",tags:["Array","Dynamic Programming","BFS"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/coin-change/"},
+{n:32,t:"House Robber",tags:["Array","Dynamic Programming"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/house-robber/"},
+{n:33,t:"Longest Consecutive Sequence",tags:["Array","Hash Table","Union Find"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/longest-consecutive-sequence/"},
+{n:34,t:"Word Break",tags:["Array","Hash Table","String","Dynamic Programming","Trie","Memoization"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/word-break/"},
+{n:35,t:"Permutations",tags:["Array","Backtracking"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/permutations/"},
+{n:36,t:"Subsets",tags:["Array","Backtracking","Bit Manipulation"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/subsets/"},
+{n:37,t:"3Sum",tags:["Array","Two Pointers","Sorting"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/3sum/"},
+{n:38,t:"Min Stack",tags:["Stack","Design"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/min-stack/"},
+{n:39,t:"Merge Intervals",tags:["Array","Sorting"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/merge-intervals/"},
+{n:40,t:"Meeting Rooms",tags:["Array","Sorting"],diff:"Easy",pop:"Hot",src:"GeeksforGeeks",url:"https://www.geeksforgeeks.org/problems/attend-all-meetings/1"},
+{n:41,t:"Check if a Binary Tree is BST",tags:["Tree","DFS","BST","Binary Tree"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/validate-binary-search-tree/"},
+{n:42,t:"Lowest Common Ancestor of a Binary Tree",tags:["Tree","DFS","Binary Tree"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/"},
+{n:43,t:"Maximum Depth of Binary Tree",tags:["Tree","DFS","Binary Tree"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/maximum-depth-of-binary-tree/"},
+{n:44,t:"Inorder Traversal of Binary Tree",tags:["Tree","Stack","Binary Tree"],diff:"Easy",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/binary-tree-inorder-traversal/"},
+{n:45,t:"Symmetric Tree",tags:["Tree","DFS","BFS","Binary Tree"],diff:"Easy",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/symmetric-tree/"},
+{n:46,t:"Gas Station",tags:["Array","Greedy"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/gas-station/"},
+{n:47,t:"Next Permutation",tags:["Array","Two Pointers"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/next-permutation/"},
+{n:48,t:"Find the Duplicate Number",tags:["Array","Two Pointers","Binary Search","Bit Manipulation"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/find-the-duplicate-number/"},
+{n:49,t:"Search in Rotated Sorted Array",tags:["Array","Binary Search"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/search-in-rotated-sorted-array/"},
+{n:50,t:"Is Subsequence",tags:["Two Pointers","String","Dynamic Programming"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/is-subsequence/"},
+{n:51,t:"Find Peak Element",tags:["Array","Binary Search"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/find-peak-element/"},
+{n:52,t:"Shortest Path in a Binary Maze",tags:["Matrix","BFS","Graph"],diff:"Medium",pop:"Hot",src:"GeeksforGeeks",url:"https://www.geeksforgeeks.org/problems/shortest-path-in-a-binary-maze-1655453161/1"},
+{n:53,t:"Count Primes",tags:["Math","Number Theory","Array"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/count-primes/"},
+{n:54,t:"Maximum Product Subarray",tags:["Array","Dynamic Programming"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/maximum-product-subarray/"},
+{n:55,t:"Longest Palindromic Substring",tags:["String","Dynamic Programming"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/longest-palindromic-substring/"},
+{n:56,t:"Valid Sudoku",tags:["Array","Hash Table","Matrix"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/valid-sudoku/"},
+{n:57,t:"Jump Game",tags:["Array","Dynamic Programming","Greedy"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/jump-game/"},
+{n:58,t:"Kth Smallest Element in a BST",tags:["Tree","DFS","BST","Binary Tree"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/kth-smallest-element-in-a-bst/"},
+{n:59,t:"Unique Paths",tags:["Math","Dynamic Programming","Combinatorics"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/unique-paths/"},
+{n:60,t:"Set Matrix Zeroes",tags:["Array","Hash Table","Matrix"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/set-matrix-zeroes/"},
+{n:61,t:"Word Search",tags:["Array","Matrix","Backtracking"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/word-search/"},
+{n:62,t:"Rotate Image",tags:["Array","Math","Matrix"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/rotate-image/"},
+{n:63,t:"Remove Duplicates from Sorted Array",tags:["Array","Two Pointers"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/remove-duplicates-from-sorted-array/"},
+{n:64,t:"Implement Queue using Stacks",tags:["Stack","Design","Queue"],diff:"Easy",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/implement-queue-using-stacks/"},
+{n:65,t:"Flatten Binary Tree to Linked List",tags:["Tree","DFS","Binary Tree","Linked List"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/flatten-binary-tree-to-linked-list/"},
+{n:66,t:"Binary Tree Zigzag Level Order Traversal",tags:["Tree","BFS","Binary Tree"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/"},
+{n:67,t:"Longest Palindromic Subsequence",tags:["String","Dynamic Programming"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/longest-palindromic-subsequence/"},
+{n:68,t:"Edit Distance",tags:["String","Dynamic Programming"],diff:"Hard",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/edit-distance/"},
+{n:69,t:"Network Delay Time",tags:["DFS","BFS","Graph","Heap","Shortest Path"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/network-delay-time/"},
+{n:70,t:"Generate Parentheses",tags:["String","Backtracking"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/generate-parentheses/"},
+{n:71,t:"Minimum Path Sum",tags:["Array","Matrix","Dynamic Programming"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/minimum-path-sum/"},
+{n:72,t:"Excel Sheet Column Number",tags:["Math","String"],diff:"Easy",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/excel-sheet-column-number/"},
+{n:73,t:"Knapsack Problem (0/1 standard archetype)",tags:["Dynamic Programming"],diff:"Medium",pop:"Very Hot",src:"GeeksforGeeks",url:"https://www.geeksforgeeks.org/problems/0-1-knapsack-problem0945/1"},
+{n:74,t:"Armstrong Numbers",tags:["Math"],diff:"Easy",pop:"Very Hot",src:"GeeksforGeeks",url:"https://www.geeksforgeeks.org/problems/armstrong-numbers2727/1"},
+{n:75,t:"Find Nth element of dynamic series (Simulation)",tags:["Math","Simulation"],diff:"Easy",pop:"Very Hot",src:"GeeksforGeeks",url:"https://www.geeksforgeeks.org/dsa/program-to-find-nth-term-in-the-given-series/"}
+];
+
+const STORAGE_KEY = "tcs-dsa-tracker-progress-v1";
+let state = {}; // { [n]: {solved:bool, bookmarked:bool} }
+let filters = { search:"", diff:"all", pop:"all", bookmarkedOnly:false, unsolvedOnly:false };
+
+const listBody = document.getElementById('listBody');
+const emptyState = document.getElementById('emptyState');
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    state = raw ? JSON.parse(raw) : {};
+  }catch(e){
+    state = {};
+  }
+  render();
+}
+
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }catch(e){
+    console.error('Could not save progress', e);
+  }
+}
+
+function toggleSolved(n){
+  state[n] = state[n] || {};
+  state[n].solved = !state[n].solved;
+  saveState();
+  render();
+}
+function toggleBookmark(n){
+  state[n] = state[n] || {};
+  state[n].bookmarked = !state[n].bookmarked;
+  saveState();
+  render();
+}
+
+function popClass(pop){
+  return "pop-" + pop.replace(/\s+/g,'');
+}
+
+function matchesFilters(p){
+  const s = state[p.n] || {};
+  if(filters.diff !== 'all' && p.diff !== filters.diff) return false;
+  if(filters.pop !== 'all' && p.pop !== filters.pop) return false;
+  if(filters.bookmarkedOnly && !s.bookmarked) return false;
+  if(filters.unsolvedOnly && s.solved) return false;
+  if(filters.search){
+    const q = filters.search.toLowerCase();
+    const hay = (p.t + ' ' + p.tags.join(' ')).toLowerCase();
+    if(!hay.includes(q)) return false;
+  }
+  return true;
+}
+
+function render(){
+  const solvedCount = PROBLEMS.filter(p => state[p.n] && state[p.n].solved).length;
+  document.getElementById('solvedCount').textContent = solvedCount + " / " + PROBLEMS.length;
+  const pct = Math.round((solvedCount / PROBLEMS.length) * 100);
+  document.getElementById('ringLabel').textContent = pct + "%";
+  const circumference = 226.19;
+  document.getElementById('ringFg').style.strokeDashoffset = circumference - (circumference * pct / 100);
+
+  const filtered = PROBLEMS.filter(matchesFilters);
+  listBody.innerHTML = '';
+  emptyState.style.display = filtered.length ? 'none' : 'block';
+
+  filtered.forEach(p => {
+    const s = state[p.n] || {};
+    const row = document.createElement('div');
+    row.className = 'row' + (s.solved ? ' solved' : '');
+
+    const cb = document.createElement('div');
+    cb.className = 'checkbox' + (s.solved ? ' checked' : '');
+    cb.textContent = s.solved ? '✓' : '';
+    cb.onclick = () => toggleSolved(p.n);
+    row.appendChild(cb);
+
+    const num = document.createElement('div');
+    num.className = 'p-num';
+    num.textContent = String(p.n).padStart(2,'0');
+    row.appendChild(num);
+
+    const titleWrap = document.createElement('div');
+    const a = document.createElement('a');
+    a.className = 'p-title';
+    a.href = p.url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = p.t;
+    titleWrap.appendChild(a);
+    const srcSpan = document.createElement('div');
+    srcSpan.className = 'mono';
+    srcSpan.style.color = 'var(--muted)';
+    srcSpan.style.fontSize = '10.5px';
+    srcSpan.style.marginTop = '3px';
+    srcSpan.textContent = p.src;
+    titleWrap.appendChild(srcSpan);
+    row.appendChild(titleWrap);
+
+    const tagsWrap = document.createElement('div');
+    tagsWrap.className = 'p-tags';
+    p.tags.forEach(tag => {
+      const tEl = document.createElement('span');
+      tEl.className = 'tag';
+      tEl.textContent = tag;
+      tagsWrap.appendChild(tEl);
+    });
+    row.appendChild(tagsWrap);
+
+    const diffEl = document.createElement('div');
+    diffEl.className = 'p-diff diff-' + p.diff;
+    diffEl.textContent = p.diff;
+    row.appendChild(diffEl);
+
+    const popEl = document.createElement('div');
+    popEl.className = 'pop-pill ' + popClass(p.pop);
+    popEl.textContent = p.pop;
+    row.appendChild(popEl);
+
+    const starBtn = document.createElement('button');
+    starBtn.className = 'star-btn' + (s.bookmarked ? ' on' : '');
+    starBtn.textContent = s.bookmarked ? '★' : '☆';
+    starBtn.onclick = () => toggleBookmark(p.n);
+    row.appendChild(starBtn);
+
+    listBody.appendChild(row);
+  });
+}
+
+document.getElementById('searchBox').addEventListener('input', e => {
+  filters.search = e.target.value;
+  render();
+});
+document.getElementById('diffFilter').addEventListener('change', e => {
+  filters.diff = e.target.value;
+  render();
+});
+document.getElementById('popFilter').addEventListener('change', e => {
+  filters.pop = e.target.value;
+  render();
+});
+document.getElementById('bookmarkToggle').addEventListener('click', function(){
+  filters.bookmarkedOnly = !filters.bookmarkedOnly;
+  this.classList.toggle('active', filters.bookmarkedOnly);
+  this.textContent = filters.bookmarkedOnly ? '★ Bookmarked only' : '☆ Bookmarked only';
+  render();
+});
+document.getElementById('unsolvedToggle').addEventListener('click', function(){
+  filters.unsolvedOnly = !filters.unsolvedOnly;
+  this.classList.toggle('active', filters.unsolvedOnly);
+  render();
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if(confirm('Reset all solved/bookmark progress? This cannot be undone.')){
+    state = {};
+    saveState();
+    render();
+  }
+});
+
+loadState();
+</script>
+</body>
+</html>

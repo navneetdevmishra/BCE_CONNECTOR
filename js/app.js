@@ -32,6 +32,13 @@ class BCEConnectApp {
       conducted: 100
     };
 
+    // TCS DSA Questions Sheet State
+    this.tcsSolvedIds = new Set(JSON.parse(localStorage.getItem('tcs_solved_ids') || '[]'));
+    this.tcsBookmarkIds = new Set(JSON.parse(localStorage.getItem('tcs_bookmark_ids') || '[]'));
+    this.tcsOnlyBookmarked = false;
+    this.tcsUnsolvedOnly = false;
+    this.activeTcsCodeLang = 'cpp';
+
     // Chat history for AI assistant
     this.aiMessages = [
       {
@@ -50,6 +57,8 @@ class BCEConnectApp {
     this.renderPyqView();
     this.renderAttendanceView();
     this.renderResultsView();
+    this.renderRolePortal();
+    this.renderTcsDsaView();
     this.renderCampusTab('departments');
     this.syncWithBackend();
   }
@@ -135,6 +144,8 @@ class BCEConnectApp {
       this.renderRolePortal();
     } else if (viewId === 'student360') {
       this.renderStudent360View();
+    } else if (viewId === 'tcs') {
+      this.renderTcsDsaView();
     }
 
     // Handle subtab if switching to campus
@@ -2181,6 +2192,267 @@ ${resumeMarkdown}
         noteEl.style.color = 'var(--accent-cyan)';
       }
     }
+  }
+
+  // TCS NQT DSA SHEET CONTROLLER METHODS
+  toggleTcsBookmarkFilter() {
+    this.tcsOnlyBookmarked = !this.tcsOnlyBookmarked;
+    const btn = document.getElementById('tcsFilterBookmarkBtn');
+    if (btn) {
+      btn.style.background = this.tcsOnlyBookmarked ? 'rgba(245,158,11,0.2)' : 'transparent';
+    }
+    this.renderTcsDsaView();
+  }
+
+  toggleTcsUnsolvedFilter() {
+    this.tcsUnsolvedOnly = !this.tcsUnsolvedOnly;
+    const btn = document.getElementById('tcsFilterUnsolvedBtn');
+    if (btn) {
+      btn.style.background = this.tcsUnsolvedOnly ? 'rgba(0,242,254,0.2)' : 'transparent';
+    }
+    this.renderTcsDsaView();
+  }
+
+  resetTcsProgress() {
+    if (confirm('Reset all solved/bookmark progress for TCS DSA Sheet? This cannot be undone.')) {
+      this.tcsSolvedIds.clear();
+      this.tcsBookmarkIds.clear();
+      localStorage.removeItem('tcs_solved_ids');
+      localStorage.removeItem('tcs_bookmark_ids');
+      this.showToast('🧹 Progress reset successfully!');
+      this.renderTcsDsaView();
+    }
+  }
+
+  toggleTcsSolved(id) {
+    if (this.tcsSolvedIds.has(id)) {
+      this.tcsSolvedIds.delete(id);
+      this.showToast('Marked as Unsolved');
+    } else {
+      this.tcsSolvedIds.add(id);
+      this.showToast('🎉 Great job! Problem marked as Solved 🟢');
+    }
+    localStorage.setItem('tcs_solved_ids', JSON.stringify(Array.from(this.tcsSolvedIds)));
+    this.renderTcsDsaView();
+  }
+
+  toggleTcsBookmark(id) {
+    if (this.tcsBookmarkIds.has(id)) {
+      this.tcsBookmarkIds.delete(id);
+      this.showToast('Removed from Bookmarks');
+    } else {
+      this.tcsBookmarkIds.add(id);
+      this.showToast('⭐ Saved to Bookmarks!');
+    }
+    localStorage.setItem('tcs_bookmark_ids', JSON.stringify(Array.from(this.tcsBookmarkIds)));
+    this.renderTcsDsaView();
+  }
+
+  setTcsFilter(type) {
+    this.tcsOnlyBookmarked = false;
+    this.tcsUnsolvedOnly = false;
+
+    const bookmarkBtn = document.getElementById('tcsFilterBookmarkBtn');
+    if (bookmarkBtn) bookmarkBtn.style.background = 'transparent';
+
+    const unsolvedBtn = document.getElementById('tcsFilterUnsolvedBtn');
+    if (unsolvedBtn) unsolvedBtn.style.background = 'transparent';
+
+    const diffSelect = document.getElementById('tcsDifficultySelect');
+    const trackSelect = document.getElementById('tcsTrackSelect');
+    const popSelect = document.getElementById('tcsPopularitySelect');
+    const searchInput = document.getElementById('tcsSearchInput');
+
+    if (diffSelect) diffSelect.value = 'ALL';
+    if (trackSelect) trackSelect.value = 'ALL';
+    if (popSelect) popSelect.value = 'ALL';
+    if (searchInput) searchInput.value = '';
+
+    this.renderTcsDsaView();
+  }
+
+  renderTcsDsaView() {
+    const questions = typeof TCS_DSA_QUESTIONS !== 'undefined' ? TCS_DSA_QUESTIONS : [];
+    const tbody = document.getElementById('tcsQuestionsTableBody');
+    const searchVal = document.getElementById('tcsSearchInput')?.value.toLowerCase() || '';
+    const diffVal = document.getElementById('tcsDifficultySelect')?.value || 'ALL';
+    const trackVal = document.getElementById('tcsTrackSelect')?.value || 'ALL';
+    const popVal = document.getElementById('tcsPopularitySelect')?.value || 'ALL';
+
+    const totalEl = document.getElementById('tcsTotalCount');
+    const percentEl = document.getElementById('tcsProgressPercent');
+    const progressTextEl = document.getElementById('tcsProgressText');
+    const circleEl = document.getElementById('tcsProgressCircle');
+
+    if (totalEl) totalEl.textContent = questions.length;
+
+    const solvedCount = Array.from(this.tcsSolvedIds).filter(id => questions.some(q => q.id === id)).length;
+    const percent = questions.length > 0 ? Math.round((solvedCount / questions.length) * 100) : 0;
+
+    if (percentEl) percentEl.textContent = `${percent}%`;
+    if (progressTextEl) progressTextEl.textContent = `${solvedCount} / ${questions.length} Solved`;
+    if (circleEl) circleEl.setAttribute('stroke-dasharray', `${percent}, 100`);
+
+    if (!tbody) return;
+
+    let filtered = questions.filter(q => {
+      const matchSearch = q.title.toLowerCase().includes(searchVal) || 
+                          q.tags.some(t => t.toLowerCase().includes(searchVal)) ||
+                          String(q.id).includes(searchVal);
+      const matchDiff = diffVal === 'ALL' || q.difficulty === diffVal;
+      const matchTrack = trackVal === 'ALL' || q.track === trackVal;
+      const matchPop = popVal === 'ALL' || q.popularity === popVal;
+      const matchBookmark = !this.tcsOnlyBookmarked || this.tcsBookmarkIds.has(q.id);
+      const matchUnsolved = !this.tcsUnsolvedOnly || !this.tcsSolvedIds.has(q.id);
+      return matchSearch && matchDiff && matchTrack && matchPop && matchBookmark && matchUnsolved;
+    });
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+            <i class="fa-solid fa-folder-open" style="font-size: 2rem; margin-bottom: 0.5rem; display: block; color: var(--accent-cyan);"></i>
+            No TCS DSA questions found matching selected filters.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(q => {
+      const isSolved = this.tcsSolvedIds.has(q.id);
+      const isBookmarked = this.tcsBookmarkIds.has(q.id);
+      const diffBadgeClass = q.difficulty === 'Easy' ? 'badge-emerald' : (q.difficulty === 'Medium' ? 'badge-amber' : 'badge-red');
+
+      return `
+        <tr style="border-bottom: 1px solid var(--border-glass); transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+          <td style="padding: 12px 16px; text-align: center;">
+            <button onclick="app.toggleTcsSolved(${q.id})" style="background: transparent; border: none; cursor: pointer; font-size: 1.15rem; color: ${isSolved ? 'var(--accent-emerald)' : 'var(--text-muted)'};">
+              <i class="fa-${isSolved ? 'solid fa-circle-check' : 'regular fa-circle'}"></i>
+            </button>
+          </td>
+          <td style="padding: 12px 16px;">
+            <div style="font-weight: 700; color: var(--text-main); cursor: pointer;" onclick="app.openTcsProblemModal(${q.id})">
+              ${q.id}. ${q.title}
+            </div>
+          </td>
+          <td style="padding: 12px 16px;">
+            <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+              ${q.tags.map(t => `<span class="badge-mini badge-outline" style="font-size: 0.68rem; padding: 2px 6px;">${t}</span>`).join('')}
+            </div>
+          </td>
+          <td style="padding: 12px 16px; text-align: center;">
+            <button class="btn-sm btn-cyan" onclick="app.openTcsProblemModal(${q.id})" style="padding: 4px 8px; font-size: 0.75rem;">
+              <i class="fa-solid fa-code"></i>
+            </button>
+          </td>
+          <td style="padding: 12px 16px;">
+            <span class="badge-mini ${diffBadgeClass}">${q.difficulty}</span>
+          </td>
+          <td style="padding: 12px 16px;">
+            <span class="badge-mini badge-purple">${q.track || q.popularity}</span>
+          </td>
+          <td style="padding: 12px 16px; text-align: center;">
+            <button onclick="app.toggleTcsBookmark(${q.id})" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem; color: ${isBookmarked ? 'var(--accent-amber)' : 'var(--text-muted)'};">
+              <i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-star"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  openTcsProblemModal(id) {
+    const questions = typeof TCS_DSA_QUESTIONS !== 'undefined' ? TCS_DSA_QUESTIONS : [];
+    const q = questions.find(item => item.id === id);
+    if (!q) return;
+
+    const modal = document.getElementById('tcsProblemDetailModal');
+    const titleEl = document.getElementById('tcsModalProblemTitle');
+    const diffEl = document.getElementById('tcsModalDifficulty');
+    const trackEl = document.getElementById('tcsModalTrack');
+    const bodyEl = document.getElementById('tcsModalBody');
+
+    if (titleEl) titleEl.textContent = `${q.id}. ${q.title}`;
+    if (diffEl) {
+      diffEl.textContent = q.difficulty;
+      diffEl.className = `badge-mini ${q.difficulty === 'Easy' ? 'badge-emerald' : (q.difficulty === 'Medium' ? 'badge-amber' : 'badge-red')}`;
+    }
+    if (trackEl) trackEl.textContent = q.track;
+
+    if (bodyEl) {
+      bodyEl.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <!-- Tags & Frequency -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; background: rgba(255,255,255,0.03); padding: 0.75rem 1rem; border-radius: var(--radius-md);">
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+              ${q.tags.map(t => `<span class="badge-mini badge-cyan">${t}</span>`).join('')}
+            </div>
+            <span style="font-size: 0.8rem; color: var(--accent-amber); font-weight: 700;">🔥 ${q.frequency || 'High Repeat Rate in TCS NQT'}</span>
+          </div>
+
+          <!-- Problem Statement -->
+          <div class="glass-panel" style="padding: 1rem; border-radius: var(--radius-md);">
+            <h4 style="font-size: 0.95rem; color: var(--accent-cyan); margin-bottom: 0.4rem;"><i class="fa-solid fa-file-lines"></i> Problem Statement</h4>
+            <p style="font-size: 0.88rem; color: var(--text-main); line-height: 1.6; white-space: pre-line;">${q.statement}</p>
+          </div>
+
+          <!-- Example Input / Output -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
+            <div class="glass-panel" style="padding: 0.85rem; border-radius: var(--radius-md); border-left: 3px solid var(--accent-cyan);">
+              <h5 style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem;">EXAMPLE INPUT:</h5>
+              <pre style="background: rgba(0,0,0,0.4); padding: 0.5rem; border-radius: 4px; font-family: monospace; font-size: 0.8rem; color: var(--accent-cyan); overflow-x: auto;">${q.exampleInput}</pre>
+            </div>
+            <div class="glass-panel" style="padding: 0.85rem; border-radius: var(--radius-md); border-left: 3px solid var(--accent-emerald);">
+              <h5 style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem;">EXAMPLE OUTPUT:</h5>
+              <pre style="background: rgba(0,0,0,0.4); padding: 0.5rem; border-radius: 4px; font-family: monospace; font-size: 0.8rem; color: var(--accent-emerald); overflow-x: auto;">${q.exampleOutput}</pre>
+            </div>
+          </div>
+
+          ${q.explanation ? `
+            <div style="font-size: 0.82rem; color: var(--text-muted); background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: var(--radius-md);">
+              <strong style="color: var(--accent-cyan);">Explanation:</strong> ${q.explanation}
+            </div>
+          ` : ''}
+
+          <!-- Code Solution Tabs -->
+          <div class="glass-panel" style="padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--accent-purple);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 0.75rem; gap: 0.5rem;">
+              <h4 style="font-size: 0.95rem; color: var(--accent-purple); margin: 0;"><i class="fa-solid fa-code"></i> Optimal Code Solution</h4>
+              <div style="display: flex; gap: 0.35rem;">
+                <button class="btn-sm ${this.activeTcsCodeLang === 'cpp' ? 'btn-purple' : 'btn-outline'}" onclick="app.setTcsCodeLang('cpp', ${q.id})">C++</button>
+                <button class="btn-sm ${this.activeTcsCodeLang === 'java' ? 'btn-purple' : 'btn-outline'}" onclick="app.setTcsCodeLang('java', ${q.id})">Java</button>
+                <button class="btn-sm ${this.activeTcsCodeLang === 'python' ? 'btn-purple' : 'btn-outline'}" onclick="app.setTcsCodeLang('python', ${q.id})">Python</button>
+              </div>
+            </div>
+
+            <pre style="background: #090d16; padding: 1rem; border-radius: var(--radius-md); font-family: monospace; font-size: 0.82rem; color: #38bdf8; overflow-x: auto; max-height: 320px; line-height: 1.5; border: 1px solid var(--border-glass);">${this.activeTcsCodeLang === 'java' ? q.codeJava : (this.activeTcsCodeLang === 'python' ? q.codePython : q.codeCpp)}</pre>
+          </div>
+
+          <!-- Bottom Action Buttons -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <button class="btn-sm btn-cyan" onclick="app.closeTcsProblemModal(); app.switchView('ai'); app.triggerAiPreset('Explain optimal solution for TCS NQT problem: ${q.title}');">
+              <i class="fa-solid fa-brain"></i> Ask BCE Genius AI to Explain
+            </button>
+            <button class="btn-sm ${this.tcsSolvedIds.has(q.id) ? 'btn-emerald' : 'btn-outline'}" onclick="app.toggleTcsSolved(${q.id}); app.openTcsProblemModal(${q.id});">
+              <i class="fa-solid fa-${this.tcsSolvedIds.has(q.id) ? 'check' : 'circle'}"></i> ${this.tcsSolvedIds.has(q.id) ? 'Solved 🟢' : 'Mark as Solved'}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    if (modal) modal.classList.add('active');
+  }
+
+  setTcsCodeLang(lang, id) {
+    this.activeTcsCodeLang = lang;
+    this.openTcsProblemModal(id);
+  }
+
+  closeTcsProblemModal() {
+    const modal = document.getElementById('tcsProblemDetailModal');
+    if (modal) modal.classList.remove('active');
   }
 
   // Toast Popup

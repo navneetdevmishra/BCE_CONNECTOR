@@ -2,15 +2,17 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
 
 const app = express();
 const PORT = process.env.PORT || 8086;
 const DB_FILE = path.join(__dirname, 'bce_database.json');
+const MONGO_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/bce_connect';
 
 // Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Default Database Structure
 const defaultDb = {
@@ -136,7 +138,79 @@ const defaultDb = {
   certificatesQueue: []
 };
 
-// Database Helper Functions
+// ---------------- MONGOOSE SCHEMAS & MODELS ----------------
+let isMongoConnected = false;
+
+const StudentSchema = new mongoose.Schema({
+  regNo: { type: String, required: true, unique: true },
+  name: String,
+  branch: String,
+  sem: String,
+  status: String,
+  idCard: String,
+  attendance: String,
+  email: String,
+  joinedDate: String
+}, { timestamps: true });
+
+const NoticeSchema = new mongoose.Schema({
+  id: String,
+  title: String,
+  category: String,
+  date: String,
+  author: String,
+  content: String,
+  priority: String
+}, { timestamps: true });
+
+const PyqSchema = new mongoose.Schema({
+  id: String,
+  subject: String,
+  branch: String,
+  sem: String,
+  year: String,
+  uploadedBy: String,
+  fileUrl: String,
+  downloads: Number
+}, { timestamps: true });
+
+const StudentModel = mongoose.model('Student', StudentSchema);
+const NoticeModel = mongoose.model('Notice', NoticeSchema);
+const PyqModel = mongoose.model('Pyq', PyqSchema);
+
+// Connect MongoDB with timeout & auto fallback
+mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 3000 })
+  .then(async () => {
+    isMongoConnected = true;
+    console.log('⚡ Connected to MongoDB Database successfully!');
+    await seedMongoDbIfEmpty();
+  })
+  .catch(() => {
+    isMongoConnected = false;
+    console.log('ℹ️ MongoDB server not running locally. Falling back to JSON File Database (bce_database.json).');
+  });
+
+async function seedMongoDbIfEmpty() {
+  try {
+    const studentCount = await StudentModel.countDocuments();
+    if (studentCount === 0) {
+      console.log('🌱 Seeding MongoDB with initial student dataset...');
+      await StudentModel.insertMany(defaultDb.registeredStudents);
+    }
+    const noticeCount = await NoticeModel.countDocuments();
+    if (noticeCount === 0) {
+      await NoticeModel.insertMany(defaultDb.notices);
+    }
+    const pyqCount = await PyqModel.countDocuments();
+    if (pyqCount === 0) {
+      await PyqModel.insertMany(defaultDb.uploadedPyqs);
+    }
+  } catch (err) {
+    console.warn('Error seeding MongoDB:', err.message);
+  }
+}
+
+// Database Helper Functions (JSON Fallback & Sync)
 function loadDb() {
   if (!fs.existsSync(DB_FILE)) {
     fs.writeFileSync(DB_FILE, JSON.stringify(defaultDb, null, 2));
@@ -166,75 +240,106 @@ function saveDb(data) {
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
-    system: 'BCE Bakhtiyapur Express Backend Engine v2.0',
+    system: 'BCE Bakhtiyapur Express & MongoDB Backend Engine v3.0',
+    databaseMode: isMongoConnected ? 'MongoDB (Mongoose ODM)' : 'JSON File Storage (Fallback)',
     port: PORT,
     timestamp: new Date().toISOString()
   });
 });
 
 // 2. Dashboard Live Stats
-app.get('/api/stats', (req, res) => {
-  const db = loadDb();
-  const totalStudents = db.registeredStudents.length;
-  const verifiedStudents = db.registeredStudents.filter(s => s.status === 'VERIFIED').length;
-  const pendingStudents = db.registeredStudents.filter(s => s.status === 'PENDING_VERIFICATION').length;
-  const totalPyqs = db.uploadedPyqs.length;
-  const totalNotices = db.notices.length;
+app.get('/api/stats', async (req, res) => {
+  try {
+    let totalStudents, verifiedStudents, pendingStudents, totalPyqs, totalNotices;
 
-  res.json({
-    success: true,
-    stats: {
-      totalStudents,
-      verifiedStudents,
-      pendingStudents,
-      totalPyqs,
-      totalNotices,
-      college: "BCE Bakhtiyapur (Patna)",
-      affiliation: "Bihar Engineering University (BEU)"
+    if (isMongoConnected) {
+      totalStudents = await StudentModel.countDocuments();
+      verifiedStudents = await StudentModel.countDocuments({ status: 'VERIFIED' });
+      pendingStudents = await StudentModel.countDocuments({ status: 'PENDING_VERIFICATION' });
+      totalPyqs = await PyqModel.countDocuments();
+      totalNotices = await NoticeModel.countDocuments();
+    } else {
+      const db = loadDb();
+      totalStudents = db.registeredStudents.length;
+      verifiedStudents = db.registeredStudents.filter(s => s.status === 'VERIFIED').length;
+      pendingStudents = db.registeredStudents.filter(s => s.status === 'PENDING_VERIFICATION').length;
+      totalPyqs = db.uploadedPyqs.length;
+      totalNotices = db.notices.length;
     }
-  });
+
+    res.json({
+      success: true,
+      databaseMode: isMongoConnected ? 'MongoDB' : 'JSON File',
+      stats: {
+        totalStudents,
+        verifiedStudents,
+        pendingStudents,
+        totalPyqs,
+        totalNotices,
+        college: "BCE Bakhtiyapur (Patna)",
+        affiliation: "Bihar Engineering University (BEU)"
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 // 3. Students - GET List
-app.get('/api/students', (req, res) => {
-  const db = loadDb();
-  res.json({ success: true, students: db.registeredStudents });
+app.get('/api/students', async (req, res) => {
+  try {
+    if (isMongoConnected) {
+      const students = await StudentModel.find().lean();
+      return res.json({ success: true, databaseMode: 'MongoDB', students });
+    }
+    const db = loadDb();
+    res.json({ success: true, databaseMode: 'JSON File', students: db.registeredStudents });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 // 4. Students - POST Register
-app.post('/api/students/register', (req, res) => {
+app.post('/api/students/register', async (req, res) => {
   try {
     const payload = req.body;
     if (!payload.regNo || !payload.name) {
       return res.status(400).json({ success: false, error: 'Registration Number and Name are required.' });
     }
 
-    const db = loadDb();
-    const existingIndex = db.registeredStudents.findIndex(s => s.regNo === payload.regNo);
+    const studentData = {
+      regNo: payload.regNo,
+      name: payload.name.toUpperCase(),
+      branch: payload.branch || 'CSE (IoT)',
+      sem: payload.sem || '4',
+      status: 'PENDING_VERIFICATION',
+      idCard: payload.idCard || `ID_CARD_${payload.regNo}.png`,
+      attendance: payload.attendance || '100.0%',
+      email: payload.email || `${payload.name.toLowerCase().replace(/\s+/g, '.')}@bce.edu.in`,
+      joinedDate: new Date().toISOString().split('T')[0]
+    };
 
-    if (existingIndex !== -1) {
-      db.registeredStudents[existingIndex] = {
-        ...db.registeredStudents[existingIndex],
-        ...payload,
-        status: 'PENDING_VERIFICATION'
-      };
-    } else {
-      db.registeredStudents.unshift({
-        regNo: payload.regNo,
-        name: payload.name.toUpperCase(),
-        branch: payload.branch || 'CSE (IoT)',
-        sem: payload.sem || '4',
-        status: 'PENDING_VERIFICATION',
-        idCard: payload.idCard || `ID_CARD_${payload.regNo}.png`,
-        attendance: payload.attendance || '100.0%',
-        email: payload.email || `${payload.name.toLowerCase().replace(/\s+/g, '.')}@bce.edu.in`,
-        joinedDate: new Date().toISOString().split('T')[0]
-      });
+    if (isMongoConnected) {
+      await StudentModel.findOneAndUpdate(
+        { regNo: payload.regNo },
+        studentData,
+        { upsert: true, new: true }
+      );
     }
 
+    // Always keep JSON fallback file updated
+    const db = loadDb();
+    const existingIndex = db.registeredStudents.findIndex(s => s.regNo === payload.regNo);
+    if (existingIndex !== -1) {
+      db.registeredStudents[existingIndex] = { ...db.registeredStudents[existingIndex], ...studentData };
+    } else {
+      db.registeredStudents.unshift(studentData);
+    }
     saveDb(db);
+
     res.json({
       success: true,
+      databaseMode: isMongoConnected ? 'MongoDB' : 'JSON File',
       message: 'Registration submitted successfully! Pending verification by faculty.',
       students: db.registeredStudents
     });
@@ -244,117 +349,64 @@ app.post('/api/students/register', (req, res) => {
 });
 
 // 5. Students - POST Approve Status
-app.post('/api/students/approve', (req, res) => {
+app.post('/api/students/approve', async (req, res) => {
   try {
     const { regNo } = req.body;
     if (!regNo) {
-      return res.status(400).json({ success: false, error: 'Registration Number is required.' });
+      return res.status(400).json({ success: false, error: 'Student Reg No is required.' });
+    }
+
+    if (isMongoConnected) {
+      await StudentModel.findOneAndUpdate({ regNo }, { status: 'VERIFIED' });
     }
 
     const db = loadDb();
     const student = db.registeredStudents.find(s => s.regNo === regNo);
-
     if (student) {
       student.status = 'VERIFIED';
       saveDb(db);
-      res.json({
-        success: true,
-        message: `ID Verified and Approved for ${student.name} (${student.regNo})`,
-        student
-      });
-    } else {
-      res.status(404).json({ success: false, error: 'Student not found.' });
     }
+
+    res.json({
+      success: true,
+      databaseMode: isMongoConnected ? 'MongoDB' : 'JSON File',
+      message: `Approved student ${regNo}`
+    });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 });
 
-// 6. Notices - GET
-app.get('/api/notices', (req, res) => {
-  const db = loadDb();
-  res.json({ success: true, notices: db.notices });
-});
-
-// 7. Notices - POST Add
-app.post('/api/notices', (req, res) => {
+// 6. Notices - GET List
+app.get('/api/notices', async (req, res) => {
   try {
-    const { title, category, content, priority, author } = req.body;
-    if (!title || !content) {
-      return res.status(400).json({ success: false, error: 'Title and content are required.' });
+    if (isMongoConnected) {
+      const notices = await NoticeModel.find().lean();
+      return res.json({ success: true, databaseMode: 'MongoDB', notices });
     }
-
     const db = loadDb();
-    const newNotice = {
-      id: `NTC-${Date.now().toString().slice(-4)}`,
-      title,
-      category: category || 'General',
-      date: new Date().toISOString().split('T')[0],
-      author: author || 'BCE Administration',
-      content,
-      priority: priority || 'MEDIUM'
-    };
-
-    db.notices.unshift(newNotice);
-    saveDb(db);
-
-    res.json({ success: true, message: 'Notice posted successfully!', notice: newNotice, notices: db.notices });
+    res.json({ success: true, databaseMode: 'JSON File', notices: db.notices });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 });
 
-// 8. PYQs - GET
-app.get('/api/pyqs', (req, res) => {
-  const db = loadDb();
-  res.json({ success: true, pyqs: db.uploadedPyqs });
-});
-
-// 9. PYQs - POST Upload/Add
-app.post('/api/pyqs', (req, res) => {
+// 7. PYQs - GET List
+app.get('/api/pyqs', async (req, res) => {
   try {
-    const { subject, branch, sem, year, uploadedBy } = req.body;
-    if (!subject || !branch || !sem || !year) {
-      return res.status(400).json({ success: false, error: 'Subject, branch, semester, and year are required.' });
+    if (isMongoConnected) {
+      const pyqs = await PyqModel.find().lean();
+      return res.json({ success: true, databaseMode: 'MongoDB', pyqs });
     }
-
     const db = loadDb();
-    const newPyq = {
-      id: `PYQ-${Date.now().toString().slice(-4)}`,
-      subject,
-      branch,
-      sem,
-      year,
-      uploadedBy: uploadedBy || 'Anonymous Student',
-      fileUrl: '#',
-      downloads: 0
-    };
-
-    db.uploadedPyqs.unshift(newPyq);
-    saveDb(db);
-
-    res.json({ success: true, message: 'PYQ added successfully!', pyq: newPyq, pyqs: db.uploadedPyqs });
+    res.json({ success: true, databaseMode: 'JSON File', pyqs: db.uploadedPyqs });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 });
 
-// 10. Attendance - GET & POST
-app.get('/api/attendance/:regNo', (req, res) => {
-  const db = loadDb();
-  const regNo = req.params.regNo;
-  const userAttendance = db.attendanceLogs[regNo] || {
-    "Microprocessors & Microcontrollers": { attended: 28, total: 32 },
-    "Database Management Systems": { attended: 30, total: 34 },
-    "Operating Systems": { attended: 26, total: 30 },
-    "Discrete Mathematics": { attended: 24, total: 28 },
-    "Environmental Science": { attended: 18, total: 20 }
-  };
-
-  res.json({ success: true, regNo, attendance: userAttendance });
-});
-
-app.post('/api/attendance/mark', (req, res) => {
+// 8. Attendance Mark Route
+app.post('/api/attendance/mark', async (req, res) => {
   try {
     const { regNo, subject, attended, total } = req.body;
     if (!regNo || !subject) {
@@ -383,7 +435,7 @@ app.post('/api/attendance/mark', (req, res) => {
   }
 });
 
-// 11. Static Files Serving
+// Static Files Serving
 app.use(express.static(__dirname));
 
 // Fallback Route to index.html
@@ -395,6 +447,6 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`=======================================================`);
   console.log(`🚀 BCE Bakhtiyapur Express Server Active at http://localhost:${PORT}`);
-  console.log(`⚡ Connected to Database: ${DB_FILE}`);
+  console.log(`⚡ MongoDB Ready Mode: ${MONGO_URI}`);
   console.log(`=======================================================`);
 });

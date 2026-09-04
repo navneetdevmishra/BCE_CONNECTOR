@@ -136,6 +136,12 @@
             <span class="badge-mini badge-cyan">PORTFOLIO</span>
           </button>
 
+          <button class="sidebar-item" data-view="tcs" onclick="app.switchView('tcs')">
+            <i class="fa-solid fa-code"></i>
+            <span>TCS NQT DSA Sheet</span>
+            <span class="badge-mini badge-cyan">HYNTS 75</span>
+          </button>
+
           <button class="sidebar-item" data-view="portal" onclick="app.switchView('portal')">
             <i class="fa-solid fa-user-shield"></i>
             <span>Admin & Teacher Portal</span>
@@ -800,6 +806,7 @@
               <button class="btn-sm btn-amber mt-3" onclick="app.openFreshersModal()">View Freshers Kit</button>
             </div>
           </div>
+        </section>
         <!-- ========================================== -->
         <!-- VIEW 9: MULTI-ROLE PORTALS (ADMIN & TEACHER)-->
         <!-- ========================================== -->
@@ -841,6 +848,134 @@
           <div id="rolePanelContainer">
             <!-- Dynamically populated via JS depending on active role (teacher, admin, student) -->
           </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW: TCS + TCS NQT DSA INTERVIEW SHEET    -->
+        <!-- ========================================== -->
+        <section id="view-tcs" class="view-section">
+          <!-- Breadcrumb navigation -->
+          <div class="tcs-breadcrumb mb-3" style="font-size: 0.8rem; color: var(--text-muted);">
+            Preparation &gt; Company Wise DSA &gt; <span style="color: var(--accent-cyan); font-weight: 600;">TCS + TCS NQT DSA Interview Questions</span>
+          </div>
+
+          <!-- Hynts-styled Header Title Card -->
+          <div class="tcs-sheet-header glass-card panel-padded mb-4" style="border: 1px solid var(--accent-cyan); background: linear-gradient(135deg, rgba(0, 242, 254, 0.06), rgba(15, 23, 42, 0.95));">
+            <div style="display: flex; align-items: flex-start; gap: 1.25rem; flex-wrap: wrap;">
+              <div style="width: 56px; height: 56px; background: rgba(0, 242, 254, 0.1); border: 1px solid var(--accent-cyan); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--accent-cyan); flex-shrink: 0;">
+                <i class="fa-solid fa-code"></i>
+              </div>
+              <div style="flex: 1; min-width: 260px;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                  <h1 style="font-size: 1.6rem; font-weight: 800; margin: 0; color: var(--text-main);">TCS + TCS NQT DSA Interview Questions</h1>
+                  <span class="badge-mini badge-cyan">HYNTS 75 SHEET</span>
+                </div>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.4rem; line-height: 1.5;">
+                  Master the TCS recruitment pipeline with this comprehensive, high-yield preparation sheet featuring highly recurring coding questions aggregated from recent TCS NQT, Digital, and Prime hiring assessments.
+                </p>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.6rem; font-size: 0.8rem; color: var(--text-main);">
+                  <span><i class="fa-solid fa-layer-group accent-cyan"></i> <strong id="tcsTotalCount">15</strong> Problems</span>
+                  <span><i class="fa-solid fa-bolt accent-amber"></i> NQT, Digital & Prime Tracks</span>
+                  <span><i class="fa-solid fa-laptop-code accent-purple"></i> C++, Java & Python Solutions</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls & Progress Bar Row -->
+          <div class="glass-card panel-padded mb-4" style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-glass);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem;">
+              
+              <!-- Progress Gauge Box -->
+              <div style="display: flex; align-items: center; gap: 1rem; background: rgba(255, 255, 255, 0.03); padding: 0.75rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-glass);">
+                <div style="position: relative; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.95rem; color: var(--accent-emerald);">
+                  <svg width="50" height="50" viewBox="0 0 36 36" style="transform: rotate(-90deg); position: absolute; top:0; left:0;">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3" />
+                    <path id="tcsProgressCircle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--accent-emerald)" stroke-dasharray="0, 100" stroke-width="3" />
+                  </svg>
+                  <span id="tcsProgressPercent">0%</span>
+                </div>
+                <div>
+                  <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">Overall Progress</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);" id="tcsProgressText">0 / 15 Solved</div>
+                </div>
+              </div>
+
+              <!-- Search & Filter Controls -->
+              <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                <!-- Search Input -->
+                <div style="position: relative; min-width: 180px;">
+                  <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.8rem;"></i>
+                  <input type="text" id="tcsSearchInput" class="chat-input" placeholder="Search TCS problems..." oninput="app.renderTcsDsaView()" style="padding-left: 28px; height: 36px; font-size: 0.8rem;">
+                </div>
+
+                <!-- All Pill -->
+                <button class="btn-sm btn-cyan active" id="tcsFilterAllBtn" onclick="app.setTcsFilter('all')" style="height: 36px; padding: 0 1rem; border-radius: var(--radius-full);">
+                  All
+                </button>
+
+                <!-- Difficulty Dropdown -->
+                <select id="tcsDifficultySelect" class="custom-select btn-sm" onchange="app.renderTcsDsaView()" style="height: 36px; font-size: 0.8rem;">
+                  <option value="ALL">Difficulty: All</option>
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+
+                <!-- Track Dropdown -->
+                <select id="tcsTrackSelect" class="custom-select btn-sm" onchange="app.renderTcsDsaView()" style="height: 36px; font-size: 0.8rem;">
+                  <option value="ALL">Track: All (Ninja/Digital/Prime)</option>
+                  <option value="TCS Ninja">TCS Ninja</option>
+                  <option value="TCS Digital">TCS Digital</option>
+                  <option value="TCS Prime">TCS Prime</option>
+                </select>
+
+                <!-- Popularity Dropdown -->
+                <select id="tcsPopularitySelect" class="custom-select btn-sm" onchange="app.renderTcsDsaView()" style="height: 36px; font-size: 0.8rem;">
+                  <option value="ALL">Popularity: All</option>
+                  <option value="Very Hot">Very Hot 🔥🔥</option>
+                  <option value="Hot">Hot 🔥</option>
+                  <option value="Warm">Warm ⚡</option>
+                </select>
+
+                <!-- Unsolved Only Filter Toggle -->
+                <button class="btn-sm btn-outline" id="tcsFilterUnsolvedBtn" onclick="app.toggleTcsUnsolvedFilter()" style="height: 36px; border-color: var(--accent-cyan); color: var(--accent-cyan);">
+                  <i class="fa-regular fa-square"></i> Unsolved only
+                </button>
+
+                <!-- Bookmarked Filter Toggle -->
+                <button class="btn-sm btn-outline" id="tcsFilterBookmarkBtn" onclick="app.toggleTcsBookmarkFilter()" style="height: 36px; border-color: var(--accent-amber); color: var(--accent-amber);">
+                  <i class="fa-solid fa-star"></i> Bookmarked
+                </button>
+
+                <!-- Reset Progress Button -->
+                <button class="btn-sm btn-outline" onclick="app.resetTcsProgress()" style="height: 36px; border-color: #ef4444; color: #ef4444;" title="Reset progress">
+                  <i class="fa-solid fa-rotate-left"></i> Reset
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hynts Table Container -->
+          <div class="glass-card panel-padded" style="overflow-x: auto; padding: 0;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+              <thead>
+                <tr style="background: rgba(255, 255, 255, 0.04); color: var(--text-muted); font-weight: 700; border-bottom: 1px solid var(--border-glass); text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.5px;">
+                  <th style="padding: 14px 16px; width: 70px; text-align: center;">STATUS</th>
+                  <th style="padding: 14px 16px;">PROBLEM</th>
+                  <th style="padding: 14px 16px;">TAGS</th>
+                  <th style="padding: 14px 16px; width: 70px; text-align: center;">LINK</th>
+                  <th style="padding: 14px 16px; width: 110px;">DIFFICULTY</th>
+                  <th style="padding: 14px 16px; width: 120px;">POPULARITY</th>
+                  <th style="padding: 14px 16px; width: 60px; text-align: center;">SAVE</th>
+                </tr>
+              </thead>
+              <tbody id="tcsQuestionsTableBody">
+                <!-- Dynamically rendered via app.renderTcsDsaView() -->
+              </tbody>
+            </table>
+          </div>
+        </section>
         <!-- ========================================== -->
         <!-- VIEW 10: STUDENT 360° DIGITAL IDENTITY     -->
         <!-- ========================================== -->
@@ -1861,6 +1996,25 @@
     </div>
   </div>
 
+  <!-- TCS Problem Detail & Code Solution Modal -->
+  <div id="tcsProblemDetailModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+          <h3 id="tcsModalProblemTitle" style="font-size: 1.15rem; color: var(--accent-cyan); margin: 0;">
+            Problem Title
+          </h3>
+          <span class="badge-mini badge-emerald" id="tcsModalDifficulty">Easy</span>
+          <span class="badge-mini badge-purple" id="tcsModalTrack">TCS Ninja</span>
+        </div>
+        <button class="modal-close-btn" onclick="app.closeTcsProblemModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="tcsModalBody">
+        <!-- Dynamically filled -->
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Popup -->
   <div id="toast" class="toast-popup glass-card">
     <i class="fa-solid fa-circle-check toast-icon"></i>
@@ -1870,6 +2024,7 @@
   <!-- Scripts -->
   <script src="js/data/bce-data.js"></script>
   <script src="js/data/syllabus-data.js"></script>
+  <script src="js/data/tcs-dsa-data.js"></script>
   <script src="js/app.js"></script>
   <!-- React 18 Pre-compiled Application Script -->
   <script src="js/app-react-compiled.js"></script>
