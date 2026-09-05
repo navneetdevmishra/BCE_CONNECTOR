@@ -1,13 +1,19 @@
 # 🎓 BCE Connect — Campus OS | BCE Bakhtiyarpur
 
 > **ONE CAMPUS. ONE IDENTITY. EVERYTHING BCE.**  
-> An all-in-one personalized digital campus portal and student operating system designed specifically for **Bakhtiyarpur College of Engineering (BCE), Patna** (Affiliated with Bihar Engineering University - BEU).
+> Ek all-in-one student portal jo **BCE Bakhtiyarpur** ke students ke liye syllabus, PYQ analytics, AI study assistant, attendance calculator, results, aur ek 360° AI-resume-builder ko ek hi dashboard mein la deta hai — built with **React 18 + Node.js/Express**, glassmorphism UI ke saath. Bikhre hue college resources (WhatsApp notices, PDF timetables, alag-alag portals) ko ek single reusable **"Campus OS"** mein badalne ka try hai — jo kal ko kisi bhi engineering college ke liye deploy ho sake.
+
+---
+
+🌐 **Live Website**: [https://navneetdevmishra.github.io/BCE_CONNECTOR/](https://navneetdevmishra.github.io/BCE_CONNECTOR/)  
+💻 **TCS DSA Arena & Compiler**: [https://navneetdevmishra.github.io/BCE_CONNECTOR/tcs-dsa-tracker.html](https://navneetdevmishra.github.io/BCE_CONNECTOR/tcs-dsa-tracker.html)  
+📦 **GitHub Repository**: [https://github.com/navneetdevmishra/BCE_CONNECTOR](https://github.com/navneetdevmishra/BCE_CONNECTOR)
 
 ---
 
 ## 🌟 Overview
 
-**BCE Connect** provides a modern, fast, and unified web platform for engineering students and faculty at BCE Bakhtiyarpur. It streamlines access to daily academic resources, syllabus tracking, notices, attendance calculations, and placement preparation tools.
+**BCE Connect** provides a modern, fast, and unified web platform for engineering students and faculty at BCE Bakhtiyarpur (Affiliated with Bihar Engineering University - BEU). It streamlines access to daily academic resources, syllabus tracking, notices, attendance calculations, and placement preparation tools.
 
 ---
 
