@@ -408,16 +408,20 @@ class BCEConnectApp {
 
           <div style="display:flex; flex-direction:column; gap:0.5rem;">
             <!-- PYQ & Notes Direct Buttons -->
-            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap; align-items:center;">
               ${p.driveUrl && p.driveUrl !== '#' ? `
                 <a href="${p.driveUrl}" target="_blank" class="btn-sm btn-purple" style="flex:1; text-align:center; font-weight:700;">
-                  <i class="fa-solid fa-file-pdf"></i> View PYQ PDF
+                  <i class="fa-solid fa-file-pdf"></i> View PYQ Paper
                 </a>
+              ` : (p.driveUrl === null ? `
+                <span class="badge-mini badge-amber" style="flex:1; text-align:center; padding:0.4rem; font-weight:700; border:1px solid rgba(245,158,11,0.4);">
+                  <i class="fa-solid fa-clock"></i> Coming Soon ⏳
+                </span>
               ` : `
                 <button class="btn-sm btn-purple" style="flex:1;" onclick="app.openPyqViewer('${p.id}')">
                   <i class="fa-solid fa-eye"></i> View Paper
                 </button>
-              `}
+              `)}
 
               ${p.notesUrl && p.notesUrl !== '#' ? `
                 <a href="${p.notesUrl}" target="_blank" class="btn-sm btn-cyan" style="flex:1; text-align:center; font-weight:700;">
