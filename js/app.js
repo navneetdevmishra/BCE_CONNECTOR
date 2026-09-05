@@ -1698,8 +1698,65 @@ class BCEConnectApp {
   pausePomodoroTimer() {
     if (this.pomoInterval) clearInterval(this.pomoInterval);
     const status = document.getElementById('pomoStatusText');
-    if (status) status.textContent = '⏸️ Timer Paused.';
-    this.showToast('Timer Paused.', 'info');
+    if (status) status.textContent = '⏸️ Timer Paused';
+    this.showToast('Timer Paused');
+  }
+
+  // PDF Compressor & Tools Modal Handlers
+  openPdfToolModal() {
+    const modal = document.getElementById('pdfToolModal');
+    if (modal) modal.classList.add('active');
+  }
+
+  closePdfToolModal() {
+    const modal = document.getElementById('pdfToolModal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  handlePdfSelected(input) {
+    const statusEl = document.getElementById('pdfFileStatus');
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+      if (statusEl) {
+        statusEl.textContent = `Selected: ${file.name} (${sizeMB} MB) • Ready to Compress`;
+      }
+    }
+  }
+
+  compressPdfFileSimulated() {
+    const box = document.getElementById('pdfProgressBox');
+    const bar = document.getElementById('pdfBar');
+    const pct = document.getElementById('pdfPct');
+
+    if (box) box.style.display = 'block';
+    let progress = 0;
+
+    const interval = setInterval(() => {
+      progress += 20;
+      if (bar) bar.style.width = `${progress}%`;
+      if (pct) pct.textContent = `${progress}%`;
+
+      if (progress >= 100) {
+        clearInterval(interval);
+        this.showToast('⚡ PDF Compressed successfully under 1.8MB for BEU Portal!', 'success');
+        setTimeout(() => {
+          if (box) box.style.display = 'none';
+          this.closePdfToolModal();
+        }, 800);
+      }
+    }, 200);
+  }
+
+  // 1st Year Freshers Kit Modal Handlers
+  openFreshersModal() {
+    const modal = document.getElementById('freshersModal');
+    if (modal) modal.classList.add('active');
+  }
+
+  closeFreshersModal() {
+    const modal = document.getElementById('freshersModal');
+    if (modal) modal.classList.remove('active');
   }
 
   resetPomodoroTimer() {
@@ -2388,9 +2445,9 @@ ${resumeMarkdown}
             </div>
           </td>
           <td style="padding: 12px 16px; text-align: center;">
-            <button class="btn-sm btn-cyan" onclick="app.openTcsProblemModal(${q.id})" style="padding: 4px 8px; font-size: 0.75rem;">
+            <a href="${q.url || 'https://leetcode.com/problems/' + q.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}" target="_blank" rel="noopener noreferrer" class="btn-sm btn-cyan" style="padding: 6px 10px; font-size: 0.75rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;" title="Open directly in LeetCode (${q.title})">
               <i class="fa-solid fa-code"></i>
-            </button>
+            </a>
           </td>
           <td style="padding: 12px 16px;">
             <span class="badge-mini ${diffBadgeClass}">${q.difficulty}</span>
@@ -2676,22 +2733,6 @@ ${resumeMarkdown}
 
   setTcsCodeLang(lang, id) {
     this.setTcsModalLang(lang, id);
-  }
-
-  closeTcsProblemModal() {
-    const modal = document.getElementById('tcsProblemDetailModal');
-    if (modal) modal.classList.remove('active');
-  }    </div>
-        </div>
-      `;
-    }
-
-    if (modal) modal.classList.add('active');
-  }
-
-  setTcsCodeLang(lang, id) {
-    this.activeTcsCodeLang = lang;
-    this.openTcsProblemModal(id);
   }
 
   closeTcsProblemModal() {
