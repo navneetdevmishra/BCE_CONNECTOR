@@ -79,17 +79,45 @@ function App() {
         setBackendStatus({ online: true, info: `Express Backend Active (Port ${data.port})` });
       }
     } catch (err) {
-      setBackendStatus({ online: false, info: 'Backend Offline' });
+      setBackendStatus({ online: false, info: 'GitHub Pages Static Mode (Local Cache Active)' });
     }
   };
+
+  const DEFAULT_STATS = {
+    totalStudents: 154,
+    verifiedStudents: 142,
+    totalPyqs: 48,
+    totalNotices: 12
+  };
+
+  const DEFAULT_STUDENTS = [
+    { regNo: "25155126904", name: "NAVNEET MISHRA", branch: "CSE (IoT)", sem: "4", status: "VERIFIED", email: "navneet@bcebakhtiyarpur.ac.in", idCard: "ID_CARD_25155126904.png" },
+    { regNo: "24155126050", name: "ABHISHEK KUMAR", branch: "CSE (IoT)", sem: "4", status: "VERIFIED", email: "abhishek@bcebakhtiyarpur.ac.in", idCard: "ID_CARD_24155126050.png" },
+    { regNo: "25155126902", name: "ANKIT SHARMA", branch: "CSE (IoT)", sem: "4", status: "VERIFIED", email: "ankit@bcebakhtiyarpur.ac.in", idCard: "ID_CARD_25155126902.png" },
+    { regNo: "25155126915", name: "PRIYA KUMARI", branch: "CSE (IoT)", sem: "4", status: "PENDING_VERIFICATION", email: "priya@bcebakhtiyarpur.ac.in", idCard: "ID_CARD_25155126915.png" }
+  ];
+
+  const DEFAULT_NOTICES = [
+    { _id: 'n1', title: 'B.Tech 4th Sem Mid-Term Examination Timetable 2026', category: 'Academic', content: 'Official timetable for CSE (IoT), EEE, ME, and CE branches announced. Exams start from May 18, 2026.', priority: 'HIGH', author: 'BEU Academic Office', date: 'May 10, 2026' },
+    { _id: 'n2', title: 'TCS NQT & Digital Placement Drive Batch 2026', category: 'Placement', content: 'TCS National Qualifier Test registration open for 4th and 6th sem students. Practice using the TCS 75 DSA tracker.', priority: 'HIGH', author: 'BCE TPO Cell', date: 'May 08, 2026' },
+    { _id: 'n3', title: 'Hostel 2 Mess Timetable & Security Pass Guidelines', category: 'Campus', content: 'Gate pass required after 8:00 PM. Warden office notification for Boys Hostel H1 and H2 residents.', priority: 'NORMAL', author: 'BCE Hostel Warden', date: 'May 04, 2026' }
+  ];
+
+  const DEFAULT_PYQS = [
+    { _id: 'p1', subject: 'Computer Organization & Architecture (155401)', branch: 'CSE (IoT)', sem: '4', year: '2025', uploadedBy: 'NAVNEET MISHRA' },
+    { _id: 'p2', subject: 'Formal Language & Automata Theory (155402)', branch: 'CSE (IoT)', sem: '4', year: '2025', uploadedBy: 'ABHISHEK KUMAR' },
+    { _id: 'p3', subject: 'Design & Analysis of Algorithms (155403)', branch: 'CSE', sem: '4', year: '2024', uploadedBy: 'BCE Admin Cell' },
+    { _id: 'p4', subject: 'Database Management Systems (155404)', branch: 'CSE (IoT)', sem: '4', year: '2025', uploadedBy: 'ANKIT SHARMA' }
+  ];
 
   const fetchStats = async () => {
     try {
       const res = await fetch('/api/stats');
       const data = await res.json();
-      if (data.success) setStats(data.stats);
+      if (data.success && data.stats) setStats(data.stats);
+      else setStats(DEFAULT_STATS);
     } catch (err) {
-      console.error('Error fetching stats:', err);
+      setStats(DEFAULT_STATS);
     }
   };
 
@@ -97,9 +125,10 @@ function App() {
     try {
       const res = await fetch('/api/students');
       const data = await res.json();
-      if (data.success) setStudents(data.students);
+      if (data.success && data.students && data.students.length > 0) setStudents(data.students);
+      else setStudents(DEFAULT_STUDENTS);
     } catch (err) {
-      console.error('Error fetching students:', err);
+      setStudents(DEFAULT_STUDENTS);
     } finally {
       setLoading(false);
     }
@@ -109,9 +138,10 @@ function App() {
     try {
       const res = await fetch('/api/notices');
       const data = await res.json();
-      if (data.success) setNotices(data.notices);
+      if (data.success && data.notices && data.notices.length > 0) setNotices(data.notices);
+      else setNotices(DEFAULT_NOTICES);
     } catch (err) {
-      console.error('Error fetching notices:', err);
+      setNotices(DEFAULT_NOTICES);
     }
   };
 
@@ -119,15 +149,26 @@ function App() {
     try {
       const res = await fetch('/api/pyqs');
       const data = await res.json();
-      if (data.success) setPyqs(data.pyqs);
+      if (data.success && data.pyqs && data.pyqs.length > 0) setPyqs(data.pyqs);
+      else setPyqs(DEFAULT_PYQS);
     } catch (err) {
-      console.error('Error fetching pyqs:', err);
+      setPyqs(DEFAULT_PYQS);
     }
   };
 
   // Student Actions
   const handleRegisterStudent = async (e) => {
     e.preventDefault();
+    const newStudent = {
+      regNo: regForm.regNo || String(Date.now()),
+      name: regForm.name || 'NEW STUDENT',
+      branch: regForm.branch || 'CSE (IoT)',
+      sem: regForm.sem || '4',
+      status: 'PENDING_VERIFICATION',
+      email: regForm.email || 'student@bcebakhtiyarpur.ac.in',
+      idCard: regForm.idCard || 'ID_CARD_NEW.png'
+    };
+
     try {
       const res = await fetch('/api/students/register', {
         method: 'POST',
@@ -137,78 +178,87 @@ function App() {
       const data = await res.json();
       if (data.success) {
         alert('Registration Submitted Successfully!');
-        setShowRegModal(false);
-        setRegForm({ name: '', regNo: '', branch: 'CSE (IoT)', sem: '4', email: '', idCard: '' });
-        fetchStudents();
-        fetchStats();
-      } else {
-        alert('Error: ' + data.error);
       }
     } catch (err) {
-      alert('Failed to register student: ' + err.message);
+      console.warn('Backend offline, registered locally');
     }
+
+    setStudents(prev => [newStudent, ...prev]);
+    setShowRegModal(false);
+    setRegForm({ name: '', regNo: '', branch: 'CSE (IoT)', sem: '4', email: '', idCard: '' });
+    alert(`🎉 Registration Submitted Successfully for ${newStudent.name}! Pending Admin Approval.`);
   };
 
   const handleApproveStudent = async (regNo) => {
     try {
-      const res = await fetch('/api/students/approve', {
+      await fetch('/api/students/approve', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ regNo })
       });
-      const data = await res.json();
-      if (data.success) {
-        alert(data.message);
-        fetchStudents();
-        fetchStats();
-      }
     } catch (err) {
-      alert('Failed to approve student');
+      console.warn('Backend offline, approving locally');
     }
+
+    setStudents(prev => prev.map(s => s.regNo === regNo ? { ...s, status: 'VERIFIED' } : s));
+    alert(`✅ Student ID ${regNo} Verified & Approved!`);
   };
 
   // Post Notice Action
   const handlePostNotice = async (e) => {
     e.preventDefault();
+    const newNotice = {
+      _id: String(Date.now()),
+      title: noticeForm.title || 'New Notice',
+      category: noticeForm.category || 'Academic',
+      content: noticeForm.content || 'Notice Content',
+      priority: noticeForm.priority || 'HIGH',
+      author: noticeForm.author || 'BEU Academic Office',
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    };
+
     try {
-      const res = await fetch('/api/notices', {
+      await fetch('/api/notices', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(noticeForm)
       });
-      const data = await res.json();
-      if (data.success) {
-        alert('Notice Posted Successfully!');
-        setShowNoticeModal(false);
-        setNoticeForm({ title: '', category: 'Academic', content: '', priority: 'HIGH', author: 'BEU Academic Office' });
-        fetchNotices();
-        fetchStats();
-      }
     } catch (err) {
-      alert('Failed to post notice');
+      console.warn('Backend offline, posted locally');
     }
+
+    setNotices(prev => [newNotice, ...prev]);
+    setShowNoticeModal(false);
+    setNoticeForm({ title: '', category: 'Academic', content: '', priority: 'HIGH', author: 'BEU Academic Office' });
+    alert('📢 Notice Published Successfully!');
   };
 
   // Upload PYQ Action
   const handleUploadPyq = async (e) => {
     e.preventDefault();
+    const newPyq = {
+      _id: String(Date.now()),
+      subject: pyqForm.subject || 'Core Subject',
+      branch: pyqForm.branch || 'CSE (IoT)',
+      sem: pyqForm.sem || '4',
+      year: pyqForm.year || '2025',
+      uploadedBy: pyqForm.uploadedBy || 'NAVNEET MISHRA'
+    };
+
     try {
-      const res = await fetch('/api/pyqs', {
+      await fetch('/api/pyqs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(pyqForm)
       });
-      const data = await res.json();
-      if (data.success) {
-        alert('PYQ Added Successfully!');
-        setShowPyqModal(false);
-        setPyqForm({ subject: '', branch: 'CSE (IoT)', sem: '4', year: '2025', uploadedBy: '' });
-        fetchPyqs();
-        fetchStats();
-      }
     } catch (err) {
-      alert('Failed to upload PYQ');
+      console.warn('Backend offline, uploaded locally');
     }
+
+    setPyqs(prev => [newPyq, ...prev]);
+    setShowPyqModal(false);
+    setPyqForm({ subject: '', branch: 'CSE (IoT)', sem: '4', year: '2025', uploadedBy: '' });
+    alert('📑 PYQ Paper Uploaded Successfully!');
   };
 
   // Attendance Calculations

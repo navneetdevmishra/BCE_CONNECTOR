@@ -15,7 +15,8 @@ class BCEConnectApp {
     this.activeRole = 'teacher';
 
     // Registered Students Data Queue (Admin verification & Teacher attendance call sheet)
-    this.registeredStudents = [
+    const storedStudents = localStorage.getItem('registered_students_cache');
+    this.registeredStudents = storedStudents ? JSON.parse(storedStudents) : [
       { regNo: "25155126904", name: "NAVNEET MISHRA", branch: "CSE (IoT)", sem: "4", status: "VERIFIED", idCard: "ID_CARD_25155126904.png", attendance: "88.5%" },
       { regNo: "24155126050", name: "ABHISHEK KUMAR", branch: "CSE (IoT)", sem: "4", status: "VERIFIED", idCard: "ID_CARD_24155126050.png", attendance: "84.2%" },
       { regNo: "25155126902", name: "ANKIT SHARMA", branch: "CSE (IoT)", sem: "4", status: "VERIFIED", idCard: "ID_CARD_25155126902.png", attendance: "82.0%" },
@@ -24,7 +25,8 @@ class BCEConnectApp {
     ];
 
     // Teacher Attendance Log Store
-    this.teacherAttendanceLogs = {};
+    const storedLogs = localStorage.getItem('teacher_attendance_logs');
+    this.teacherAttendanceLogs = storedLogs ? JSON.parse(storedLogs) : {};
     
     // User Attendance State
     this.attendanceState = {
@@ -1795,14 +1797,16 @@ class BCEConnectApp {
       idCard: fileName
     };
 
-    try {
-      await fetch('http://localhost:8086/api/students/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    } catch (e) {
-      console.warn('Backend offline, saving to local memory', e);
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      try {
+        await fetch('/api/students/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch (e) {
+        console.warn('Backend offline, saving to local memory', e);
+      }
     }
 
     const exists = this.registeredStudents.find(s => s.regNo === regNo);
@@ -1821,25 +1825,34 @@ class BCEConnectApp {
       });
     }
 
+    try {
+      localStorage.setItem('registered_students_cache', JSON.stringify(this.registeredStudents));
+    } catch(e) {}
+
     this.closeStudentRegisterModal();
-    this.showToast(`🎉 Registration & ID Upload submitted for ${name} (${regNo})! Saved to Backend DB & Pending Admin Approval.`, 'success');
+    this.showToast(`🎉 Registration & ID Upload submitted for ${name} (${regNo})! Saved & Pending Admin Approval.`, 'success');
     this.renderRolePortal();
   }
 
   async approveStudentIdCard(regNo) {
-    try {
-      await fetch('http://localhost:8086/api/students/approve', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ regNo })
-      });
-    } catch (e) {
-      console.warn('Backend offline', e);
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      try {
+        await fetch('/api/students/approve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ regNo })
+        });
+      } catch (e) {
+        console.warn('Backend offline', e);
+      }
     }
 
     const student = this.registeredStudents.find(s => s.regNo === regNo);
     if (student) {
       student.status = "VERIFIED";
+      try {
+        localStorage.setItem('registered_students_cache', JSON.stringify(this.registeredStudents));
+      } catch(e) {}
       this.showToast(`✅ Approved & Verified ID Card for ${student.name} (${regNo})! Status: VERIFIED 🟢`, 'success');
       this.renderRolePortal();
     }
@@ -1856,13 +1869,19 @@ class BCEConnectApp {
     this.teacherAttendanceLogs[subCode][regNo] = status;
 
     try {
-      await fetch('http://localhost:8086/api/attendance/mark', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subCode, regNo, status })
-      });
-    } catch (e) {
-      console.warn('Backend offline', e);
+      localStorage.setItem('teacher_attendance_logs', JSON.stringify(this.teacherAttendanceLogs));
+    } catch(e) {}
+
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      try {
+        await fetch('/api/attendance/mark', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subCode, regNo, status })
+        });
+      } catch (e) {
+        console.warn('Backend offline', e);
+      }
     }
 
     this.showToast(`Marked ${status === 'P' ? 'PRESENT 🟢' : 'ABSENT 🔴'} for student ${regNo} in Subject ${subCode}`, status === 'P' ? 'success' : 'info');
