@@ -19,12 +19,14 @@
 
 ## 🔥 Key Features
 
-- 📑 **BEU Syllabus & PYQ Hub**: Instant access to B.Tech semester-wise syllabus, module breakdowns, and Previous Year Questions (PYQs).
-- 📊 **Smart Attendance Calculator**: Calculate required target attendance percentages to satisfy BEU's mandatory 75% exam criteria.
+- 💻 **LeetCode-style Code Studio & IDE**: Built-in split-pane coding environment featuring Monaco Code Editor, real-time C++/Java/Python/JS compiler execution, STDIN testcase input, stdout terminal log, and seamless integration with the TCS NQT 75-Question DSA Sheet.
+- ⏱️ **Truly Live Campus Dashboard**: Real system date synchronization (e.g. `Sunday, Sep 6, 2026`), dynamic time-of-day greeting, and automatic weekend fallback to Saturday's schedule so students never miss class routines.
+- 📑 **BEU Syllabus & PYQ Hub**: Instant access to B.Tech semester-wise syllabus, unit breakdowns, and Previous Year Questions (PYQs).
+- 📊 **Smart Attendance Calculator**: Calculate target attendance percentages to satisfy BEU's mandatory 75% exam criteria.
 - 📢 **Digital Notice Board**: Real-time university & college notice feed with instant category filters (Exams, Events, Academics) and search.
-- 💻 **TCS NQT & DSA Tracker** (`tcs-dsa-tracker.html`): Dedicated preparation module for TCS NQT & coding interviews, featuring topic-wise DSA practice checklists.
-- 👤 **Student ID & Verification Portal**: Student profiles with reg number verification, branch info, and verification badges.
-- 🤖 **AI Study Assistant Integration**: Quick guidance for academic concepts and exam preparation.
+- 💻 **TCS NQT & DSA Tracker** (`tcs-dsa-tracker.html`): Dedicated preparation module for TCS NQT & coding interviews with 75 curated problem cards and direct LeetCode links.
+- 👤 **Student ID & Verification Portal**: 360° Student profiles with reg number verification, branch info, ID cards, and verification badges.
+- 🤖 **AI Study Assistant Integration**: BCE Genius AI trained on BEU engineering syllabus for quick guidance and exam notes.
 - ⚡ **Auto-Sync & Push Engine**: Background Git synchronization scripts (`auto-sync.js` & batch scripts) for continuous deployment and database backup.
 
 ---
