@@ -518,6 +518,17 @@ class BCEConnectApp {
     this.closeUploadPyqModal();
   }
 
+  handleNoteFileSelected(input) {
+    const nameSpan = document.getElementById('selectedNoteFileName');
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      this.pendingNoteFile = file.name;
+      if (nameSpan) {
+        nameSpan.textContent = `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB) • Ready to Upload`;
+      }
+    }
+  }
+
   handlePyqFileSelected(input) {
     const nameSpan = document.getElementById('selectedFileName');
     if (input.files && input.files[0]) {
@@ -534,8 +545,8 @@ class BCEConnectApp {
 
     const title = document.getElementById('upPyqTitle')?.value || 'BEU Solved Paper';
     const author = document.getElementById('upPyqAuthor')?.value || 'Navneet Mishra';
-    const subject = document.getElementById('upPyqSubjectSelect')?.value || 'Data Structures';
-    const year = document.getElementById('upPyqYearSelect')?.value || '2025';
+    const subject = (document.getElementById('upPyqSubject') || document.getElementById('upPyqSubjectSelect'))?.value || 'Data Structures';
+    const year = (document.getElementById('upPyqYear') || document.getElementById('upPyqYearSelect'))?.value || '2025';
 
     if (!SYLLABUS_DATA.pyqPapers) SYLLABUS_DATA.pyqPapers = [];
 
