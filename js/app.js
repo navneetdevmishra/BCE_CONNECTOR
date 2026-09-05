@@ -396,21 +396,51 @@ class BCEConnectApp {
       const combined = [...userUploaded, ...defaultArchive];
 
       pyqGrid.innerHTML = combined.map(p => `
-        <div class="glass-card pyq-card" style="${p.isUserUploaded ? 'border:1px solid var(--accent-cyan); background:rgba(0,242,254,0.05);' : ''}">
+        <div class="glass-card pyq-card" style="display:flex; flex-direction:column; justify-content:space-between; gap:1rem; ${p.isUserUploaded ? 'border:1px solid var(--accent-cyan); background:rgba(0,242,254,0.05);' : ''}">
           <div>
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
               <span class="pyq-year-tag">BEU ${p.year} ${p.type || 'EXAMINATION'}</span>
               <span class="badge-mini ${p.isUserUploaded ? 'badge-cyan' : 'badge-purple'}">${p.isUserUploaded ? 'STUDENT UPLOAD 📤' : (p.code || 'BEU')}</span>
             </div>
-            <h3 class="pyq-title" style="margin:0.5rem 0 0.2rem 0;">${p.title || p.subject}</h3>
+            <h3 class="pyq-title" style="margin:0.5rem 0 0.2rem 0; font-size:1.05rem;">${p.title || p.subject}</h3>
             <p style="font-size:0.78rem; color:var(--text-muted);"><i class="fa-solid fa-user-pen accent-cyan"></i> Contributor: <strong>${p.author || 'BEU Academic Cell'}</strong></p>
           </div>
 
-          <div class="mt-3" style="display:flex; gap:0.5rem;">
-            <button class="btn-sm btn-purple full-width" onclick="app.openPyqViewer('${p.id}')">
-              <i class="fa-solid fa-eye"></i> View Paper
+          <div style="display:flex; flex-direction:column; gap:0.5rem;">
+            <!-- PYQ & Notes Direct Buttons -->
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+              ${p.driveUrl && p.driveUrl !== '#' ? `
+                <a href="${p.driveUrl}" target="_blank" class="btn-sm btn-purple" style="flex:1; text-align:center; font-weight:700;">
+                  <i class="fa-solid fa-file-pdf"></i> View PYQ PDF
+                </a>
+              ` : `
+                <button class="btn-sm btn-purple" style="flex:1;" onclick="app.openPyqViewer('${p.id}')">
+                  <i class="fa-solid fa-eye"></i> View Paper
+                </button>
+              `}
+
+              ${p.notesUrl && p.notesUrl !== '#' ? `
+                <a href="${p.notesUrl}" target="_blank" class="btn-sm btn-cyan" style="flex:1; text-align:center; font-weight:700;">
+                  <i class="fa-solid fa-book"></i> Notes PDF
+                </a>
+              ` : ''}
+            </div>
+
+            <!-- YouTube VOD Stream Buttons -->
+            ${p.vods && p.vods.length > 0 ? `
+              <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                ${p.vods.map((v, vIdx) => `
+                  <a href="${v.url}" target="_blank" class="btn-sm btn-outline" style="flex:1; text-align:center; font-size:0.75rem; border-color:var(--accent-red); color:#ef4444;">
+                    <i class="fa-solid fa-youtube"></i> VOD-${vIdx + 1} Stream
+                  </a>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <!-- AI Explanation Button -->
+            <button class="btn-sm btn-outline full-width" onclick="app.openPyqViewer('${p.id}')" style="font-size:0.75rem;">
+              <i class="fa-solid fa-wand-magic-sparkles accent-purple"></i> Preview Questions & AI Solutions
             </button>
-            ${p.fileUrl ? `<a href="${p.fileUrl}" download="${p.fileName || 'paper.pdf'}" class="btn-sm btn-cyan" title="Download Uploaded File"><i class="fa-solid fa-download"></i></a>` : `<button class="btn-sm btn-cyan" onclick="app.showToast('Downloading ${p.title || p.subject} PDF...')"><i class="fa-solid fa-download"></i></button>`}
           </div>
         </div>
       `).join('');
@@ -426,22 +456,22 @@ class BCEConnectApp {
     const userPapers = SYLLABUS_DATA.pyqPapers || [];
     const paper = userPapers.find(p => p.id === pyqId) || SYLLABUS_DATA.pyqArchive.find(p => p.id === pyqId) || SYLLABUS_DATA.pyqArchive[0];
 
-    if (paper.fileUrl) {
-      window.open(paper.fileUrl, '_blank');
-      this.showToast(`Opening uploaded file: ${paper.fileName || paper.title}...`, 'info');
-      return;
-    }
-
     titleEl.innerHTML = `<i class="fa-solid fa-file-pdf accent-purple"></i> ${paper.subject} (${paper.year})`;
 
     bodyEl.innerHTML = `
       <div class="glass-panel" style="padding:1.25rem; border-radius:var(--radius-md); margin-bottom:1rem;">
-        <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
+        <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.75rem;">
           <strong>BIHAR ENGINEERING UNIVERSITY, PATNA</strong>
           <span>Time: 3 Hours | Max Marks: 70</span>
         </div>
+        
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem;">
+          ${paper.driveUrl && paper.driveUrl !== '#' ? `<a href="${paper.driveUrl}" target="_blank" class="btn-sm btn-purple"><i class="fa-solid fa-external-link"></i> Open Original Drive PYQ PDF</a>` : ''}
+          ${paper.notesUrl && paper.notesUrl !== '#' ? `<a href="${paper.notesUrl}" target="_blank" class="btn-sm btn-cyan"><i class="fa-solid fa-file-lines"></i> Open Subject Notes PDF</a>` : ''}
+        </div>
+
         <hr style="border-color:var(--border-glass); margin-bottom:1rem;">
-        <h4 style="margin-bottom:0.75rem; color:var(--accent-cyan);">Question Paper Preview:</h4>
+        <h4 style="margin-bottom:0.75rem; color:var(--accent-cyan);">Question Paper Preview & AI Guidance:</h4>
         <div style="display:flex; flex-direction:column; gap:0.85rem; font-size:0.9rem;">
           ${(paper.previewQuestions || [
             "Q1. Explain basic working architecture and block diagram in detail.",

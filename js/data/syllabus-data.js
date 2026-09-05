@@ -206,11 +206,106 @@ const SYLLABUS_DATA = {
     { topic: "IPv4 Subnetting & CIDR Calculation (CN 155406)", frequency: 80, yearCount: "4/5 Years", marks: "7 Marks" }
   ],
 
-  // Question Papers Archive
+  // BEU 4th Semester Official Study Material Links
+  beuSyllabusDriveUrl: "https://drive.google.com/file/d/1Im01QOFAO9UBcHA3PeAot-eNB-vBGbeF/view",
+  beuWhatsappGroupUrl: "https://chat.whatsapp.com/Bay3avk81WpGFKITkKTPzE",
+
+  // Question Papers & Study Material Archive (Powered by BEU CSE 2024-28 & Edulogy Institute)
   pyqArchive: [
-    { id: "PYQ-FLAT-2025", subject: "Formal Language & Automata (FLAT)", year: 2025, code: "BEU-155402-2025", pages: 4, downloadUrl: "#", previewQuestions: ["Q1. Construct a minimum state DFA equivalent to NFA with epsilon transitions. (7 Marks)", "Q2. Convert the grammar G into Chomsky Normal Form (CNF): S -> AB | a, A -> b. (14 Marks)"] },
-    { id: "PYQ-COA-2025", subject: "Computer Organization & Arch (COA)", year: 2025, code: "BEU-155401-2025", pages: 4, downloadUrl: "#", previewQuestions: ["Q1. Calculate tag, line, and word bits for Direct Mapping with 128 MB RAM and 64 KB Cache. (14 Marks)"] },
-    { id: "PYQ-DAA-2025", subject: "Design & Analysis of Algo (DAA)", year: 2025, code: "BEU-155403-2025", pages: 4, downloadUrl: "#", previewQuestions: ["Q1. Solve 0/1 Knapsack problem using Dynamic Programming. (14 Marks)"] }
+    {
+      id: "PYQ-COA-4TH",
+      subject: "Computer Organization & Architecture (COA)",
+      code: "BEU-155401",
+      year: 2024,
+      author: "Edulogy / BEU CSE 2024-28",
+      driveUrl: "https://drive.google.com/file/d/1hPqOUr3E56CkzqO6oEG-7ltayq4tR4mz/view",
+      notesUrl: "https://drive.google.com/file/d/1vL3QPNG8ei91s7mz-h6u-IWZcmH4blCT/view",
+      vods: [
+        { title: "🎥 VOD-1 (Live Stream)", url: "https://www.youtube.com/live/lbK4yfTmDPU?si=ypAUzxSM2kDqWhO-" },
+        { title: "🎥 VOD-2 (Live Stream)", url: "https://www.youtube.com/live/Jw4oHhLT25g?si=oQk-XJGXf7s5_Wsg" }
+      ],
+      previewQuestions: [
+        "Q1. Calculate Tag, Line and Word bits for 128 MB RAM & 64 KB Cache (Direct Mapping). (14 Marks)",
+        "Q2. Explain RISC vs CISC Architecture and 5-stage Pipelining Hazards in detail. (14 Marks)"
+      ]
+    },
+    {
+      id: "PYQ-FLAT-4TH",
+      subject: "Formal Language & Automata Theory (FLAT)",
+      code: "BEU-155402",
+      year: 2024,
+      author: "Edulogy / BEU CSE 2024-28",
+      driveUrl: "https://drive.google.com/file/d/1bl0FLBjgaiDG23SOJxcW_Jo-KIPW7HQ6/view",
+      notesUrl: "https://drive.google.com/file/d/1qJANL4HRPr3yOjoaYMI2kyyq_tPva9nw/view",
+      vods: [
+        { title: "🎥 VOD-1 (Live Stream)", url: "https://www.youtube.com/live/tGvJXfLeEoA?si=O49USsW3Fln6pT0z" },
+        { title: "🎥 VOD-2 (Live Stream)", url: "https://www.youtube.com/live/SLX2yoWmniU?si=Uqv7WxP29EVtE45m" }
+      ],
+      previewQuestions: [
+        "Q1. Construct a minimum state DFA equivalent to NFA with epsilon transitions. (7 Marks)",
+        "Q2. Convert the grammar G into Chomsky Normal Form (CNF): S -> AB | a, A -> b. (14 Marks)"
+      ]
+    },
+    {
+      id: "PYQ-DAA-4TH",
+      subject: "Design and Analysis of Algorithm (DAA)",
+      code: "BEU-155403",
+      year: 2024,
+      author: "Edulogy / BEU CSE 2024-28",
+      driveUrl: "https://drive.google.com/file/d/1v43y9VMLSwoHQtBbSloqWKj8-7CbscVn/view",
+      notesUrl: null,
+      vods: [],
+      previewQuestions: [
+        "Q1. Solve 0/1 Knapsack Problem using Dynamic Programming vs Fractional Knapsack (Greedy). (14 Marks)",
+        "Q2. Apply Master's Theorem to find time complexity of T(n) = 2T(n/2) + n log n. (14 Marks)"
+      ]
+    },
+    {
+      id: "PYQ-DBMS-4TH",
+      subject: "Database Management System (DBMS)",
+      code: "BEU-155404",
+      year: 2024,
+      author: "Edulogy / BEU CSE 2024-28",
+      driveUrl: "https://drive.google.com/file/d/1DjcSpdpWnuWUCx42AJN4c18fh3WqFYSj/view",
+      notesUrl: "https://drive.google.com/file/d/16fdp7NTj2GYTIvd17E7rTwreLJJnRdfb/view",
+      vods: [
+        { title: "🎥 VOD-1 (Live Stream)", url: "https://www.youtube.com/live/Neg5-JY8IXQ?si=-nKYmfaeWOentBkO" },
+        { title: "🎥 VOD-2 (Live Stream)", url: "https://www.youtube.com/live/ukxQ1D01sDk?si=uq-i9xMXUG80cCCr" }
+      ],
+      previewQuestions: [
+        "Q1. Differentiate between 3NF and BCNF with functional dependency examples. (14 Marks)",
+        "Q2. Explain ACID properties and 2-Phase Locking (2PL) Protocol for Concurrency Control. (14 Marks)"
+      ]
+    },
+    {
+      id: "PYQ-CN-4TH",
+      subject: "Computer Network (CN)",
+      code: "BEU-155406",
+      year: 2024,
+      author: "Edulogy / BEU CSE 2024-28",
+      driveUrl: "https://drive.google.com/file/d/1W1OqBiHEwznZyQipRhCDX_JH6VBpTYk1/view",
+      notesUrl: "https://drive.google.com/file/d/17U-9NugKbVs-jOrueg8AwF5qJWAwZByx/view",
+      vods: [
+        { title: "🎥 VOD (Full Stream)", url: "https://www.youtube.com/live/hWye_MznAXc?si=wp0GDY2QJPxsjYCF" }
+      ],
+      previewQuestions: [
+        "Q1. Given IP address 192.168.10.0/26, calculate number of subnets and valid host IP range. (14 Marks)",
+        "Q2. Explain TCP 3-Way Handshake and Sliding Window Flow Control mechanism. (14 Marks)"
+      ]
+    },
+    {
+      id: "PYQ-ETC-4TH",
+      subject: "Effective Technical Communication (ETC)",
+      code: "BEU-155405",
+      year: 2024,
+      author: "Edulogy / BEU CSE 2024-28",
+      driveUrl: null,
+      notesUrl: null,
+      vods: [],
+      previewQuestions: [
+        "ℹ️ New Subject in BEU 2024 Curriculum. PYQs and notes will be uploaded soon!"
+      ]
+    }
   ],
 
   // Student Attendance Data Breakdown
