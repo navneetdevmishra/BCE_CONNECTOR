@@ -166,28 +166,83 @@ class BCEConnectApp {
   // VIEW 1: HOME DASHBOARD RENDERER
   // --------------------------------------------------------------------------
   renderHomeView() {
-    // 0. Render Live Dynamic Date
+    // 0. Truly Live System Date & Dynamic Schedule Selection
+    const today = new Date(); // Live system date
+    const dayIndex = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+    const daysNameMap = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    let targetDayName = daysNameMap[dayIndex];
+    let scheduleTitle = "Today's Schedule";
+    let dayBadgeText = targetDayName;
+    let isWeekendOff = false;
+
+    if (dayIndex === 0) {
+      // Sunday -> Show Saturday's schedule with clear "Sunday Off" notification
+      targetDayName = "Saturday";
+      scheduleTitle = "Saturday's Schedule (Sunday Off / No Classes Today 😴)";
+      dayBadgeText = "Sunday Off • Saturday Routine";
+      isWeekendOff = true;
+    }
+
+    // Render Live Dynamic Date
     const dateEl = document.getElementById('liveDateStr');
     if (dateEl) {
       const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
-      const nowStr = new Date().toLocaleDateString('en-US', options);
+      const nowStr = today.toLocaleDateString('en-US', options);
       dateEl.innerHTML = `${nowStr} • <span class="badge-mini badge-emerald" style="font-size:0.65rem;">LIVE DYNAMIC DATA 🟢</span>`;
     }
 
-    // 1. Render Daily Schedule
+    // Render Dynamic Time-of-Day Greeting
+    const greetingEl = document.getElementById('liveGreetingSub');
+    if (greetingEl) {
+      const hour = today.getHours();
+      let greeting = 'Good Morning 👋';
+      if (hour >= 12 && hour < 17) greeting = 'Good Afternoon ☀️';
+      else if (hour >= 17 && hour < 22) greeting = 'Good Evening 🌙';
+      else if (hour >= 22 || hour < 5) greeting = 'Night Owls 🌙';
+      greetingEl.textContent = greeting;
+    }
+
+    // Update Schedule Title & Day Badge Header
+    const titleEl = document.getElementById('homeScheduleTitle');
+    const badgeEl = document.getElementById('todayDayBadge');
+    if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-calendar-day accent-cyan"></i> ${scheduleTitle}`;
+    if (badgeEl) {
+      badgeEl.textContent = dayBadgeText;
+      badgeEl.className = `badge-mini ${isWeekendOff ? 'badge-amber' : 'badge-cyan'}`;
+    }
+
+    // 1. Render Daily Schedule Timeline using targetDayName
     const scheduleContainer = document.getElementById('homeScheduleList');
     if (scheduleContainer) {
-      const schedule = BCE_DATA.timetables.CSE_4 || [];
-      scheduleContainer.innerHTML = schedule.map(item => `
-        <div class="timeline-item">
-          <div class="timeline-time">${item.time}</div>
-          <div class="timeline-info">
-            <h4>${item.subject}</h4>
-            <p><i class="fa-solid fa-location-dot"></i> ${item.room} • ${item.faculty}</p>
+      const deptData = (BCE_DATA.weeklyTimetables && BCE_DATA.weeklyTimetables[this.currentBranch]) ? BCE_DATA.weeklyTimetables[this.currentBranch] : (BCE_DATA.weeklyTimetables ? BCE_DATA.weeklyTimetables['CSE-IoT'] : null);
+      const dayClasses = (deptData && deptData.days && deptData.days[targetDayName]) ? deptData.days[targetDayName] : [];
+
+      const periodTimes = [
+        "10:00 - 11:00 AM",
+        "11:00 AM - 12:00 PM",
+        "12:00 - 01:00 PM",
+        "01:50 - 02:50 PM",
+        "02:50 - 03:50 PM",
+        "03:50 - 04:50 PM"
+      ];
+
+      if (dayClasses.length > 0) {
+        scheduleContainer.innerHTML = dayClasses.map((item, idx) => `
+          <div class="timeline-item">
+            <div class="timeline-time">${periodTimes[idx] || 'Class Hour'}</div>
+            <div class="timeline-info">
+              <h4 style="font-size:0.95rem; margin-bottom:0.2rem;">${item.subject}</h4>
+              <p style="font-size:0.78rem; color:var(--text-muted);"><i class="fa-solid fa-user-tie"></i> ${item.faculty} • <i class="fa-solid fa-location-dot"></i> ${deptData ? deptData.room : 'Room 217'}</p>
+            </div>
+            <span class="badge-mini ${idx === 0 && !isWeekendOff ? 'badge-cyan' : 'badge-outline'}">
+              ${idx === 0 && !isWeekendOff ? 'NEXT CLASS' : `Period ${idx + 1}`}
+            </span>
           </div>
-          <span class="badge-mini ${item.status === 'NEXT CLASS' ? 'badge-cyan' : 'badge-outline'}">${item.status}</span>
-        </div>
-      `).join('');
+        `).join('');
+      } else {
+        scheduleContainer.innerHTML = `<p style="padding:1rem; color:var(--text-muted); text-align:center;">No scheduled classes for ${targetDayName}.</p>`;
+      }
     }
 
     // 2. Render Short Notice Stream
