@@ -457,6 +457,12 @@
   max-width: 800px;
 }
 
+.modal-leetcode {
+  max-width: 1280px;
+  width: 95vw;
+  max-height: 94vh;
+}
+
 .modal-header {
   display: flex;
   align-items: center;
