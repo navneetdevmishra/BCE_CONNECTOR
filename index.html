@@ -289,6 +289,17 @@
               <div class="hero-date-badge">
                 <i class="fa-regular fa-calendar-days"></i>
                 <span id="liveDateStr">Sunday, Sep 6, 2026</span>
+                <script>
+                  (function(){
+                    try {
+                      var d = new Date();
+                      var opts = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
+                      var str = d.toLocaleDateString('en-US', opts);
+                      var el = document.getElementById('liveDateStr');
+                      if(el) el.innerHTML = str + ' • <span class="badge-mini badge-emerald" style="font-size:0.65rem;">LIVE DYNAMIC DATA 🟢</span>';
+                    } catch(e){}
+                  })();
+                </script>
               </div>
             </div>
 
@@ -2289,15 +2300,15 @@
 
   <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
-  <script src="js/data/dsa-problems.js?v=1.0.6"></script>
-  <script src="js/services/storage.js?v=1.0.6"></script>
-  <script src="js/services/executor.js?v=1.0.6"></script>
-  <script src="js/data/bce-data.js?v=1.0.6"></script>
-  <script src="js/data/syllabus-data.js?v=1.0.6"></script>
-  <script src="js/data/tcs-dsa-data.js?v=1.0.6"></script>
-  <script src="js/app.js?v=1.0.6"></script>
+  <script src="js/data/dsa-problems.js?v=1.0.7"></script>
+  <script src="js/services/storage.js?v=1.0.7"></script>
+  <script src="js/services/executor.js?v=1.0.7"></script>
+  <script src="js/data/bce-data.js?v=1.0.7"></script>
+  <script src="js/data/syllabus-data.js?v=1.0.7"></script>
+  <script src="js/data/tcs-dsa-data.js?v=1.0.7"></script>
+  <script src="js/app.js?v=1.0.7"></script>
   <!-- React 18 Pre-compiled Application Script -->
-  <script src="js/app-react-compiled.js?v=1.0.6"></script>
+  <script src="js/app-react-compiled.js?v=1.0.7"></script>
 </body>
 </html>
 
