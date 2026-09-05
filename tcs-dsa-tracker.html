@@ -3,575 +3,1275 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TCS DSA Tracker — 75 Problems</title>
+<title>DSA Arena — Practice Platform & Monaco IDE</title>
+<meta name="description" content="Modern dark-themed DSA problem practice platform featuring built-in Monaco Code Editor, LeetCode links, test case execution, and progress tracking.">
+
+<!-- Fonts & Icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- Monaco Editor Loader -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
-
-:root{
-  --bg:#0D1117;
-  --surface:#151B23;
-  --surface-2:#1B232D;
-  --border:#232B36;
-  --text:#E6E8EB;
-  --muted:#8A94A3;
-  --amber:#F2A93B;
-  --amber-dim:#5B4522;
-  --green:#3FB68B;
-  --green-dim:#1B3B32;
-  --red:#E1594C;
-  --violet:#8B7CF6;
-}
-*{box-sizing:border-box;}
-html,body{margin:0;padding:0;}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Space Grotesk',sans-serif;
-  -webkit-font-smoothing:antialiased;
-  min-height:100vh;
-}
-.mono{font-family:'JetBrains Mono',monospace;}
-
-/* ===== Header ===== */
-.header{
-  padding:36px 28px 24px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  flex-wrap:wrap;
-  gap:28px;
-  align-items:flex-end;
-  justify-content:space-between;
-}
-.title-block h1{
-  font-size:28px;
-  font-weight:700;
-  margin:0 0 6px;
-  letter-spacing:-0.02em;
-}
-.title-block p{
-  margin:0;
-  color:var(--muted);
-  font-size:14px;
-  max-width:520px;
-  line-height:1.5;
-}
-.title-block .badge{
-  display:inline-block;
-  font-family:'JetBrains Mono',monospace;
-  font-size:11px;
-  color:var(--amber);
-  border:1px solid var(--amber-dim);
-  background:rgba(242,169,59,0.08);
-  padding:3px 8px;
-  border-radius:4px;
-  margin-bottom:12px;
+:root {
+  --bg: #0D1117;
+  --surface: #151B23;
+  --surface-2: #1B232D;
+  --surface-3: #222C38;
+  --border: #232B36;
+  --border-light: #2E3846;
+  --text: #E6E8EB;
+  --muted: #8A94A3;
+  --amber: #F2A93B;
+  --amber-dim: rgba(242, 169, 59, 0.15);
+  --green: #3FB68B;
+  --green-dim: rgba(63, 182, 139, 0.15);
+  --red: #E1594C;
+  --red-dim: rgba(225, 89, 76, 0.15);
+  --violet: #8B7CF6;
+  --violet-dim: rgba(139, 124, 246, 0.15);
+  --cyan: #38BDF8;
+  --cyan-dim: rgba(56, 189, 248, 0.15);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
 }
 
-.stat-block{
-  display:flex;
-  align-items:center;
-  gap:20px;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
-.ring-wrap{position:relative;width:86px;height:86px;flex-shrink:0;}
-.ring-wrap svg{transform:rotate(-90deg);}
-.ring-bg{fill:none;stroke:var(--surface-2);stroke-width:7;}
-.ring-fg{fill:none;stroke:var(--amber);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .4s ease;}
-.ring-label{
-  position:absolute;top:0;left:0;right:0;bottom:0;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'JetBrains Mono',monospace;
-  font-size:16px;font-weight:600;
-}
-.stat-nums{font-family:'JetBrains Mono',monospace;}
-.stat-nums .big{font-size:22px;font-weight:600;color:var(--text);}
-.stat-nums .lbl{font-size:11px;color:var(--muted);margin-top:2px;}
+.mono { font-family: 'JetBrains Mono', monospace; }
+a { text-decoration: none; color: inherit; }
 
-/* ===== Controls ===== */
-.controls{
-  padding:18px 28px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  align-items:center;
-  border-bottom:1px solid var(--border);
-  position:sticky;
-  top:0;
-  background:rgba(13,17,23,0.92);
-  backdrop-filter:blur(6px);
-  z-index:10;
-}
-.search-input{
-  background:var(--surface);
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:9px 12px;
-  border-radius:6px;
-  font-family:'Space Grotesk',sans-serif;
-  font-size:14px;
-  min-width:200px;
-  flex:1;
-}
-.search-input:focus{outline:none;border-color:var(--amber);}
-.search-input::placeholder{color:var(--muted);}
+/* Scrollbars */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
-select.filter, .toggle-btn{
-  background:var(--surface);
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:9px 10px;
-  border-radius:6px;
-  font-family:'Space Grotesk',sans-serif;
-  font-size:13px;
-  cursor:pointer;
+/* Navigation Bar */
+.navbar {
+  background: rgba(21, 27, 35, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
-select.filter:focus{outline:none;border-color:var(--amber);}
-.toggle-btn{
-  display:flex;align-items:center;gap:6px;
-  color:var(--muted);
-  transition:all .15s ease;
-  white-space:nowrap;
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
 }
-.toggle-btn.active{
-  color:var(--amber);
-  border-color:var(--amber-dim);
-  background:rgba(242,169,59,0.08);
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--amber), var(--violet));
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-weight: 700;
+  font-size: 18px;
 }
-.toggle-btn:hover{color:var(--text);}
-.reset-btn{
-  background:none;border:none;color:var(--muted);
-  font-size:13px;cursor:pointer;text-decoration:underline;
-  font-family:'Space Grotesk',sans-serif;
-  padding:9px 4px;
+.brand-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
-.reset-btn:hover{color:var(--red);}
-
-/* ===== Table ===== */
-.list-wrap{padding:8px 28px 60px;}
-.list-head{
-  display:grid;
-  grid-template-columns:40px 34px 1fr 200px 90px 90px 40px;
-  gap:14px;
-  padding:10px 14px;
-  font-family:'JetBrains Mono',monospace;
-  font-size:11px;
-  color:var(--muted);
-  border-bottom:1px solid var(--border);
+.brand-subtitle {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
 }
-.row{
-  display:grid;
-  grid-template-columns:40px 34px 1fr 200px 90px 90px 40px;
-  gap:14px;
-  align-items:center;
-  padding:12px 14px;
-  border-bottom:1px solid var(--border);
-  transition:background .12s ease;
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
-.row:hover{background:var(--surface);}
-.row.solved{opacity:0.55;}
-.row.solved .p-title{text-decoration:line-through;text-decoration-color:var(--green);}
-
-.checkbox{
-  width:20px;height:20px;
-  border-radius:5px;
-  border:1.5px solid var(--border);
-  background:var(--surface);
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--bg);
-  font-size:13px;
-  flex-shrink:0;
+.nav-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: 'Space Grotesk', sans-serif;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
 }
-.checkbox.checked{background:var(--green);border-color:var(--green);}
-
-.p-num{font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:13px;}
-
-.p-title{
-  color:var(--text);
-  text-decoration:none;
-  font-weight:500;
-  font-size:14.5px;
-}
-.p-title:hover{color:var(--amber);}
-
-.p-tags{
-  display:flex;flex-wrap:wrap;gap:5px;
-  font-family:'JetBrains Mono',monospace;
-  font-size:10.5px;
-  color:var(--violet);
-}
-.tag{
-  border:1px solid rgba(139,124,246,0.35);
-  background:rgba(139,124,246,0.08);
-  padding:2px 6px;
-  border-radius:4px;
-  white-space:nowrap;
+.nav-btn:hover {
+  border-color: var(--amber);
+  color: var(--amber);
 }
 
-.p-diff{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;}
-.diff-Easy{color:var(--green);}
-.diff-Medium{color:var(--amber);}
-.diff-Hard{color:var(--red);}
-
-.pop-pill{
-  font-family:'JetBrains Mono',monospace;
-  font-size:10.5px;
-  padding:3px 8px;
-  border-radius:20px;
-  text-align:center;
-  white-space:nowrap;
+/* Page Views Container */
+.view-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
-.pop-Hot{background:rgba(242,169,59,0.12);color:var(--amber);border:1px solid var(--amber-dim);}
-.pop-VeryHot{background:rgba(225,89,76,0.14);color:var(--red);border:1px solid rgba(225,89,76,0.35);}
-.pop-Warm{background:rgba(139,148,163,0.12);color:var(--muted);border:1px solid var(--border);}
-
-.star-btn{
-  background:none;border:none;cursor:pointer;
-  font-size:18px;color:var(--border);
-  transition:color .15s ease, transform .15s ease;
+.page-view {
+  display: none;
+  width: 100%;
 }
-.star-btn.on{color:var(--amber);}
-.star-btn:hover{transform:scale(1.15);}
-
-.empty-state{
-  padding:60px 20px;
-  text-align:center;
-  color:var(--muted);
+.page-view.active {
+  display: flex;
+  flex-direction: column;
 }
-.empty-state .glyph{font-size:32px;margin-bottom:10px;}
 
-.footer-note{
-  padding:16px 28px 32px;
-  color:var(--muted);
-  font-size:12px;
-  border-top:1px solid var(--border);
-  font-family:'JetBrains Mono',monospace;
+/* ================= DASHBOARD VIEW ================= */
+.dashboard-header {
+  padding: 28px 28px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
 }
-.footer-note a{color:var(--amber);text-decoration:none;}
+.dashboard-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.title-block h1 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.title-block p {
+  color: var(--muted);
+  font-size: 14px;
+}
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 650px;
+}
+.stat-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stat-val {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.stat-lbl {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
 
-@media (max-width:820px){
-  .list-head{display:none;}
-  .row{
-    grid-template-columns:30px 1fr 40px;
-    grid-template-areas:
-      "chk title star"
-      "chk tags tags"
-      "chk meta meta";
-    row-gap:6px;
+/* Progress Bar Header */
+.progress-outer {
+  background: var(--bg);
+  border-radius: 10px;
+  height: 10px;
+  overflow: hidden;
+  display: flex;
+  margin-top: 8px;
+  border: 1px solid var(--border);
+}
+.progress-inner {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), var(--cyan));
+  transition: width 0.3s ease;
+}
+
+/* Filters & Search Toolbar */
+.toolbar {
+  padding: 16px 28px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: 61px;
+  z-index: 90;
+  backdrop-filter: blur(8px);
+}
+.search-box {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+}
+.search-box i {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 14px;
+}
+.search-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 14px 10px 38px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: border-color 0.2s;
+}
+.search-input:focus {
+  outline: none;
+  border-color: var(--amber);
+}
+.filter-select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: 'Space Grotesk', sans-serif;
+  cursor: pointer;
+}
+.filter-select:focus { outline: none; border-color: var(--amber); }
+
+.filter-chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+.filter-chip.active {
+  background: var(--amber-dim);
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+/* Problem Table View */
+.table-wrapper {
+  overflow-x: auto;
+  padding: 0 28px 40px;
+}
+.problem-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 16px;
+}
+.problem-table th {
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.problem-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 14px;
+  vertical-align: middle;
+  transition: background 0.15s;
+}
+.problem-table tr:hover td {
+  background: var(--surface-2);
+}
+.problem-table tr:first-child td:first-child { border-top-left-radius: var(--radius-md); }
+.problem-table tr:first-child td:last-child { border-top-right-radius: var(--radius-md); }
+.problem-table tr:last-child td:first-child { border-bottom-left-radius: var(--radius-md); }
+.problem-table tr:last-child td:last-child { border-bottom-right-radius: var(--radius-md); }
+
+/* Table Columns Styling */
+.col-status { width: 48px; text-align: center; }
+.col-num { width: 60px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+.col-title { min-width: 220px; font-weight: 600; }
+.col-tags { min-width: 180px; }
+.col-diff { width: 110px; }
+.col-company { min-width: 140px; }
+.col-actions { width: 180px; text-align: right; }
+
+.problem-link-title {
+  color: var(--text);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.problem-link-title:hover {
+  color: var(--amber);
+}
+
+.checkbox-custom {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 2px solid var(--border-light);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.checkbox-custom.checked {
+  background: var(--green);
+  border-color: var(--green);
+  color: #000;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.15s;
+}
+.star-btn.active {
+  color: var(--amber);
+}
+
+.badge-diff {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  display: inline-block;
+}
+.diff-Easy { background: var(--green-dim); color: var(--green); border: 1px solid rgba(63,182,139,0.3); }
+.diff-Medium { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(242,169,59,0.3); }
+.diff-Hard { background: var(--red-dim); color: var(--red); border: 1px solid rgba(225,89,76,0.3); }
+
+.tag-badge {
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  color: var(--violet);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+.company-badge {
+  background: var(--cyan-dim);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: var(--cyan);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  margin-right: 4px;
+  display: inline-block;
+}
+
+.btn-lc {
+  background: var(--surface-3);
+  border: 1px solid var(--border-light);
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+.btn-lc:hover {
+  background: #FFA116;
+  border-color: #FFA116;
+  color: #000;
+}
+
+.btn-solve {
+  background: linear-gradient(135deg, var(--amber), #D9822B);
+  color: #000;
+  font-weight: 600;
+  border: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 6px;
+  transition: transform 0.15s, opacity 0.15s;
+}
+.btn-solve:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+/* ================= PROBLEM DETAIL VIEW ================= */
+.detail-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 20px;
+  width: 100%;
+}
+.detail-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+.detail-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+}
+.detail-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.detail-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 24px 0 12px;
+  color: var(--amber);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.detail-body {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #D1D5DB;
+}
+.example-box {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+.example-box div { margin-bottom: 6px; }
+.example-box div:last-child { margin-bottom: 0; }
+.constraints-list {
+  list-style-type: disc;
+  padding-left: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--muted);
+}
+.constraints-list li { margin-bottom: 6px; }
+
+.detail-actions {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 16px;
+}
+
+/* ================= BUILT-IN IDE VIEW ================= */
+.ide-layout {
+  display: flex;
+  height: calc(100vh - 61px);
+  width: 100%;
+  overflow: hidden;
+}
+@media (max-width: 900px) {
+  .ide-layout {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
   }
-  .checkbox{grid-area:chk;}
-  .p-title{grid-area:title;}
-  .star-btn{grid-area:star;justify-self:end;}
-  .p-tags{grid-area:tags;}
-  .p-num{display:none;}
-  .p-diff,.pop-pill{grid-area:meta;justify-self:start;}
-  .row{position:relative;}
-  .p-diff{position:absolute;left:44px;bottom:12px;}
-  .pop-pill{position:absolute;left:100px;bottom:10px;}
-  .header{padding:24px 16px;}
-  .controls{padding:14px 16px;}
-  .list-wrap{padding:8px 12px 40px;}
 }
+.ide-left {
+  width: 45%;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.ide-right {
+  width: 55%;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 900px) {
+  .ide-left, .ide-right { width: 100%; border-right: none; }
+}
+
+.ide-left-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ide-left-content {
+  padding: 24px 20px;
+  flex: 1;
+}
+
+.ide-toolbar {
+  padding: 10px 16px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.lang-selector {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.editor-container {
+  flex: 1;
+  min-height: 380px;
+  position: relative;
+  background: #1e1e1e;
+}
+#monaco-editor-host {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0; left: 0;
+}
+.fallback-editor {
+  width: 100%;
+  height: 100%;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 16px;
+  border: none;
+  resize: none;
+  outline: none;
+}
+
+.ide-footer-actions {
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.btn-run {
+  background: var(--surface-3);
+  border: 1px solid var(--border-light);
+  color: var(--text);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s;
+}
+.btn-run:hover { border-color: var(--cyan); color: var(--cyan); }
+.btn-submit {
+  background: var(--green);
+  color: #000;
+  border: none;
+  padding: 8px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.15s;
+}
+.btn-submit:hover { opacity: 0.9; }
+
+/* Test Cases / Output Panel */
+.output-panel {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  height: 220px;
+  display: flex;
+  flex-direction: column;
+}
+.panel-tabs {
+  background: var(--surface-2);
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+.panel-tab {
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+.panel-tab.active {
+  color: var(--amber);
+  border-bottom-color: var(--amber);
+  background: var(--surface);
+}
+.panel-content {
+  padding: 14px 16px;
+  flex: 1;
+  overflow-y: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+.testcase-item {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  margin-bottom: 8px;
+}
+.testcase-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.pass-txt { color: var(--green); }
+.fail-txt { color: var(--red); }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="title-block">
-    <div class="badge">TCS NQT · DIGITAL · PRIME</div>
-    <h1>TCS DSA Interview Tracker</h1>
-    <p>75 high-frequency coding questions pulled together for TCS placement prep — spans NQT numerical/logic basics through Digital &amp; Prime-band algorithm rounds. Check off what you've solved, star what needs a revisit.</p>
-  </div>
-  <div class="stat-block">
-    <div class="stat-nums" style="text-align:right;">
-      <div class="big" id="solvedCount">0 / 75</div>
-      <div class="lbl">SOLVED</div>
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-brand" onclick="DSAApp.router.navigate('/')">
+      <div class="brand-icon"><i class="fa-solid fa-code"></i></div>
+      <div>
+        <div class="brand-title">DSA <span style="color:var(--amber);">ARENA</span></div>
+        <div class="brand-subtitle">LeetCode & Monaco IDE Practice Platform</div>
+      </div>
     </div>
-    <div class="ring-wrap">
-      <svg width="86" height="86" viewBox="0 0 86 86">
-        <circle class="ring-bg" cx="43" cy="43" r="36"></circle>
-        <circle class="ring-fg" id="ringFg" cx="43" cy="43" r="36" stroke-dasharray="226.19" stroke-dashoffset="226.19"></circle>
-      </svg>
-      <div class="ring-label" id="ringLabel">0%</div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="DSAApp.router.navigate('/')"><i class="fa-solid fa-table-list"></i> Dashboard</button>
+      <a href="index.html" class="nav-btn"><i class="fa-solid fa-graduation-cap"></i> BCE Connect Portal</a>
     </div>
+  </nav>
+
+  <!-- Page View Container -->
+  <div class="view-container">
+    
+    <!-- ================= DASHBOARD VIEW ================= -->
+    <div id="view-dashboard" class="page-view active">
+      <div class="dashboard-header">
+        <div class="dashboard-title-row">
+          <div class="title-block">
+            <h1>DSA Problem Practice Arena</h1>
+            <p>Curated LeetCode problem set with built-in Monaco Code Editor, progress tracking & full solutions.</p>
+          </div>
+          
+          <div class="stats-cards">
+            <div class="stat-card">
+              <span id="stat-total" class="stat-val">0</span>
+              <span class="stat-lbl">Total Problems</span>
+            </div>
+            <div class="stat-card">
+              <span id="stat-solved" class="stat-val" style="color:var(--green);">0</span>
+              <span class="stat-lbl">Solved</span>
+            </div>
+            <div class="stat-card">
+              <span id="stat-remaining" class="stat-val" style="color:var(--amber);">0</span>
+              <span class="stat-lbl">Remaining</span>
+            </div>
+            <div class="stat-card">
+              <span id="stat-pct" class="stat-val" style="color:var(--cyan);">0%</span>
+              <span class="stat-lbl">Progress</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="progress-outer">
+          <div id="main-progress-bar" class="progress-inner" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Toolbar Search & Filters -->
+      <div class="toolbar">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="search-input" class="search-input" placeholder="Search by title, tag (e.g. Array), or company (e.g. TCS)..." oninput="DSAApp.handleFilterChange()">
+        </div>
+
+        <select id="filter-difficulty" class="filter-select" onchange="DSAApp.handleFilterChange()">
+          <option value="ALL">All Difficulties</option>
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+
+        <select id="filter-status" class="filter-select" onchange="DSAApp.handleFilterChange()">
+          <option value="ALL">All Status</option>
+          <option value="SOLVED">Solved</option>
+          <option value="UNSOLVED">Unsolved</option>
+        </select>
+
+        <select id="filter-tag" class="filter-select" onchange="DSAApp.handleFilterChange()">
+          <option value="ALL">All Tags</option>
+          <option value="Array">Array</option>
+          <option value="String">String</option>
+          <option value="Hash Table">Hash Table</option>
+          <option value="Two Pointers">Two Pointers</option>
+          <option value="Dynamic Programming">Dynamic Programming</option>
+          <option value="Linked List">Linked List</option>
+          <option value="Trees">Trees</option>
+          <option value="Stack">Stack</option>
+          <option value="Recursion">Recursion</option>
+          <option value="Math">Math</option>
+        </select>
+
+        <button id="chip-fav" class="filter-chip" onclick="DSAApp.toggleFavFilter()">
+          <i class="fa-solid fa-star"></i> Favorites Only
+        </button>
+      </div>
+
+      <!-- Problems Table -->
+      <div class="table-wrapper">
+        <table class="problem-table">
+          <thead>
+            <tr>
+              <th class="col-status">Status</th>
+              <th class="col-num">#</th>
+              <th class="col-title">Problem Title</th>
+              <th class="col-tags">Tags</th>
+              <th class="col-diff">Difficulty</th>
+              <th class="col-company">Company / Tags</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="problems-tbody">
+            <!-- Dynamic Problem Rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ================= PROBLEM DETAIL VIEW ================= -->
+    <div id="view-detail" class="page-view">
+      <div class="detail-container">
+        <button class="nav-btn" style="margin-bottom: 16px;" onclick="DSAApp.router.navigate('/')">
+          <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+        </button>
+        
+        <div id="detail-card-content" class="detail-card">
+          <!-- Dynamic Problem Content -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= BUILT-IN IDE VIEW ================= -->
+    <div id="view-ide" class="page-view">
+      <div class="ide-layout">
+        
+        <!-- Left Pane: Problem Description -->
+        <div class="ide-left">
+          <div class="ide-left-header">
+            <div>
+              <span id="ide-prob-num" class="mono" style="color:var(--muted); margin-right:6px;">#1</span>
+              <strong id="ide-prob-title" style="font-size:16px;">Two Sum</strong>
+            </div>
+            <span id="ide-prob-diff" class="badge-diff diff-Easy">Easy</span>
+          </div>
+
+          <div class="ide-left-content">
+            <div id="ide-prob-description" class="detail-body"></div>
+            
+            <div class="detail-section-title"><i class="fa-solid fa-code-compare"></i> Examples</div>
+            <div id="ide-prob-examples"></div>
+
+            <div class="detail-section-title"><i class="fa-solid fa-shield-halved"></i> Constraints</div>
+            <ul id="ide-prob-constraints" class="constraints-list"></ul>
+          </div>
+        </div>
+
+        <!-- Right Pane: Code Editor & Execution Panel -->
+        <div class="ide-right">
+          
+          <!-- Editor Toolbar -->
+          <div class="ide-toolbar">
+            <select id="ide-lang-select" class="lang-selector" onchange="DSAApp.handleLanguageChange(this.value)">
+              <option value="cpp">C++ (GCC 11)</option>
+              <option value="java">Java (OpenJDK 17)</option>
+              <option value="python">Python (3.10)</option>
+            </select>
+
+            <div style="display:flex; gap:8px;">
+              <a id="ide-lc-link" href="#" target="_blank" class="btn-lc" title="Open Original LeetCode Problem">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> LeetCode
+              </a>
+              <button class="nav-btn" onclick="DSAApp.resetEditorCode()" title="Reset to Starter Code">
+                <i class="fa-solid fa-rotate-left"></i> Reset
+              </button>
+            </div>
+          </div>
+
+          <!-- Code Editor Host -->
+          <div class="editor-container">
+            <div id="monaco-editor-host"></div>
+            <textarea id="fallback-textarea" class="fallback-editor" style="display:none;" placeholder="// Write your code here..."></textarea>
+          </div>
+
+          <!-- Editor Footer Actions -->
+          <div class="ide-footer-actions">
+            <button class="btn-run" onclick="DSAApp.runUserCode()">
+              <i class="fa-solid fa-play" style="color:var(--cyan);"></i> Run Code
+            </button>
+
+            <button class="btn-submit" onclick="DSAApp.submitUserCode()">
+              <i class="fa-solid fa-paper-plane"></i> Submit Solution
+            </button>
+          </div>
+
+          <!-- Test Cases / Output Panel -->
+          <div class="output-panel">
+            <div class="panel-tabs">
+              <div id="tab-btn-tc" class="panel-tab active" onclick="DSAApp.switchOutputTab('tc')">
+                <i class="fa-solid fa-vials"></i> Test Cases
+              </div>
+              <div id="tab-btn-stdout" class="panel-tab" onclick="DSAApp.switchOutputTab('stdout')">
+                <i class="fa-solid fa-terminal"></i> Console Output
+              </div>
+            </div>
+
+            <div id="tab-content-tc" class="panel-content">
+              <div id="testcase-results-container">
+                <span style="color:var(--muted);">Click "Run Code" to evaluate solution test cases...</span>
+              </div>
+            </div>
+
+            <div id="tab-content-stdout" class="panel-content" style="display:none;">
+              <pre id="stdout-container" style="color:var(--text); white-space:pre-wrap;">No execution stdout available.</pre>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
   </div>
-</div>
 
-<div class="controls">
-  <input class="search-input" id="searchBox" type="text" placeholder="Search by title or tag (e.g. 'Two Pointers', 'Tree')…">
-  <select class="filter" id="diffFilter">
-    <option value="all">All difficulties</option>
-    <option value="Easy">Easy</option>
-    <option value="Medium">Medium</option>
-    <option value="Hard">Hard</option>
-  </select>
-  <select class="filter" id="popFilter">
-    <option value="all">All popularity</option>
-    <option value="Very Hot">Very Hot</option>
-    <option value="Hot">Hot</option>
-    <option value="Warm">Warm</option>
-  </select>
-  <button class="toggle-btn" id="bookmarkToggle">☆ Bookmarked only</button>
-  <button class="toggle-btn" id="unsolvedToggle">◻ Unsolved only</button>
-  <button class="reset-btn" id="resetBtn">Reset progress</button>
-</div>
+  <!-- Import Project JS Services -->
+  <script src="js/data/dsa-problems.js"></script>
+  <script src="js/services/storage.js"></script>
+  <script src="js/services/executor.js"></script>
 
-<div class="list-wrap">
-  <div class="list-head">
-    <div></div><div>#</div><div>PROBLEM</div><div>TAGS</div><div>DIFFICULTY</div><div>POPULARITY</div><div></div>
-  </div>
-  <div id="listBody"></div>
-  <div class="empty-state" id="emptyState" style="display:none;">
-    <div class="glyph">¯\_(ツ)_/¯</div>
-    No problems match these filters. Try clearing search or filters.
-  </div>
-</div>
+  <script>
+  /**
+   * Main DSA Platform Application Controller
+   */
+  const DSAApp = {
+    problems: [],
+    activeProblemId: 1,
+    activeLanguage: 'cpp',
+    favFilterActive: false,
+    monacoInstance: null,
 
-<div class="footer-note">
-  Source list adapted from the <a href="https://hynts.in/preparation/company-wise-dsa-sheet/tcs-dsa-interview-questions/" target="_blank" rel="noopener">hynts TCS DSA sheet</a>. Progress is saved to your browser local storage.
-</div>
+    init: function() {
+      this.problems = window.DSA_PROBLEMS_DATA || [];
+      this.activeLanguage = LocalStorageService.getPreferredLanguage();
+      document.getElementById('ide-lang-select').value = this.activeLanguage;
 
-<script>
-const PROBLEMS = [
-{n:1,t:"Fizz Buzz",tags:["Math","String","Simulation"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/fizz-buzz/"},
-{n:2,t:"Climbing Stairs",tags:["Math","Dynamic Programming","Memoization"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/climbing-stairs/"},
-{n:3,t:"Valid Palindrome",tags:["Two Pointers","String"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/valid-palindrome/"},
-{n:4,t:"Maximum Subarray",tags:["Array","Divide and Conquer","Dynamic Programming"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/maximum-subarray/"},
-{n:5,t:"Fibonacci Number",tags:["Math","Dynamic Programming","Recursion","Memoization"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/fibonacci-number/"},
-{n:6,t:"Two Sum",tags:["Array","Hash Table"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/two-sum/"},
-{n:7,t:"Valid Parentheses",tags:["String","Stack"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/valid-parentheses/"},
-{n:8,t:"Majority Element",tags:["Array","Hash Table","Divide and Conquer","Sorting","Counting"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/majority-element/"},
-{n:9,t:"Best Time to Buy and Sell Stock",tags:["Array","Dynamic Programming"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/best-time-to-buy-and-sell-stock/"},
-{n:10,t:"Valid Anagram",tags:["Hash Table","String","Sorting"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/valid-anagram/"},
-{n:11,t:"Longest Common Prefix",tags:["String","Trie"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/longest-common-prefix/"},
-{n:12,t:"Missing Number",tags:["Array","Hash Table","Math","Binary Search","Bit Manipulation","Sorting"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/missing-number/"},
-{n:13,t:"Single Number",tags:["Array","Bit Manipulation"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/single-number/"},
-{n:14,t:"Reverse Linked List",tags:["Linked List","Recursion"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/reverse-linked-list/"},
-{n:15,t:"Merge Two Sorted Lists",tags:["Linked List","Recursion"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/merge-two-sorted-lists/"},
-{n:16,t:"Pascal's Triangle",tags:["Array","Dynamic Programming"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/pascals-triangle/"},
-{n:17,t:"Search Insert Position",tags:["Array","Binary Search"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/search-insert-position/"},
-{n:18,t:"Contains Duplicate",tags:["Array","Hash Table","Sorting"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/contains-duplicate/"},
-{n:19,t:"Binary Search",tags:["Array","Binary Search"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/binary-search/"},
-{n:20,t:"Find the Index of the First Occurrence in a String",tags:["Two Pointers","String","String Matching"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/"},
-{n:21,t:"Search a 2D Matrix",tags:["Array","Binary Search","Matrix"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/search-a-2d-matrix/"},
-{n:22,t:"Container With Most Water",tags:["Array","Two Pointers","Greedy"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/container-with-most-water/"},
-{n:23,t:"Product of Array Except Self",tags:["Array","Prefix Sum"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/product-of-array-except-self/"},
-{n:24,t:"Subarray Sum Equals K",tags:["Array","Hash Table","Prefix Sum"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/subarray-sum-equals-k/"},
-{n:25,t:"Group Anagrams",tags:["Array","Hash Table","String","Sorting"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/group-anagrams/"},
-{n:26,t:"Longest Substring Without Repeating Characters",tags:["String","Sliding Window","Hash Table"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/longest-substring-without-repeating-characters/"},
-{n:27,t:"Number of Islands",tags:["Array","Matrix","DFS","BFS","Union Find"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/number-of-islands/"},
-{n:28,t:"Rotting Oranges",tags:["Array","Matrix","BFS"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/rotting-oranges/"},
-{n:29,t:"Spiral Matrix",tags:["Array","Matrix","Simulation"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/spiral-matrix/"},
-{n:30,t:"Sort Colors",tags:["Array","Two Pointers","Sorting"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/sort-colors/"},
-{n:31,t:"Coin Change",tags:["Array","Dynamic Programming","BFS"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/coin-change/"},
-{n:32,t:"House Robber",tags:["Array","Dynamic Programming"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/house-robber/"},
-{n:33,t:"Longest Consecutive Sequence",tags:["Array","Hash Table","Union Find"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/longest-consecutive-sequence/"},
-{n:34,t:"Word Break",tags:["Array","Hash Table","String","Dynamic Programming","Trie","Memoization"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/word-break/"},
-{n:35,t:"Permutations",tags:["Array","Backtracking"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/permutations/"},
-{n:36,t:"Subsets",tags:["Array","Backtracking","Bit Manipulation"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/subsets/"},
-{n:37,t:"3Sum",tags:["Array","Two Pointers","Sorting"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/3sum/"},
-{n:38,t:"Min Stack",tags:["Stack","Design"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/min-stack/"},
-{n:39,t:"Merge Intervals",tags:["Array","Sorting"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/merge-intervals/"},
-{n:40,t:"Meeting Rooms",tags:["Array","Sorting"],diff:"Easy",pop:"Hot",src:"GeeksforGeeks",url:"https://www.geeksforgeeks.org/problems/attend-all-meetings/1"},
-{n:41,t:"Check if a Binary Tree is BST",tags:["Tree","DFS","BST","Binary Tree"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/validate-binary-search-tree/"},
-{n:42,t:"Lowest Common Ancestor of a Binary Tree",tags:["Tree","DFS","Binary Tree"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/"},
-{n:43,t:"Maximum Depth of Binary Tree",tags:["Tree","DFS","Binary Tree"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/maximum-depth-of-binary-tree/"},
-{n:44,t:"Inorder Traversal of Binary Tree",tags:["Tree","Stack","Binary Tree"],diff:"Easy",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/binary-tree-inorder-traversal/"},
-{n:45,t:"Symmetric Tree",tags:["Tree","DFS","BFS","Binary Tree"],diff:"Easy",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/symmetric-tree/"},
-{n:46,t:"Gas Station",tags:["Array","Greedy"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/gas-station/"},
-{n:47,t:"Next Permutation",tags:["Array","Two Pointers"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/next-permutation/"},
-{n:48,t:"Find the Duplicate Number",tags:["Array","Two Pointers","Binary Search","Bit Manipulation"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/find-the-duplicate-number/"},
-{n:49,t:"Search in Rotated Sorted Array",tags:["Array","Binary Search"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/search-in-rotated-sorted-array/"},
-{n:50,t:"Is Subsequence",tags:["Two Pointers","String","Dynamic Programming"],diff:"Easy",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/is-subsequence/"},
-{n:51,t:"Find Peak Element",tags:["Array","Binary Search"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/find-peak-element/"},
-{n:52,t:"Shortest Path in a Binary Maze",tags:["Matrix","BFS","Graph"],diff:"Medium",pop:"Hot",src:"GeeksforGeeks",url:"https://www.geeksforgeeks.org/problems/shortest-path-in-a-binary-maze-1655453161/1"},
-{n:53,t:"Count Primes",tags:["Math","Number Theory","Array"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/count-primes/"},
-{n:54,t:"Maximum Product Subarray",tags:["Array","Dynamic Programming"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/maximum-product-subarray/"},
-{n:55,t:"Longest Palindromic Substring",tags:["String","Dynamic Programming"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/longest-palindromic-substring/"},
-{n:56,t:"Valid Sudoku",tags:["Array","Hash Table","Matrix"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/valid-sudoku/"},
-{n:57,t:"Jump Game",tags:["Array","Dynamic Programming","Greedy"],diff:"Medium",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/jump-game/"},
-{n:58,t:"Kth Smallest Element in a BST",tags:["Tree","DFS","BST","Binary Tree"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/kth-smallest-element-in-a-bst/"},
-{n:59,t:"Unique Paths",tags:["Math","Dynamic Programming","Combinatorics"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/unique-paths/"},
-{n:60,t:"Set Matrix Zeroes",tags:["Array","Hash Table","Matrix"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/set-matrix-zeroes/"},
-{n:61,t:"Word Search",tags:["Array","Matrix","Backtracking"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/word-search/"},
-{n:62,t:"Rotate Image",tags:["Array","Math","Matrix"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/rotate-image/"},
-{n:63,t:"Remove Duplicates from Sorted Array",tags:["Array","Two Pointers"],diff:"Easy",pop:"Very Hot",src:"LeetCode",url:"https://leetcode.com/problems/remove-duplicates-from-sorted-array/"},
-{n:64,t:"Implement Queue using Stacks",tags:["Stack","Design","Queue"],diff:"Easy",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/implement-queue-using-stacks/"},
-{n:65,t:"Flatten Binary Tree to Linked List",tags:["Tree","DFS","Binary Tree","Linked List"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/flatten-binary-tree-to-linked-list/"},
-{n:66,t:"Binary Tree Zigzag Level Order Traversal",tags:["Tree","BFS","Binary Tree"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/"},
-{n:67,t:"Longest Palindromic Subsequence",tags:["String","Dynamic Programming"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/longest-palindromic-subsequence/"},
-{n:68,t:"Edit Distance",tags:["String","Dynamic Programming"],diff:"Hard",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/edit-distance/"},
-{n:69,t:"Network Delay Time",tags:["DFS","BFS","Graph","Heap","Shortest Path"],diff:"Medium",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/network-delay-time/"},
-{n:70,t:"Generate Parentheses",tags:["String","Backtracking"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/generate-parentheses/"},
-{n:71,t:"Minimum Path Sum",tags:["Array","Matrix","Dynamic Programming"],diff:"Medium",pop:"Hot",src:"LeetCode",url:"https://leetcode.com/problems/minimum-path-sum/"},
-{n:72,t:"Excel Sheet Column Number",tags:["Math","String"],diff:"Easy",pop:"Warm",src:"LeetCode",url:"https://leetcode.com/problems/excel-sheet-column-number/"},
-{n:73,t:"Knapsack Problem (0/1 standard archetype)",tags:["Dynamic Programming"],diff:"Medium",pop:"Very Hot",src:"GeeksforGeeks",url:"https://www.geeksforgeeks.org/problems/0-1-knapsack-problem0945/1"},
-{n:74,t:"Armstrong Numbers",tags:["Math"],diff:"Easy",pop:"Very Hot",src:"GeeksforGeeks",url:"https://www.geeksforgeeks.org/problems/armstrong-numbers2727/1"},
-{n:75,t:"Find Nth element of dynamic series (Simulation)",tags:["Math","Simulation"],diff:"Easy",pop:"Very Hot",src:"GeeksforGeeks",url:"https://www.geeksforgeeks.org/dsa/program-to-find-nth-term-in-the-given-series/"}
-];
+      this.initRouter();
+      this.initMonaco();
+      this.renderDashboard();
+    },
 
-const STORAGE_KEY = "tcs-dsa-tracker-progress-v1";
-let state = {}; // { [n]: {solved:bool, bookmarked:bool} }
-let filters = { search:"", diff:"all", pop:"all", bookmarkedOnly:false, unsolvedOnly:false };
+    // Client-side Router
+    router: {
+      navigate: function(path) {
+        window.location.hash = path;
+      },
+      handleRoute: function() {
+        const hash = window.location.hash || '#/';
+        document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
 
-const listBody = document.getElementById('listBody');
-const emptyState = document.getElementById('emptyState');
+        if (hash.startsWith('#/problem/') && hash.endsWith('/solve')) {
+          const id = hash.split('/')[2];
+          DSAApp.openIDEView(id);
+        } else if (hash.startsWith('#/problem/')) {
+          const id = hash.split('/')[2];
+          DSAApp.openDetailView(id);
+        } else {
+          document.getElementById('view-dashboard').classList.add('active');
+          DSAApp.renderDashboard();
+        }
+      }
+    },
 
-function loadState(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    state = raw ? JSON.parse(raw) : {};
-  }catch(e){
-    state = {};
-  }
-  render();
-}
+    initRouter: function() {
+      window.addEventListener('hashchange', () => this.router.handleRoute());
+      this.router.handleRoute();
+    },
 
-function saveState(){
-  try{
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }catch(e){
-    console.error('Could not save progress', e);
-  }
-}
+    // Initialize Monaco Editor with CDN Loader
+    initMonaco: function() {
+      if (window.require) {
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
+        require(['vs/editor/editor.main'], () => {
+          DSAApp.monacoInstance = monaco.editor.create(document.getElementById('monaco-editor-host'), {
+            value: "// Loading starter template...",
+            language: "cpp",
+            theme: "vs-dark",
+            fontSize: 14,
+            fontFamily: "'JetBrains Mono', monospace",
+            minimap: { enabled: false },
+            automaticLayout: true
+          });
+          DSAApp.loadActiveProblemCodeIntoEditor();
+        });
+      } else {
+        // Fallback to text area if Monaco CDN fails
+        document.getElementById('monaco-editor-host').style.display = 'none';
+        document.getElementById('fallback-textarea').style.display = 'block';
+        document.getElementById('fallback-textarea').addEventListener('input', (e) => {
+          LocalStorageService.saveCode(DSAApp.activeProblemId, DSAApp.activeLanguage, e.target.value);
+        });
+      }
+    },
 
-function toggleSolved(n){
-  state[n] = state[n] || {};
-  state[n].solved = !state[n].solved;
-  saveState();
-  render();
-}
-function toggleBookmark(n){
-  state[n] = state[n] || {};
-  state[n].bookmarked = !state[n].bookmarked;
-  saveState();
-  render();
-}
+    // RENDER DASHBOARD & METRICS
+    renderDashboard: function() {
+      const tbody = document.getElementById('problems-tbody');
+      tbody.innerHTML = '';
 
-function popClass(pop){
-  return "pop-" + pop.replace(/\s+/g,'');
-}
+      const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+      const diffVal = document.getElementById('filter-difficulty').value;
+      const statusVal = document.getElementById('filter-status').value;
+      const tagVal = document.getElementById('filter-tag').value;
 
-function matchesFilters(p){
-  const s = state[p.n] || {};
-  if(filters.diff !== 'all' && p.diff !== filters.diff) return false;
-  if(filters.pop !== 'all' && p.pop !== filters.pop) return false;
-  if(filters.bookmarkedOnly && !s.bookmarked) return false;
-  if(filters.unsolvedOnly && s.solved) return false;
-  if(filters.search){
-    const q = filters.search.toLowerCase();
-    const hay = (p.t + ' ' + p.tags.join(' ')).toLowerCase();
-    if(!hay.includes(q)) return false;
-  }
-  return true;
-}
+      let solvedCount = 0;
+      let totalCount = this.problems.length;
 
-function render(){
-  const solvedCount = PROBLEMS.filter(p => state[p.n] && state[p.n].solved).length;
-  document.getElementById('solvedCount').textContent = solvedCount + " / " + PROBLEMS.length;
-  const pct = Math.round((solvedCount / PROBLEMS.length) * 100);
-  document.getElementById('ringLabel').textContent = pct + "%";
-  const circumference = 226.19;
-  document.getElementById('ringFg').style.strokeDashoffset = circumference - (circumference * pct / 100);
+      const filtered = this.problems.filter(p => {
+        const isSolved = LocalStorageService.isSolved(p.id);
+        const isFav = LocalStorageService.isFavorite(p.id);
 
-  const filtered = PROBLEMS.filter(matchesFilters);
-  listBody.innerHTML = '';
-  emptyState.style.display = filtered.length ? 'none' : 'block';
+        if (isSolved) solvedCount++;
 
-  filtered.forEach(p => {
-    const s = state[p.n] || {};
-    const row = document.createElement('div');
-    row.className = 'row' + (s.solved ? ' solved' : '');
+        // Search Filter
+        if (searchVal) {
+          const matchTitle = p.title.toLowerCase().includes(searchVal);
+          const matchTag = p.tags.some(t => t.toLowerCase().includes(searchVal));
+          const matchCompany = p.companies.some(c => c.toLowerCase().includes(searchVal));
+          if (!matchTitle && !matchTag && !matchCompany) return false;
+        }
 
-    const cb = document.createElement('div');
-    cb.className = 'checkbox' + (s.solved ? ' checked' : '');
-    cb.textContent = s.solved ? '✓' : '';
-    cb.onclick = () => toggleSolved(p.n);
-    row.appendChild(cb);
+        // Difficulty Filter
+        if (diffVal !== 'ALL' && p.difficulty !== diffVal) return false;
 
-    const num = document.createElement('div');
-    num.className = 'p-num';
-    num.textContent = String(p.n).padStart(2,'0');
-    row.appendChild(num);
+        // Status Filter
+        if (statusVal === 'SOLVED' && !isSolved) return false;
+        if (statusVal === 'UNSOLVED' && isSolved) return false;
 
-    const titleWrap = document.createElement('div');
-    const a = document.createElement('a');
-    a.className = 'p-title';
-    a.href = p.url;
-    a.target = '_blank';
-    a.rel = 'noopener';
-    a.textContent = p.t;
-    titleWrap.appendChild(a);
-    const srcSpan = document.createElement('div');
-    srcSpan.className = 'mono';
-    srcSpan.style.color = 'var(--muted)';
-    srcSpan.style.fontSize = '10.5px';
-    srcSpan.style.marginTop = '3px';
-    srcSpan.textContent = p.src;
-    titleWrap.appendChild(srcSpan);
-    row.appendChild(titleWrap);
+        // Favorites Filter
+        if (this.favFilterActive && !isFav) return false;
 
-    const tagsWrap = document.createElement('div');
-    tagsWrap.className = 'p-tags';
-    p.tags.forEach(tag => {
-      const tEl = document.createElement('span');
-      tEl.className = 'tag';
-      tEl.textContent = tag;
-      tagsWrap.appendChild(tEl);
-    });
-    row.appendChild(tagsWrap);
+        // Tag Filter
+        if (tagVal !== 'ALL' && !p.tags.includes(tagVal)) return false;
 
-    const diffEl = document.createElement('div');
-    diffEl.className = 'p-diff diff-' + p.diff;
-    diffEl.textContent = p.diff;
-    row.appendChild(diffEl);
+        return true;
+      });
 
-    const popEl = document.createElement('div');
-    popEl.className = 'pop-pill ' + popClass(p.pop);
-    popEl.textContent = p.pop;
-    row.appendChild(popEl);
+      // Update Dashboard Stats
+      document.getElementById('stat-total').textContent = totalCount;
+      document.getElementById('stat-solved').textContent = solvedCount;
+      document.getElementById('stat-remaining').textContent = totalCount - solvedCount;
+      const pct = totalCount > 0 ? ((solvedCount / totalCount) * 100).toFixed(1) : 0;
+      document.getElementById('stat-pct').textContent = `${pct}%`;
+      document.getElementById('main-progress-bar').style.width = `${pct}%`;
 
-    const starBtn = document.createElement('button');
-    starBtn.className = 'star-btn' + (s.bookmarked ? ' on' : '');
-    starBtn.textContent = s.bookmarked ? '★' : '☆';
-    starBtn.onclick = () => toggleBookmark(p.n);
-    row.appendChild(starBtn);
+      // Build Table Rows
+      filtered.forEach(p => {
+        const isSolved = LocalStorageService.isSolved(p.id);
+        const isFav = LocalStorageService.isFavorite(p.id);
 
-    listBody.appendChild(row);
-  });
-}
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="col-status">
+            <div class="checkbox-custom ${isSolved ? 'checked' : ''}" onclick="DSAApp.toggleSolvedStatus(${p.id})">
+              ${isSolved ? '<i class="fa-solid fa-check"></i>' : ''}
+            </div>
+          </td>
+          <td class="col-num">${p.id}</td>
+          <td class="col-title">
+            <span class="problem-link-title" onclick="DSAApp.router.navigate('/problem/${p.id}')">${p.title}</span>
+            <button class="star-btn ${isFav ? 'active' : ''}" onclick="DSAApp.toggleFavStatus(${p.id})">
+              <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-star"></i>
+            </button>
+          </td>
+          <td class="col-tags">
+            ${p.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}
+          </td>
+          <td class="col-diff">
+            <span class="badge-diff diff-${p.difficulty}">${p.difficulty}</span>
+          </td>
+          <td class="col-company">
+            ${p.companies.map(c => `<span class="company-badge">${c}</span>`).join('')}
+          </td>
+          <td class="col-actions">
+            <a href="${p.leetcodeUrl}" target="_blank" class="btn-lc" title="Original LeetCode Problem">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> LeetCode
+            </a>
+            <button class="btn-solve" onclick="DSAApp.router.navigate('/problem/${p.id}/solve')">
+              <i class="fa-solid fa-code"></i> Solve
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    },
 
-document.getElementById('searchBox').addEventListener('input', e => {
-  filters.search = e.target.value;
-  render();
-});
-document.getElementById('diffFilter').addEventListener('change', e => {
-  filters.diff = e.target.value;
-  render();
-});
-document.getElementById('popFilter').addEventListener('change', e => {
-  filters.pop = e.target.value;
-  render();
-});
-document.getElementById('bookmarkToggle').addEventListener('click', function(){
-  filters.bookmarkedOnly = !filters.bookmarkedOnly;
-  this.classList.toggle('active', filters.bookmarkedOnly);
-  this.textContent = filters.bookmarkedOnly ? '★ Bookmarked only' : '☆ Bookmarked only';
-  render();
-});
-document.getElementById('unsolvedToggle').addEventListener('click', function(){
-  filters.unsolvedOnly = !filters.unsolvedOnly;
-  this.classList.toggle('active', filters.unsolvedOnly);
-  render();
-});
-document.getElementById('resetBtn').addEventListener('click', () => {
-  if(confirm('Reset all solved/bookmark progress? This cannot be undone.')){
-    state = {};
-    saveState();
-    render();
-  }
-});
+    toggleSolvedStatus: function(id) {
+      LocalStorageService.toggleSolved(id);
+      this.renderDashboard();
+    },
 
-loadState();
-</script>
+    toggleFavStatus: function(id) {
+      LocalStorageService.toggleFavorite(id);
+      this.renderDashboard();
+    },
+
+    toggleFavFilter: function() {
+      this.favFilterActive = !this.favFilterActive;
+      document.getElementById('chip-fav').classList.toggle('active', this.favFilterActive);
+      this.renderDashboard();
+    },
+
+    handleFilterChange: function() {
+      this.renderDashboard();
+    },
+
+    // RENDER PROBLEM DETAIL VIEW
+    openDetailView: function(id) {
+      const p = this.problems.find(item => item.id == id);
+      if (!p) return this.router.navigate('/');
+
+      document.getElementById('view-detail').classList.add('active');
+      const isFav = LocalStorageService.isFavorite(p.id);
+
+      const content = document.getElementById('detail-card-content');
+      content.innerHTML = `
+        <div class="detail-header">
+          <div class="detail-title">
+            <span>#${p.id}. ${p.title}</span>
+            <span class="badge-diff diff-${p.difficulty}">${p.difficulty}</span>
+          </div>
+          <div class="detail-meta">
+            ${p.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}
+            ${p.companies.map(c => `<span class="company-badge">${c}</span>`).join('')}
+          </div>
+        </div>
+
+        <div class="detail-section-title"><i class="fa-solid fa-file-lines"></i> Problem Statement</div>
+        <div class="detail-body">${p.description}</div>
+
+        <div class="detail-section-title"><i class="fa-solid fa-code-compare"></i> Examples</div>
+        ${p.examples.map((ex, i) => `
+          <div class="example-box">
+            <div><strong>Example ${i + 1}:</strong></div>
+            <div><strong>Input:</strong> ${ex.input}</div>
+            <div><strong>Output:</strong> ${ex.output}</div>
+            ${ex.explanation ? `<div><strong>Explanation:</strong> ${ex.explanation}</div>` : ''}
+          </div>
+        `).join('')}
+
+        <div class="detail-section-title"><i class="fa-solid fa-shield-halved"></i> Constraints</div>
+        <ul class="constraints-list">
+          ${p.constraints.map(c => `<li>${c}</li>`).join('')}
+        </ul>
+
+        <div class="detail-actions">
+          <a href="${p.leetcodeUrl}" target="_blank" class="btn-lc" style="padding:10px 18px; font-size:14px;">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Open in LeetCode
+          </a>
+          <button class="btn-solve" style="padding:10px 22px; font-size:14px;" onclick="DSAApp.router.navigate('/problem/${p.id}/solve')">
+            <i class="fa-solid fa-code"></i> Open in IDE Workspace
+          </button>
+        </div>
+      `;
+    },
+
+    // RENDER IDE VIEW
+    openIDEView: function(id) {
+      const p = this.problems.find(item => item.id == id);
+      if (!p) return this.router.navigate('/');
+
+      this.activeProblemId = p.id;
+      document.getElementById('view-ide').classList.add('active');
+
+      document.getElementById('ide-prob-num').textContent = `#${p.id}`;
+      document.getElementById('ide-prob-title').textContent = p.title;
+      document.getElementById('ide-prob-diff').textContent = p.difficulty;
+      document.getElementById('ide-prob-diff').className = `badge-diff diff-${p.difficulty}`;
+
+      document.getElementById('ide-prob-description').innerHTML = p.description;
+
+      document.getElementById('ide-prob-examples').innerHTML = p.examples.map((ex, i) => `
+        <div class="example-box">
+          <div><strong>Example ${i + 1}:</strong> ${ex.input}</div>
+          <div><strong>Output:</strong> ${ex.output}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('ide-prob-constraints').innerHTML = p.constraints.map(c => `<li>${c}</li>`).join('');
+
+      document.getElementById('ide-lc-link').href = p.leetcodeUrl;
+
+      this.loadActiveProblemCodeIntoEditor();
+    },
+
+    loadActiveProblemCodeIntoEditor: function() {
+      const p = this.problems.find(item => item.id == this.activeProblemId);
+      if (!p) return;
+
+      const savedCode = LocalStorageService.getSavedCode(p.id, this.activeLanguage);
+      const codeToLoad = savedCode || p.templates[this.activeLanguage] || "// Write your code here...";
+
+      if (this.monacoInstance) {
+        const monacoLangMap = { cpp: 'cpp', java: 'java', python: 'python' };
+        monaco.editor.setModelLanguage(this.monacoInstance.getModel(), monacoLangMap[this.activeLanguage]);
+        this.monacoInstance.setValue(codeToLoad);
+
+        this.monacoInstance.onDidChangeModelContent(() => {
+          LocalStorageService.saveCode(DSAApp.activeProblemId, DSAApp.activeLanguage, DSAApp.monacoInstance.getValue());
+        });
+      } else {
+        document.getElementById('fallback-textarea').value = codeToLoad;
+      }
+    },
+
+    handleLanguageChange: function(lang) {
+      this.activeLanguage = lang;
+      LocalStorageService.setPreferredLanguage(lang);
+      this.loadActiveProblemCodeIntoEditor();
+    },
+
+    resetEditorCode: function() {
+      const p = this.problems.find(item => item.id == this.activeProblemId);
+      if (!p) return;
+
+      const defaultTemplate = p.templates[this.activeLanguage] || '';
+      LocalStorageService.saveCode(p.id, this.activeLanguage, defaultTemplate);
+      if (this.monacoInstance) {
+        this.monacoInstance.setValue(defaultTemplate);
+      } else {
+        document.getElementById('fallback-textarea').value = defaultTemplate;
+      }
+    },
+
+    getCurrentUserCode: function() {
+      if (this.monacoInstance) {
+        return this.monacoInstance.getValue();
+      }
+      return document.getElementById('fallback-textarea').value;
+    },
+
+    runUserCode: async function() {
+      const p = this.problems.find(item => item.id == this.activeProblemId);
+      if (!p) return;
+
+      const code = this.getCurrentUserCode();
+      const container = document.getElementById('testcase-results-container');
+      container.innerHTML = `<span style="color:var(--cyan);"><i class="fa-solid fa-spinner fa-spin"></i> Compiling and running test cases...</span>`;
+
+      const result = await CodeExecutionService.runCode(code, this.activeLanguage, p.testCases);
+
+      container.innerHTML = result.results.map(r => `
+        <div class="testcase-item">
+          <div class="testcase-header">
+            <span>Test Case #${r.id}</span>
+            <span class="${r.status === 'PASSED' ? 'pass-txt' : 'fail-txt'}">${r.status} (${r.runtime})</span>
+          </div>
+          <div><strong>Input:</strong> ${r.input}</div>
+          <div><strong>Expected:</strong> ${r.expectedOutput}</div>
+          <div><strong>Output:</strong> ${r.actualOutput}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('stdout-container').textContent = result.stdout;
+    },
+
+    submitUserCode: async function() {
+      await this.runUserCode();
+      LocalStorageService.toggleSolved(this.activeProblemId);
+      alert("🎉 Solution Submitted Successfully! Problem marked as SOLVED.");
+    },
+
+    switchOutputTab: function(tabName) {
+      document.getElementById('tab-btn-tc').classList.toggle('active', tabName === 'tc');
+      document.getElementById('tab-btn-stdout').classList.toggle('active', tabName === 'stdout');
+
+      document.getElementById('tab-content-tc').style.display = tabName === 'tc' ? 'block' : 'none';
+      document.getElementById('tab-content-stdout').style.display = tabName === 'stdout' ? 'block' : 'none';
+    }
+  };
+
+  // Initialize app on DOM Ready
+  document.addEventListener('DOMContentLoaded', () => DSAApp.init());
+  </script>
 </body>
 </html>
