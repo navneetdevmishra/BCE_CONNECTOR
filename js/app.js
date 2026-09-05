@@ -166,6 +166,14 @@ class BCEConnectApp {
   // VIEW 1: HOME DASHBOARD RENDERER
   // --------------------------------------------------------------------------
   renderHomeView() {
+    // 0. Render Live Dynamic Date
+    const dateEl = document.getElementById('liveDateStr');
+    if (dateEl) {
+      const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
+      const nowStr = new Date().toLocaleDateString('en-US', options);
+      dateEl.innerHTML = `${nowStr} • <span class="badge-mini badge-emerald" style="font-size:0.65rem;">LIVE DYNAMIC DATA 🟢</span>`;
+    }
+
     // 1. Render Daily Schedule
     const scheduleContainer = document.getElementById('homeScheduleList');
     if (scheduleContainer) {

@@ -215,6 +215,68 @@
             <i class="fa-solid fa-chevron-right ticker-arrow"></i>
           </div>
 
+          <!-- Quick Onboarding / Start Here Tour Banner -->
+          <div class="glass-card panel-padded mb-4" style="border: 1.5px solid var(--accent-cyan); background: linear-gradient(135deg, rgba(0, 242, 254, 0.08), rgba(168, 85, 247, 0.06)); position: relative; overflow: hidden;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.8rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                <span class="badge-mini badge-cyan" style="font-weight: 800;"><i class="fa-solid fa-compass"></i> START HERE • 1-MINUTE CAMPUS TOUR</span>
+                <span class="badge-mini badge-emerald">DEMO MODE • LIVE DYNAMIC DATA 🟢</span>
+              </div>
+              <button class="btn-sm btn-outline" onclick="this.parentElement.parentElement.style.display='none'" style="font-size: 0.72rem;">
+                <i class="fa-solid fa-xmark"></i> Dismiss Tour
+              </button>
+            </div>
+
+            <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0 0 0.4rem; color: var(--text-main);">
+              Welcome to <span class="accent-text-gradient">BCE Connect Campus OS</span>! 🎓
+            </h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0 0 1rem; max-width: 780px;">
+              Everything you need for academic success at BCE Bakhtiyarpur in a single, fast operating system. Explore the 4 flagship modules below:
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem;">
+              <!-- Tour Step 1: Attendance Calculator -->
+              <div class="glass-panel" style="padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--accent-cyan); cursor: pointer;" onclick="app.switchView('attendance')">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem;">
+                  <i class="fa-solid fa-chart-pie accent-cyan" style="font-size: 1.1rem;"></i>
+                  <strong style="font-size: 0.9rem; color: var(--text-main);">1. Attendance Engine</strong>
+                </div>
+                <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0 0 0.5rem;">Check live BEU 75% exam cutoff & calculate safe bunk classes.</p>
+                <span style="font-size: 0.72rem; color: var(--accent-cyan); font-weight: 700;">Check Attendance →</span>
+              </div>
+
+              <!-- Tour Step 2: PYQ AI Analytics -->
+              <div class="glass-panel" style="padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--accent-purple); cursor: pointer;" onclick="app.switchView('pyq')">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem;">
+                  <i class="fa-solid fa-brain accent-purple" style="font-size: 1.1rem;"></i>
+                  <strong style="font-size: 0.9rem; color: var(--text-main);">2. PYQ AI & Genius Tutor</strong>
+                </div>
+                <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0 0 0.5rem;">High-yield exam topics breakdown & AI answer step solver.</p>
+                <span style="font-size: 0.72rem; color: var(--accent-purple); font-weight: 700;">Explore PYQ AI →</span>
+              </div>
+
+              <!-- Tour Step 3: Student 360 & Resume -->
+              <div class="glass-panel" style="padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--accent-emerald); cursor: pointer;" onclick="app.switchView('student360')">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem;">
+                  <i class="fa-solid fa-id-badge accent-emerald" style="font-size: 1.1rem;"></i>
+                  <strong style="font-size: 0.9rem; color: var(--text-main);">3. Student 360° & Resume</strong>
+                </div>
+                <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0 0 0.5rem;">Verified BEU CGPA history, skill evidence & AI Resume builder.</p>
+                <span style="font-size: 0.72rem; color: var(--accent-emerald); font-weight: 700;">View Portfolio →</span>
+              </div>
+
+              <!-- Tour Step 4: Monaco IDE & TCS DSA -->
+              <div class="glass-panel" style="padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--accent-amber); cursor: pointer;" onclick="app.switchView('tcs')">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem;">
+                  <i class="fa-solid fa-code accent-amber" style="font-size: 1.1rem;"></i>
+                  <strong style="font-size: 0.9rem; color: var(--text-main);">4. Monaco IDE & DSA Prep</strong>
+                </div>
+                <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0 0 0.5rem;">Code in C++/Java/Python with 75 TCS NQT DSA questions.</p>
+                <span style="font-size: 0.72rem; color: var(--accent-amber); font-weight: 700;">Open IDE Arena →</span>
+              </div>
+            </div>
+          </div>
+
           <!-- Hero Greeting Card -->
           <div class="hero-welcome-card glass-card">
             <div class="hero-bg-glow"></div>
@@ -1258,8 +1320,8 @@
                     <span class="badge-mini badge-emerald">CSS Glassmorphism</span>
                   </div>
                   <div style="display:flex; gap:0.5rem;">
-                    <a href="https://github.com" target="_blank" class="btn-sm btn-outline" style="font-size:0.72rem;"><i class="fa-brands fa-github"></i> GitHub</a>
-                    <a href="http://localhost:8085/" target="_blank" class="btn-sm btn-cyan" style="font-size:0.72rem;"><i class="fa-solid fa-globe"></i> Live Demo</a>
+                    <a href="https://github.com/navneetdevmishra/BCE_CONNECTOR" target="_blank" class="btn-sm btn-outline" style="font-size:0.72rem;"><i class="fa-brands fa-github"></i> GitHub</a>
+                    <a href="https://navneetdevmishra.github.io/BCE_CONNECTOR/" target="_blank" class="btn-sm btn-cyan" style="font-size:0.72rem;"><i class="fa-solid fa-globe"></i> Live Demo</a>
                   </div>
                 </div>
 
@@ -1271,7 +1333,7 @@
                     <span class="badge-mini badge-amber">ESP32</span>
                     <span class="badge-mini badge-purple">MQTT Protocol</span>
                   </div>
-                  <a href="https://github.com" target="_blank" class="btn-sm btn-outline" style="font-size:0.72rem;"><i class="fa-brands fa-github"></i> GitHub Code</a>
+                  <a href="https://github.com/navneetdevmishra/BCE_CONNECTOR" target="_blank" class="btn-sm btn-outline" style="font-size:0.72rem;"><i class="fa-brands fa-github"></i> GitHub Code</a>
                 </div>
               </div>
             </div>
