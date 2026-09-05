@@ -146,6 +146,12 @@
             <span class="badge-mini badge-cyan">HYNTS 75</span>
           </button>
 
+          <button class="sidebar-item" data-view="editor" onclick="app.switchView('editor')">
+            <i class="fa-solid fa-laptop-code"></i>
+            <span>IDE Code Studio</span>
+            <span class="badge-mini badge-emerald">COMPILER</span>
+          </button>
+
           <button class="sidebar-item" data-view="portal" onclick="app.switchView('portal')">
             <i class="fa-solid fa-user-shield"></i>
             <span>Admin & Teacher Portal</span>
@@ -983,6 +989,101 @@
                 <!-- Dynamically rendered via app.renderTcsDsaView() -->
               </tbody>
             </table>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW: ONLINE COMPILER & CODE EDITOR STUDIO -->
+        <!-- ========================================== -->
+        <section id="view-editor" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title"><i class="fa-solid fa-laptop-code accent-cyan"></i> BCE IDE Code Compiler & Practice Studio</h1>
+              <p class="view-sub">Write, Compile & Test C++, Java, Python & JavaScript Code in Real-Time</p>
+            </div>
+
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button class="btn-sm btn-cyan" onclick="app.runCodeCompiler()">
+                <i class="fa-solid fa-play"></i> ⚡ Run Code (Compiler)
+              </button>
+              <button class="btn-sm btn-purple" onclick="app.downloadEditorCode()">
+                <i class="fa-solid fa-download"></i> Download Code
+              </button>
+            </div>
+          </div>
+
+          <!-- IDE Main Workspace Container -->
+          <div class="glass-card panel-padded" style="border:1px solid var(--accent-cyan); background:rgba(15,23,42,0.85);">
+            <!-- Top IDE Control Bar -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; padding-bottom:1rem; margin-bottom:1rem; border-bottom:1px solid var(--border-glass);">
+              <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                <label style="font-size:0.8rem; font-weight:700; color:var(--accent-cyan);"><i class="fa-solid fa-code"></i> Select Language:</label>
+                <select id="editorLangSelect" class="custom-select btn-sm" onchange="app.changeEditorTemplate()" style="font-weight:700; background:rgba(0,242,254,0.08); border-color:var(--accent-cyan);">
+                  <option value="cpp" selected>C++ (GCC 11 / C++17)</option>
+                  <option value="java">Java (OpenJDK 17)</option>
+                  <option value="python">Python (Python 3.10)</option>
+                  <option value="javascript">JavaScript (Node.js ES6)</option>
+                </select>
+
+                <select id="editorThemeSelect" class="custom-select btn-sm" style="font-size:0.75rem;">
+                  <option value="dark">Theme: JetBrains Dark 🌙</option>
+                  <option value="cyber">Theme: Cyber Neon ⚡</option>
+                </select>
+              </div>
+
+              <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <button class="btn-sm btn-outline" onclick="app.resetEditorTemplate()" style="font-size:0.75rem;">
+                  <i class="fa-solid fa-rotate-left"></i> Reset Template
+                </button>
+                <button class="btn-sm btn-outline" onclick="app.copyEditorCode()" style="font-size:0.75rem;">
+                  <i class="fa-solid fa-copy"></i> Copy Code
+                </button>
+              </div>
+            </div>
+
+            <!-- Code Editor & Console Split Grid -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:1.25rem;">
+              
+              <!-- Left Column: Source Code Editor Box -->
+              <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:0.8rem; font-weight:700; color:var(--text-main);"><i class="fa-solid fa-file-code accent-purple"></i> Source Code Editor:</span>
+                  <span style="font-size:0.72rem; color:var(--text-muted); font-family:monospace;">UTF-8 • Auto-Indent Ready</span>
+                </div>
+                
+                <div style="position:relative; border-radius:var(--radius-md); border:1px solid var(--border-glass); background:#0D1117; overflow:hidden;">
+                  <textarea id="editorCodeInput" spellcheck="false" style="width:100%; height:420px; background:#0D1117; color:#E6E8EB; font-family:'JetBrains Mono', 'Fira Code', monospace; font-size:0.88rem; padding:1rem; border:none; outline:none; resize:vertical; line-height:1.5; tab-size:4;" placeholder="// Write your solution code here..."></textarea>
+                </div>
+              </div>
+
+              <!-- Right Column: Input & Output Terminal Box -->
+              <div style="display:flex; flex-direction:column; gap:1rem;">
+                
+                <!-- STDIN Box -->
+                <div style="display:flex; flex-direction:column; gap:0.4rem;">
+                  <span style="font-size:0.8rem; font-weight:700; color:var(--accent-amber);"><i class="fa-solid fa-terminal"></i> Custom Test Input (STDIN):</span>
+                  <textarea id="editorStdinInput" spellcheck="false" style="width:100%; height:90px; background:#151B23; color:#E6E8EB; font-family:monospace; font-size:0.8rem; padding:0.6rem 0.8rem; border-radius:var(--radius-md); border:1px solid var(--border-glass); outline:none; resize:none;" placeholder="Enter custom input testcases here... (e.g. 5)"></textarea>
+                </div>
+
+                <!-- Terminal STDOUT Console -->
+                <div style="display:flex; flex-direction:column; gap:0.4rem; flex:1;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.8rem; font-weight:700; color:var(--accent-emerald);"><i class="fa-solid fa-desktop"></i> Execution Terminal (STDOUT):</span>
+                    <span id="editorExecutionStatus" style="font-size:0.75rem; font-weight:700; color:var(--accent-cyan);">Ready 🟢</span>
+                  </div>
+
+                  <div id="editorConsoleOutput" style="width:100%; min-height:220px; background:#080C14; color:#3FB68B; font-family:'JetBrains Mono', monospace; font-size:0.82rem; padding:1rem; border-radius:var(--radius-md); border:1px solid var(--border-glass); overflow-y:auto; white-space:pre-wrap;">
+<span style="color:var(--text-muted);">// Console output log will appear here after clicking ⚡ Run Code...</span>
+                  </div>
+                </div>
+
+                <!-- Run Code Bar -->
+                <button class="btn-cyan full-width" onclick="app.runCodeCompiler()" style="padding:0.75rem; font-size:0.95rem; font-weight:700;">
+                  <i class="fa-solid fa-play"></i> ⚡ Run & Execute Code Now
+                </button>
+              </div>
+
+            </div>
           </div>
         </section>
         <!-- ========================================== -->
