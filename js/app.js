@@ -1759,6 +1759,163 @@ class BCEConnectApp {
     if (modal) modal.classList.remove('active');
   }
 
+  // Official Timetable Routine Sheet Modal
+  openOfficialRoutineModal() {
+    const modal = document.getElementById('officialRoutineModal');
+    const body = document.getElementById('officialRoutineModalBody');
+    if (!modal || !body) return;
+
+    body.innerHTML = `
+      <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.83rem; text-align:center; border:1px solid var(--border-glass);">
+          <thead>
+            <tr style="background:rgba(0,242,254,0.12); color:var(--accent-cyan); font-weight:700;">
+              <th style="padding:10px; border:1px solid var(--border-glass);">Day</th>
+              <th style="padding:10px; border:1px solid var(--border-glass);">10:00 - 11:00 AM</th>
+              <th style="padding:10px; border:1px solid var(--border-glass);">11:00 AM - 12:00 PM</th>
+              <th style="padding:10px; border:1px solid var(--border-glass);">12:00 - 01:00 PM</th>
+              <th style="padding:10px; border:1px solid var(--border-glass);">01:00 - 02:00 PM</th>
+              <th style="padding:10px; border:1px solid var(--border-glass);">02:00 - 05:00 PM</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border-glass);">
+              <td style="padding:10px; font-weight:700; color:var(--accent-cyan);">MON</td>
+              <td style="padding:10px;">COA (155401)<br><small style="color:var(--text-muted);">Mrs. Bhawana Singh</small></td>
+              <td style="padding:10px; background:rgba(0,242,254,0.1); font-weight:700; color:var(--accent-cyan);">DAA (155403)<br><small>Mr. Shahab Saquib</small></td>
+              <td style="padding:10px;">FLAT (155402)<br><small style="color:var(--text-muted);">Mrs. Priti Kumari</small></td>
+              <td style="padding:10px; background:rgba(255,255,255,0.03);">LUNCH BREAK 🍱</td>
+              <td style="padding:10px;">DAA Lab (155403P)<br><small style="color:var(--accent-purple);">Lab 3 (SS/PK)</small></td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border-glass);">
+              <td style="padding:10px; font-weight:700; color:var(--accent-cyan);">TUE</td>
+              <td style="padding:10px;">DBMS (155404)<br><small style="color:var(--text-muted);">Prof. S.K. Singh</small></td>
+              <td style="padding:10px;">COA (155401)<br><small style="color:var(--text-muted);">Mrs. Bhawana Singh</small></td>
+              <td style="padding:10px;">SE (155405)<br><small style="color:var(--text-muted);">Mr. Rahul Kumar</small></td>
+              <td style="padding:10px; background:rgba(255,255,255,0.03);">LUNCH BREAK 🍱</td>
+              <td style="padding:10px;">DBMS Lab (155404P)<br><small style="color:var(--accent-purple);">Lab 2</small></td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border-glass);">
+              <td style="padding:10px; font-weight:700; color:var(--accent-cyan);">WED</td>
+              <td style="padding:10px;">FLAT (155402)<br><small style="color:var(--text-muted);">Mrs. Priti Kumari</small></td>
+              <td style="padding:10px;">DAA (155403)<br><small style="color:var(--text-muted);">Mr. Shahab Saquib</small></td>
+              <td style="padding:10px;">DBMS (155404)<br><small style="color:var(--text-muted);">Prof. S.K. Singh</small></td>
+              <td style="padding:10px; background:rgba(255,255,255,0.03);">LUNCH BREAK 🍱</td>
+              <td style="padding:10px;">COA Lab (155401P)<br><small style="color:var(--accent-purple);">Hardware Lab</small></td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border-glass);">
+              <td style="padding:10px; font-weight:700; color:var(--accent-cyan);">THU</td>
+              <td style="padding:10px;">SE (155405)<br><small style="color:var(--text-muted);">Mr. Rahul Kumar</small></td>
+              <td style="padding:10px;">CN (155406)<br><small style="color:var(--text-muted);">Mrs. Anjali Roy</small></td>
+              <td style="padding:10px;">COA (155401)<br><small style="color:var(--text-muted);">Mrs. Bhawana Singh</small></td>
+              <td style="padding:10px; background:rgba(255,255,255,0.03);">LUNCH BREAK 🍱</td>
+              <td style="padding:10px;">Library & Self Study 📚</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border-glass);">
+              <td style="padding:10px; font-weight:700; color:var(--accent-cyan);">FRI</td>
+              <td style="padding:10px;">DAA (155403)<br><small style="color:var(--text-muted);">Mr. Shahab Saquib</small></td>
+              <td style="padding:10px;">CN (155406)<br><small style="color:var(--text-muted);">Mrs. Anjali Roy</small></td>
+              <td style="padding:10px;">FLAT (155402)<br><small style="color:var(--text-muted);">Mrs. Priti Kumari</small></td>
+              <td style="padding:10px; background:rgba(255,255,255,0.03);">LUNCH BREAK 🍱</td>
+              <td style="padding:10px;">Placement Preparation 💼</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    modal.classList.add('active');
+  }
+
+  closeOfficialRoutineModal() {
+    const modal = document.getElementById('officialRoutineModal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  // Subject Syllabus Detail Modal
+  openSubjectDetail(subjectName) {
+    const modal = document.getElementById('subjectModal');
+    const titleEl = document.getElementById('subjectModalTitle');
+    const bodyEl = document.getElementById('subjectModalBody');
+    if (!modal || !bodyEl) return;
+
+    const list = (typeof SYLLABUS_DATA !== 'undefined' && SYLLABUS_DATA.CSE_4) ? SYLLABUS_DATA.CSE_4 : [];
+    const sub = list.find(s => s.name.toLowerCase().includes(subjectName.toLowerCase()) || subjectName.toLowerCase().includes(s.name.toLowerCase())) || list[0] || { code: "155403", name: subjectName, credits: 4, faculty: "Mr. Shahab Saquib", units: [] };
+
+    if (titleEl) {
+      titleEl.innerHTML = `<i class="fa-solid fa-book accent-cyan"></i> ${sub.name} (${sub.code})`;
+    }
+
+    bodyEl.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.25rem; background:rgba(0,242,254,0.05); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--accent-cyan);">
+        <div>
+          <span class="badge-mini badge-cyan">BEU CODE: ${sub.code}</span>
+          <h3 style="font-size:1.2rem; margin:0.3rem 0; color:var(--text-main);">${sub.name}</h3>
+          <p style="font-size:0.85rem; color:var(--text-muted);">Faculty: <strong>${sub.faculty || 'BCE Faculty'}</strong> • Credits: <strong>${sub.credits || 4} Credits</strong></p>
+        </div>
+        <button class="btn-sm btn-cyan" onclick="app.closeSubjectModal(); app.switchView('ai'); app.triggerAiPreset('Explain syllabus & important topics for ${sub.name}');">
+          <i class="fa-solid fa-brain"></i> Ask BCE Genius AI
+        </button>
+      </div>
+
+      <h4 style="font-size:0.95rem; color:var(--accent-amber); margin-bottom:0.75rem;"><i class="fa-solid fa-layer-group"></i> Course Units & Syllabus Topics:</h4>
+      <div style="display:flex; flex-direction:column; gap:0.75rem;">
+        ${(sub.units || [
+          { num: 1, title: "Introduction & Algorithm Analysis", topics: ["Asymptotic Notation (Big O, Omega, Theta)", "Recurrence Relations & Master Theorem", "Divide and Conquer: MergeSort & QuickSort"] },
+          { num: 2, title: "Dynamic Programming & Greedy Algorithms", topics: ["0/1 Knapsack Problem & Fractional Knapsack", "Longest Common Subsequence (LCS)", "Matrix Chain Multiplication"] }
+        ]).map(u => `
+          <div class="glass-panel" style="padding:1rem; border-radius:var(--radius-md); border-left:3px solid var(--accent-cyan);">
+            <h5 style="font-size:0.88rem; color:var(--accent-cyan); margin:0 0 0.4rem;">Unit ${u.num}: ${u.title}</h5>
+            <ul style="font-size:0.82rem; color:var(--text-main); margin:0; padding-left:1.2rem; line-height:1.6;">
+              ${u.topics.map(t => `<li>${t}</li>`).join('')}
+            </ul>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    modal.classList.add('active');
+  }
+
+  closeSubjectModal() {
+    const modal = document.getElementById('subjectModal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  // BEU Official Marksheet Simulator Modal
+  openBeuResultSimulatorModal() {
+    const modal = document.getElementById('beuResultModal');
+    const body = document.getElementById('beuResultModalBody');
+    if (!modal || !body) return;
+
+    body.innerHTML = `
+      <div style="background:rgba(7, 11, 20, 0.95); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--accent-cyan);">
+        <div style="text-align:center; border-bottom:1.5px solid var(--accent-cyan); padding-bottom:0.8rem; margin-bottom:1rem;">
+          <h3 style="color:var(--accent-cyan); margin:0;">BIHAR ENGINEERING UNIVERSITY, PATNA</h3>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.2rem;">Official Grade Marksheet Simulator (beu-bih.ac.in)</p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:0.75rem; font-size:0.82rem; margin-bottom:1rem;">
+          <div><strong>Student Name:</strong> NAVNEET MISHRA</div>
+          <div><strong>BEU Reg No:</strong> 25155126904</div>
+          <div><strong>Branch:</strong> CSE (IoT & Cyber Security)</div>
+          <div><strong>Semester:</strong> IV</div>
+        </div>
+
+        <div style="font-size:0.85rem; font-weight:700; color:var(--accent-emerald); text-align:center; padding:0.75rem; background:rgba(63,182,139,0.1); border-radius:var(--radius-sm); border:1px solid var(--accent-emerald);">
+          ✓ SIMULATED SEMESTER CGPA: 8.75 / 10.0 (FIRST CLASS WITH DISTINCTION ⭐)
+        </div>
+      </div>
+    `;
+
+    modal.classList.add('active');
+  }
+
+  closeBeuResultSimulatorModal() {
+    const modal = document.getElementById('beuResultModal');
+    if (modal) modal.classList.remove('active');
+  }
+
   resetPomodoroTimer() {
     if (this.pomoInterval) clearInterval(this.pomoInterval);
     const display = document.getElementById('pomoTimeDisplay');
