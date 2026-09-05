@@ -2460,6 +2460,11 @@ ${resumeMarkdown}
               <i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-star"></i>
             </button>
           </td>
+          <td style="padding: 12px 16px; text-align: center;">
+            <button class="btn-sm btn-amber" onclick="app.openTcsProblemModal(${q.id})" style="padding: 5px 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+              <i class="fa-solid fa-code"></i> Solve
+            </button>
+          </td>
         </tr>
       `;
     }).join('');
