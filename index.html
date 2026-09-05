@@ -2129,6 +2129,22 @@
     </div>
   </div>
 
+  <!-- PYQ Question Paper Viewer Modal -->
+  <div id="pyqViewerModal" class="modal-overlay">
+    <div class="modal-card glass-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 id="pyqModalTitle" style="font-size:1.15rem; color:var(--accent-purple);"><i class="fa-solid fa-file-pdf accent-purple"></i> BEU Question Paper Viewer</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">Official BEU End-Semester Examination Solved Question Paper</p>
+        </div>
+        <button class="modal-close-btn" onclick="app.closePyqViewer()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="pyqModalBody">
+        <!-- Dynamically filled by openPyqViewer -->
+      </div>
+    </div>
+  </div>
+
   <!-- PDF Compressor & Tools Modal -->
   <div id="pdfToolModal" class="modal-overlay">
     <div class="modal-card glass-card">

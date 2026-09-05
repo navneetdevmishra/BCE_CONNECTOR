@@ -406,6 +406,82 @@ class BCEConnectApp {
     if (modal) modal.classList.remove('active');
   }
 
+  // Upload PYQ & Notes Modal Handlers
+  openUploadPyqModal() {
+    const modal = document.getElementById('uploadPyqModal');
+    if (modal) modal.classList.add('active');
+  }
+
+  closeUploadPyqModal() {
+    const modal = document.getElementById('uploadPyqModal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  openStudentPyqUploadModal() {
+    this.openUploadPyqModal();
+  }
+
+  closeStudentPyqUploadModal() {
+    this.closeUploadPyqModal();
+  }
+
+  handlePyqFileSelected(input) {
+    const nameSpan = document.getElementById('selectedFileName');
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      this.pendingPyqFile = file.name;
+      if (nameSpan) {
+        nameSpan.textContent = `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB) • Ready to Upload`;
+      }
+    }
+  }
+
+  handleStudentPyqUpload(event) {
+    if (event && event.preventDefault) event.preventDefault();
+
+    const title = document.getElementById('upPyqTitle')?.value || 'BEU Solved Paper';
+    const author = document.getElementById('upPyqAuthor')?.value || 'Navneet Mishra';
+    const subject = document.getElementById('upPyqSubjectSelect')?.value || 'Data Structures';
+    const year = document.getElementById('upPyqYearSelect')?.value || '2025';
+
+    if (!SYLLABUS_DATA.pyqPapers) SYLLABUS_DATA.pyqPapers = [];
+
+    const newPaper = {
+      id: `pyq_${Date.now()}`,
+      title: title,
+      subject: subject,
+      year: year,
+      author: author,
+      isUserUploaded: true,
+      fileUrl: '#',
+      fileName: this.pendingPyqFile || 'solved_paper.pdf'
+    };
+
+    SYLLABUS_DATA.pyqPapers.unshift(newPaper);
+    this.closeUploadPyqModal();
+    this.showToast(`🎉 "${title}" uploaded and published to BCE Archive!`, 'success');
+    this.renderPyqView();
+  }
+
+  // Academics Subject & Notes Modal Handlers
+  openAddSubjectModal() {
+    const modal = document.getElementById('profileModal');
+    if (modal) modal.classList.add('active');
+  }
+
+  closeAddSubjectModal() {
+    const modal = document.getElementById('profileModal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  openUploadSyllabusNotesModal() {
+    this.openUploadPyqModal();
+  }
+
+  closeUploadSyllabusNotesModal() {
+    this.closeUploadPyqModal();
+  }
+
   // --------------------------------------------------------------------------
   // VIEW 4: BCE GENIUS AI ASSISTANT RENDERER
   // --------------------------------------------------------------------------
