@@ -75,6 +75,15 @@ const defaultDb = {
   ],
   notices: [
     {
+      id: "NTC-100",
+      title: "Notice regarding BEU 4th & 6th Sem Mid-Term Exam Seating Arrangement",
+      category: "Exam",
+      date: "2026-09-06",
+      author: "Controller of Examinations",
+      content: "Official exam hall allotment for 4th & 6th semester Mid-Sem examinations published. All students check roll numbers and room seating plan.",
+      priority: "HIGH"
+    },
+    {
       id: "NTC-101",
       title: "BEU End-Semester Examination Schedule 2026",
       category: "Exam",

@@ -111,6 +111,38 @@ const BCE_DATA = {
   // Live Official BCE Notices (Extracted from https://bcebakhtiyarpur.ac.in/category/notices/)
   notices: [
     {
+      id: "NTC-2026-112",
+      title: "Notice regarding BEU 4th & 6th Sem Mid-Term Exam Centre & Seating Arrangement",
+      category: "Exams",
+      date: "06 Sep 2026",
+      urgent: true,
+      summary: "Official exam hall allotment for 4th & 6th semester Mid-Sem examinations published. All students check roll numbers and room seating plan."
+    },
+    {
+      id: "NTC-2026-111",
+      title: "Notice regarding TCS NQT & Digital Campus Recruitment Drive Registration 2026",
+      category: "Placement",
+      date: "05 Sep 2026",
+      urgent: true,
+      summary: "TPO Cell Alert: Final registration deadline extended for TCS NQT & Digital recruitment drive for 2026/2027 batch. Complete registration on TCS NextStep portal."
+    },
+    {
+      id: "NTC-2026-110",
+      title: "Notice regarding Mandatory 75% Attendance Verification for BEU Form Filling",
+      category: "Academic",
+      date: "03 Sep 2026",
+      urgent: true,
+      summary: "Notice Ref: BCE_Acad_26_512 (Date 03/09/2026). Attendance shortage lists displayed on department notice boards. Minimum 75% attendance mandatory."
+    },
+    {
+      id: "NTC-2026-109",
+      title: "Notice regarding BEU End-Semester Examination Form Filling Timetable",
+      category: "BEU Exam",
+      date: "01 Sep 2026",
+      urgent: false,
+      summary: "Online exam form submission link for Bihar Engineering University B.Tech 4th & 6th Sem End Semester Examinations will open from Sept 10."
+    },
+    {
       id: "NTC-2026-108",
       title: "Notice regarding boys hostel 2 allotment",
       category: "Hostel",
