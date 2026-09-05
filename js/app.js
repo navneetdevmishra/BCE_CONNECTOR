@@ -15,14 +15,18 @@ class BCEConnectApp {
     this.activeRole = 'teacher';
 
     // Registered Students Data Queue (Admin verification & Teacher attendance call sheet)
-    const storedStudents = localStorage.getItem('registered_students_cache');
-    this.registeredStudents = storedStudents ? JSON.parse(storedStudents) : [
+    const defaultRoster = [
       { regNo: "25155126904", name: "NAVNEET MISHRA", branch: "CSE (IoT)", sem: "4", status: "VERIFIED", idCard: "ID_CARD_25155126904.png", attendance: "88.5%" },
       { regNo: "24155126050", name: "ABHISHEK KUMAR", branch: "CSE (IoT)", sem: "4", status: "VERIFIED", idCard: "ID_CARD_24155126050.png", attendance: "84.2%" },
       { regNo: "25155126902", name: "ANKIT SHARMA", branch: "CSE (IoT)", sem: "4", status: "VERIFIED", idCard: "ID_CARD_25155126902.png", attendance: "82.0%" },
       { regNo: "25155126915", name: "PRIYA KUMARI", branch: "CSE (IoT)", sem: "4", status: "PENDING_VERIFICATION", idCard: "ID_CARD_25155126915.png", attendance: "79.5%" },
       { regNo: "25155126920", name: "RAHUL VERMA", branch: "CSE (IoT)", sem: "4", status: "PENDING_VERIFICATION", idCard: "ID_CARD_25155126920.png", attendance: "76.0%" }
     ];
+    let loadedStudents = null;
+    try {
+      loadedStudents = JSON.parse(localStorage.getItem('registered_students_cache') || 'null');
+    } catch(e) {}
+    this.registeredStudents = (Array.isArray(loadedStudents) && loadedStudents.length > 0) ? loadedStudents : defaultRoster;
 
     // Teacher Attendance Log Store
     const storedLogs = localStorage.getItem('teacher_attendance_logs');
@@ -1896,6 +1900,29 @@ class BCEConnectApp {
 
     if (!container) return;
 
+    const defaultRoster = [
+      { regNo: "25155126904", name: "NAVNEET MISHRA", branch: "CSE (IoT)", sem: "4", status: "VERIFIED", idCard: "ID_CARD_25155126904.png", attendance: "88.5%" },
+      { regNo: "24155126050", name: "ABHISHEK KUMAR", branch: "CSE (IoT)", sem: "4", status: "VERIFIED", idCard: "ID_CARD_24155126050.png", attendance: "84.2%" },
+      { regNo: "25155126902", name: "ANKIT SHARMA", branch: "CSE (IoT)", sem: "4", status: "VERIFIED", idCard: "ID_CARD_25155126902.png", attendance: "82.0%" },
+      { regNo: "25155126915", name: "PRIYA KUMARI", branch: "CSE (IoT)", sem: "4", status: "PENDING_VERIFICATION", idCard: "ID_CARD_25155126915.png", attendance: "79.5%" },
+      { regNo: "25155126920", name: "RAHUL VERMA", branch: "CSE (IoT)", sem: "4", status: "PENDING_VERIFICATION", idCard: "ID_CARD_25155126920.png", attendance: "76.0%" }
+    ];
+
+    if (!Array.isArray(this.registeredStudents) || this.registeredStudents.length === 0) {
+      this.registeredStudents = defaultRoster;
+    }
+
+    if (!this.teacherAttendanceLogs) {
+      this.teacherAttendanceLogs = {};
+    }
+
+    if (!this.activeRole) {
+      this.activeRole = 'teacher';
+    }
+
+    const studentsList = this.registeredStudents;
+    const student = studentsList[0] || defaultRoster[0];
+
     if (this.activeRole === 'teacher') {
       if (badgeEl) badgeEl.textContent = 'ACTIVE ROLE: TEACHER PANEL 👨‍🏫';
       if (titleEl) titleEl.textContent = 'Faculty Live Class Roll Call & Attendance Panel';
@@ -2020,8 +2047,6 @@ class BCEConnectApp {
       if (badgeEl) badgeEl.textContent = 'ACTIVE ROLE: STUDENT PORTAL 🎓';
       if (titleEl) titleEl.textContent = 'Student Verification & Attendance Dashboard';
       if (descEl) descEl.textContent = 'View your ID verification status and official attendance marked by teachers.';
-
-      const student = this.registeredStudents[0];
 
       container.innerHTML = `
         <div class="glass-card panel-padded mb-4" style="border:1px solid var(--accent-cyan);">
