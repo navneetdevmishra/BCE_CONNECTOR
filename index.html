@@ -1002,12 +1002,15 @@
               <p class="view-sub">Write, Compile & Test C++, Java, Python & JavaScript Code in Real-Time</p>
             </div>
 
-            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-              <button class="btn-sm btn-cyan" onclick="app.runCodeCompiler()">
-                <i class="fa-solid fa-play"></i> ⚡ Run Code (Compiler)
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+              <a href="tcs-dsa-tracker.html" class="btn-sm btn-cyan" style="font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                <i class="fa-solid fa-code"></i> Launch Monaco IDE & DSA Arena ⚡
+              </a>
+              <button class="btn-sm btn-outline" onclick="app.runCodeCompiler()">
+                <i class="fa-solid fa-play"></i> Run Code
               </button>
               <button class="btn-sm btn-purple" onclick="app.downloadEditorCode()">
-                <i class="fa-solid fa-download"></i> Download Code
+                <i class="fa-solid fa-download"></i> Download
               </button>
             </div>
           </div>
@@ -2132,6 +2135,10 @@
   </div>
 
   <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+  <script src="js/data/dsa-problems.js"></script>
+  <script src="js/services/storage.js"></script>
+  <script src="js/services/executor.js"></script>
   <script src="js/data/bce-data.js?v=1.0.5"></script>
   <script src="js/data/syllabus-data.js?v=1.0.5"></script>
   <script src="js/data/tcs-dsa-data.js?v=1.0.5"></script>
@@ -2140,3 +2147,4 @@
   <script src="js/app-react-compiled.js?v=1.0.5"></script>
 </body>
 </html>
+
